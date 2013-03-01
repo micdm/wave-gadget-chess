@@ -1,0 +1,11 @@
+<script>%% js/dev.js %%</script>
+%% htm/index.htm %%
+<script>
+    $(document).ready(function() {
+        for (var i in callbacks) {
+            callbacks[i]();
+        }
+        wave.participantCallback();
+        wave.stateCallback();
+    });
+</script>

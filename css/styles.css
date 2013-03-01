@@ -1,0 +1,84 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.board table {
+    border-collapse: collapse;
+}
+
+.board td {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #555;
+}
+
+.board tr:nth-child(2n) td:nth-child(even) {
+    background: #ffce9e;
+}
+
+.board tr:nth-child(2n) td:nth-child(odd) {
+    background: #d18b47;
+}
+
+.board tr:nth-child(2n+1) td:nth-child(even) {
+    background: #d18b47;
+}
+
+.board tr:nth-child(2n+1) td:nth-child(odd) {
+    background: #ffce9e;
+}
+
+.piece {
+    width: 100%;
+    height: 100%;
+    background: no-repeat url(data:image/png;base64,%% img/pieces.png base64 %%);;
+}
+
+.white.pawn {
+    background-position: 0 0; 
+}
+
+.white.knigh {
+    background-position: -50px 0; 
+}
+
+.white.rook {
+    background-position: -100px 0; 
+}
+
+.white.bishop {
+    background-position: -150px 0; 
+}
+
+.white.queen {
+    background-position: -200px 0; 
+}
+
+.white.king {
+    background-position: -250px 0; 
+}
+
+.black.pawn {
+    background-position: 0 -50px; 
+}
+
+.black.knight {
+    background-position: -50px -50px; 
+}
+
+.black.rook {
+    background-position: -100px -50px; 
+}
+
+.black.bishop {
+    background-position: -150px -50px; 
+}
+
+.black.queen {
+    background-position: -200px -50px; 
+}
+
+.black.king {
+    background-position: -250px -50px; 
+}

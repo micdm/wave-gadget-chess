@@ -6,6 +6,17 @@
         </style>
     </head>
     <body>
+        <div class="board"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script>
+            %% js/piece.js %%
+            %% js/piece-builder.js %%
+            %% js/board.js %%
+            %% js/gadget.js %%
+            (function() {
+                var gadget = new Gadget();
+                gadget.init();
+            })();
+        </script>
     </body>
 </html>
