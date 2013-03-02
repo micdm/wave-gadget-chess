@@ -4,30 +4,30 @@ var PieceBuilder = function(color, field, node) {
     this._node = node;
 };
 
-PieceBuilder.prototype._createPiece = function(type, x, y) {
-    var piece = new Piece(type, this._color);
-    this._field[y][x] = piece;
+PieceBuilder.prototype._createPiece = function(type, row, col) {
+    var piece = new type(this._color);
+    this._field[row][col] = piece;
     var node = piece.getNode();
-    this._node.find('tr:eq(' + y + ') td:eq(' + x + ')').append(node);
+    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')').append(node);
 };
 
 PieceBuilder.prototype._createPawns = function() {
-    var y = this._color == Piece.COLORS.WHITE ? 6 : 1;
-    for (var x = 0; x < 8; x += 1) {
-        this._createPiece(Piece.TYPES.PAWN, x, y);
+    var row = this._color == Piece.COLORS.WHITE ? 6 : 1;
+    for (var col = 0; col < 8; col += 1) {
+        this._createPiece(Pawn, row, col);
     }
 };
 
 PieceBuilder.prototype._createOtherPieces = function() {
-    var y = this._color == Piece.COLORS.WHITE ? 7 : 0;
-    this._createPiece(Piece.TYPES.ROOK, 0, y);
-    this._createPiece(Piece.TYPES.KNIGHT, 1, y);
-    this._createPiece(Piece.TYPES.BISHOP, 2, y);
-    this._createPiece(Piece.TYPES.QUEEN, 3, y);
-    this._createPiece(Piece.TYPES.KING, 4, y);
-    this._createPiece(Piece.TYPES.BISHOP, 5, y);
-    this._createPiece(Piece.TYPES.KNIGHT, 6, y);
-    this._createPiece(Piece.TYPES.ROOK, 7, y);
+    var row = this._color == Piece.COLORS.WHITE ? 7 : 0;
+    this._createPiece(Rook, row, 0);
+    this._createPiece(Knight, row, 1);
+    this._createPiece(Bishop, row, 2);
+    this._createPiece(Queen, row, 3);
+    this._createPiece(King, row, 4);
+    this._createPiece(Bishop, row, 5);
+    this._createPiece(Knight, row, 6);
+    this._createPiece(Rook, row, 7);
 };
 
 PieceBuilder.prototype.build = function() {
