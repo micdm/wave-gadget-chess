@@ -36,8 +36,18 @@ Board.prototype._createPieces = function() {
     }
 };
 
+Board.prototype._choosePiece = function(row, col) {
+    this._node.find('.chosen').remove();
+    var node = $('<div class="icon chosen"></div>');
+    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')').append(node);
+    this._piece = {
+        row: row,
+        col: col
+    };
+};
+
 Board.prototype._showAvailableMoves = function(row, col) {
-    this._node.find('.move,.attack').remove();
+    this._node.find('.move, .attack').remove();
     var piece = this._field[row][col];
     var moves = piece.getMoves(this._field, row, col);
     for (var i in moves) {
@@ -47,11 +57,18 @@ Board.prototype._showAvailableMoves = function(row, col) {
     }
 };
 
-Board.prototype._choosePiece = function(row, col) {
-    this._node.find('.chosen').remove();
-    var node = $('<div class="icon chosen"></div>');
+Board.prototype._moveChosenPiece = function(row, col) {
+    this._field[row][col] = this._field[this._piece.row][this._piece.col];
+    this._field[this._piece.row][this._piece.col] = null;
+    this._node.find('.chosen, .move, .attack').remove();
+    var node = this._node.find('.row:eq(' + this._piece.row + ') .cell:eq(' + this._piece.col + ') .piece');
     this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')').append(node);
-    this._piece = this._field[row][col];
+    this._piece = null;
+};
+
+Board.prototype._attackPiece = function(row, col) {
+    this._field[row][col] = null;
+    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ') .piece').remove();
 };
 
 Board.prototype._addClickListener = function() {
@@ -59,9 +76,17 @@ Board.prototype._addClickListener = function() {
         var offset = this._node.offset();
         var row = Math.floor((event.pageY - offset.top) / Board.CELL_SIZE);
         var col = Math.floor((event.pageX - offset.left) / Board.CELL_SIZE);
-        if (this._field[row][col]) {
+        var element = $(event.target);
+        if (element.hasClass('piece')) {
             this._choosePiece(row, col);
             this._showAvailableMoves(row, col);
+        }
+        if (element.hasClass('move')) {
+            this._moveChosenPiece(row, col);
+        }
+        if (element.hasClass('attack')) {
+            this._attackPiece(row, col);
+            this._moveChosenPiece(row, col);
         }
     }, this));
 };
