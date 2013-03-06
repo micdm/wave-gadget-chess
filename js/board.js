@@ -1,7 +1,9 @@
-var Board = function() {
+var Board = function(callbacks) {
     this._node = $('.board');
     this._field = null;
     this._piece = null;
+    this._players = new Players();
+    this._callbacks = callbacks;
 };
 
 Board.SIZE = 8;
@@ -57,22 +59,29 @@ Board.prototype._showAvailableMoves = function(row, col) {
     }
 };
 
-Board.prototype._moveChosenPiece = function(row, col) {
-    this._field[row][col] = this._field[this._piece.row][this._piece.col];
-    this._field[this._piece.row][this._piece.col] = null;
-    this._node.find('.chosen, .move, .attack').remove();
-    var node = this._node.find('.row:eq(' + this._piece.row + ') .cell:eq(' + this._piece.col + ') .piece');
-    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')').append(node);
-    this._piece = null;
-};
-
-Board.prototype._attackPiece = function(row, col) {
-    this._field[row][col] = null;
-    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ') .piece').remove();
+Board.prototype._callUpdate = function(data) {
+    if (data.type == 'move') {
+        if (!this._players.has(this._color)) {
+            this._callbacks.onUpdate({
+                type: 'player',
+                color: this._color,
+                info: {
+                    id: '',
+                    name: '',
+                    avatar: ''
+                }
+            });
+        }
+        this._players.lock();
+    }
+    this._callbacks.onUpdate(data);
 };
 
 Board.prototype._addClickListener = function() {
     this._node.click($.proxy(function(event) {
+        if (!this._players.canPlay()) {
+            return;
+        }
         var offset = this._node.offset();
         var row = Math.floor((event.pageY - offset.top) / Board.CELL_SIZE);
         var col = Math.floor((event.pageX - offset.left) / Board.CELL_SIZE);
@@ -82,11 +91,29 @@ Board.prototype._addClickListener = function() {
             this._showAvailableMoves(row, col);
         }
         if (element.hasClass('move')) {
-            this._moveChosenPiece(row, col);
+            this._callUpdate({
+                type: 'move',
+                from: this._piece,
+                to: {
+                    row: row,
+                    col: col
+                }
+            });
         }
         if (element.hasClass('attack')) {
-            this._attackPiece(row, col);
-            this._moveChosenPiece(row, col);
+            this._callUpdate({
+                type: 'remove',
+                row: row,
+                col: col
+            });
+            this._callUpdate({
+                type: 'move',
+                from: this._piece,
+                to: {
+                    row: row,
+                    col: col
+                }
+            });
         }
     }, this));
 };
@@ -96,4 +123,31 @@ Board.prototype.init = function() {
     this._createFieldTable();
     this._createPieces();
     this._addClickListener();
+};
+
+Board.prototype._movePiece = function(from, to) {
+    this._field[to.row][to.col] = this._field[from.row][from.col];
+    this._field[from.row][from.col] = null;
+    this._node.find('.chosen, .move, .attack').remove();
+    var node = this._node.find('.row:eq(' + from.row + ') .cell:eq(' + from.col + ') .piece');
+    this._node.find('.row:eq(' + to.row + ') .cell:eq(' + to.col + ')').append(node);
+    this._piece = null;
+};
+
+Board.prototype._removePiece = function(row, col) {
+    this._field[row][col] = null;
+    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ') .piece').remove();
+};
+
+Board.prototype.update = function(update) {
+    if (update.type == 'player') {
+        this._players.set(update.color, update.info.id, update.info.name, update.info.avatar);
+    }
+    if (update.type == 'remove') {
+        this._removePiece(update.row, update.col);
+    }
+    if (update.type == 'move') {
+        this._movePiece(update.from, update.to);
+        this._players.turn();
+    }
 };

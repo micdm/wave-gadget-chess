@@ -1,18 +1,23 @@
 var Participant = function(id, name, avatar) {
     this.getId = function() {
         return id;
-    }
+    };
     this.getDisplayName = function() {
         return name;
-    }
+    };
     this.getThumbnailUrl = function() {
         return avatar;
-    }
+    };
 };
 
 var wave = {
+    isInWaveContainer: function() {
+        return true;
+    },
     state: {
-        
+        revision: 2,
+        'update-1': '{"type": "player", "color": "white", "info": {"id": 1, "name": "Player 1", "avatar": "https://lh6.googleusercontent.com/-mwE_hh9x-14/AAAAAAAAAAI/AAAAAAAAE30/Iux9ke27Hs4/photo.jpg"}}',
+        'update-2': '{"type": "player", "color": "black", "info": {"id": 2, "name": "Player 2", "avatar": "https://lh6.googleusercontent.com/-a4xbIaTkq4A/AAAAAAAAAAI/AAAAAAAAAec/uVZODodZNfw/photo.jpg"}}'
     },
     participants: [
         
@@ -41,7 +46,7 @@ var wave = {
                 }
                 wave.stateCallback();
             }
-        }
+        };
     },
     getParticipants: function() {
         return wave.participants;

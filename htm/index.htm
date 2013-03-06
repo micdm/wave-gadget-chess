@@ -7,13 +7,17 @@
     </head>
     <body>
         <div class="board"></div>
+        <div class="players">
+            <div class="player white"></div> vs <div class="player black"></div>
+        </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script>
-            %% js/piece.js %%
-            %% js/piece-builder.js %%
-            %% js/board.js %%
-            %% js/gadget.js %%
             (function() {
+                %% js/piece.js %%
+                %% js/piece-builder.js %%
+                %% js/player.js %%
+                %% js/board.js %%
+                %% js/gadget.js %%
                 var gadget = new Gadget();
                 gadget.init();
             })();
