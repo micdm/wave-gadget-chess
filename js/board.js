@@ -1,8 +1,9 @@
-var Board = function(callbacks) {
+var Board = function(viewer, callbacks) {
     this._node = $('.board');
     this._field = null;
     this._piece = null;
     this._players = new Players();
+    this._viewer = viewer;
     this._callbacks = callbacks;
 };
 
@@ -62,14 +63,11 @@ Board.prototype._showAvailableMoves = function(row, col) {
 Board.prototype._callUpdate = function(data) {
     if (data.type == 'move') {
         if (!this._players.has(this._color)) {
+            var info = this._viewer.get();
             this._callbacks.onUpdate({
                 type: 'player',
                 color: this._color,
-                info: {
-                    id: '',
-                    name: '',
-                    avatar: ''
-                }
+                info: info
             });
         }
         this._players.lock();
@@ -79,7 +77,8 @@ Board.prototype._callUpdate = function(data) {
 
 Board.prototype._addClickListener = function() {
     this._node.click($.proxy(function(event) {
-        if (!this._players.canPlay()) {
+        var info = this._viewer.get();
+        if (!this._players.canPlay(info.id)) {
             return;
         }
         var offset = this._node.offset();
@@ -141,7 +140,8 @@ Board.prototype._removePiece = function(row, col) {
 
 Board.prototype.update = function(update) {
     if (update.type == 'player') {
-        this._players.set(update.color, update.info.id, update.info.name, update.info.avatar);
+        var info = update.info;
+        this._players.set(update.color, info.id, info.name, info.avatar);
     }
     if (update.type == 'remove') {
         this._removePiece(update.row, update.col);

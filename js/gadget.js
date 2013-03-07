@@ -1,3 +1,16 @@
+var Viewer = function() {
+
+};
+
+Viewer.prototype.get = function() {
+    var viewer = wave.getViewer();
+    return {
+        id: viewer.getId(),
+        name: viewer.getDisplayName(),
+        avatar: viewer.getThumbnailUrl()
+    }
+};
+
 var Gadget = function() {
     this._revision = 0;
     this._board = null;
@@ -30,7 +43,7 @@ Gadget.prototype.init = function() {
         if (!wave || !wave.isInWaveContainer()) {
             return;
         }
-        this._board = new Board({
+        this._board = new Board(new Viewer(), {
             onUpdate: $.proxy(this._onBoardUpdate, this)
         });
         this._board.init();

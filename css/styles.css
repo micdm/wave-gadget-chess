@@ -117,3 +117,7 @@
 .players .black {
     background-color: #d18b47;
 }
+
+.players .playing {
+    border-bottom: 5px solid #9acd32;
+}
