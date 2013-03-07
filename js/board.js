@@ -23,12 +23,22 @@ Board.prototype._createField = function() {
 
 Board.prototype._createFieldTable = function() {
     for (var i = 0; i < Board.SIZE; i += 1) {
-        var row = $('<div class="row"></div>');
+        var row = $(
+            '<div class="row">' +
+                '<div class="number">' + (Board.SIZE - i) + '</div>' +
+            '</div>'
+        );
         for (var j = 0; j < Board.SIZE; j += 1) {
             row.append('<div class="cell"></div>');
         }
         this._node.append(row);
     }
+    var row = $('<div class="letters"></div>');
+    for (var i = 0; i < Board.SIZE; i += 1) {
+        var letter = String.fromCharCode(97 + i);
+        row.append('<div class="letter">' + letter + '</div>');
+    }
+    this._node.append(row);
 };
 
 Board.prototype._createPieces = function() {

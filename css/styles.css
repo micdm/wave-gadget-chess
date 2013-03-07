@@ -8,6 +8,27 @@
     vertical-align: top;
 }
 
+.board .number {
+    display: inline-block;
+    width: 25px;
+    height: 50px;
+    text-align: center;
+    vertical-align: top;
+    line-height: 50px;
+}
+
+.board .letters {
+    padding-left: 25px;
+}
+
+.board .letter {
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    text-align: center;
+    line-height: 25px;
+}
+
 .board .cell {
     display: inline-block;
     width: 50px;
