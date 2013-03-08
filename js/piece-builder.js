@@ -1,14 +1,14 @@
-var PieceBuilder = function(color, field, node) {
+var PieceBuilder = function(color, field) {
     this._color = color;
     this._field = field;
-    this._node = node;
 };
 
 PieceBuilder.prototype._createPiece = function(type, row, col) {
+    var cell = this._field[row][col];
     var piece = new type(this._color);
-    this._field[row][col] = piece;
+    cell.piece = piece;
     var node = piece.getNode();
-    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')').append(node);
+    cell.node.append(node);
 };
 
 PieceBuilder.prototype._createPawns = function() {

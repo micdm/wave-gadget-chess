@@ -37,18 +37,18 @@ Piece.prototype._addMove = function(field, row, col, moves) {
     if (!cells) {
         return false;
     }
-    var cell = cells[col];
-    if (!cell) {
+    var piece = cells[col].piece;
+    if (!piece) {
         moves.push({
             row: row,
             col: col
         });
         return true;
     }
-    if (cell.hasType(Piece.TYPES.KING)) {
+    if (piece.hasType(Piece.TYPES.KING)) {
         return false;
     }
-    if (!cell.hasColor(this._color)) {
+    if (!piece.hasColor(this._color)) {
         moves.push({
             row: row,
             col: col,
@@ -64,12 +64,12 @@ var Pawn = function(color) {
 Pawn.prototype = new Piece(Piece.TYPES.PAWN);
 
 Pawn.prototype._addMove = function(field, row, col, isAttack, moves) {
-    var cell = field[row][col];
+    var piece = field[row][col].piece;
     if (isAttack) {
-        if (!cell) {
+        if (!piece) {
             return false;
         }
-        if (!cell.hasColor(this._color) && !cell.hasType(Piece.TYPES.KING)) {
+        if (!piece.hasColor(this._color) && !piece.hasType(Piece.TYPES.KING)) {
             moves.push({
                 row: row,
                 col: col,
@@ -79,7 +79,7 @@ Pawn.prototype._addMove = function(field, row, col, isAttack, moves) {
         }
         return false;
     }
-    if (cell) {
+    if (piece) {
         return false;
     }
     moves.push({

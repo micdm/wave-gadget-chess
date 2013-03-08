@@ -17,10 +17,6 @@
     line-height: 50px;
 }
 
-.board .letters {
-    padding-left: 25px;
-}
-
 .board .letter {
     display: inline-block;
     width: 50px;

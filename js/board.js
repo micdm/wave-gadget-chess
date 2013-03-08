@@ -15,7 +15,10 @@ Board.prototype._createField = function() {
     for (var i = 0; i < Board.SIZE; i += 1) {
         var row = [];
         for (var j = 0; j < Board.SIZE; j += 1) {
-            row.push(null);
+            row.push({
+                piece: null,
+                node: null
+            });
         }
         this._field.push(row);
     }
@@ -23,17 +26,16 @@ Board.prototype._createField = function() {
 
 Board.prototype._createFieldTable = function() {
     for (var i = 0; i < Board.SIZE; i += 1) {
-        var row = $(
-            '<div class="row">' +
-                '<div class="number">' + (Board.SIZE - i) + '</div>' +
-            '</div>'
-        );
+        var row = $('<div class="row"></div>');
         for (var j = 0; j < Board.SIZE; j += 1) {
-            row.append('<div class="cell"></div>');
+            var cell = $('<div class="cell"></div>');
+            row.append(cell);
+            this._field[i][j].node = cell;
         }
+        row.append('<div class="number">' + (Board.SIZE - i) + '</div>');
         this._node.append(row);
     }
-    var row = $('<div class="letters"></div>');
+    var row = $('<div></div>');
     for (var i = 0; i < Board.SIZE; i += 1) {
         var letter = String.fromCharCode(97 + i);
         row.append('<div class="letter">' + letter + '</div>');
@@ -44,7 +46,7 @@ Board.prototype._createFieldTable = function() {
 Board.prototype._createPieces = function() {
     for (var i in Piece.COLORS) {
         var color = Piece.COLORS[i];
-        var builder = new PieceBuilder(color, this._field, this._node);
+        var builder = new PieceBuilder(color, this._field);
         builder.build();
     }
 };
@@ -52,7 +54,7 @@ Board.prototype._createPieces = function() {
 Board.prototype._choosePiece = function(row, col) {
     this._node.find('.chosen').remove();
     var node = $('<div class="icon chosen"></div>');
-    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')').append(node);
+    this._field[row][col].node.append(node);
     this._piece = {
         row: row,
         col: col
@@ -61,22 +63,22 @@ Board.prototype._choosePiece = function(row, col) {
 
 Board.prototype._showAvailableMoves = function(row, col) {
     this._node.find('.move, .attack').remove();
-    var piece = this._field[row][col];
+    var piece = this._field[row][col].piece;
     var moves = piece.getMoves(this._field, row, col);
     for (var i in moves) {
         var move = moves[i];
         var node = $('<div class="icon ' + (move.attack ? 'attack' : 'move') + '"></div>');
-        this._node.find('.row:eq(' + move.row + ') .cell:eq(' + move.col + ')').append(node);
+        this._field[move.row][move.col].node.append(node);
     }
 };
 
 Board.prototype._callUpdate = function(data) {
     if (data.type == 'move') {
-        if (!this._players.has(this._color)) {
+        if (!this._players.has()) {
             var viewer = this._users.getViewer();
             this._callbacks.onUpdate({
                 type: 'player',
-                color: this._color,
+                color: this._players.getColor(),
                 id: viewer.id
             });
         }
@@ -87,8 +89,8 @@ Board.prototype._callUpdate = function(data) {
 
 Board.prototype._addClickListener = function() {
     this._node.click($.proxy(function(event) {
-        var info = this._viewer.get();
-        if (!this._players.canPlay(info.id)) {
+        var viewer = this._users.getViewer();
+        if (!this._players.canPlay(viewer.id)) {
             return;
         }
         var offset = this._node.offset();
@@ -137,17 +139,20 @@ Board.prototype.init = function() {
 };
 
 Board.prototype._movePiece = function(from, to) {
-    this._field[to.row][to.col] = this._field[from.row][from.col];
-    this._field[from.row][from.col] = null;
+    var fromCell = this._field[from.row][from.col];
+    var toCell = this._field[to.row][to.col];
+    toCell.piece = fromCell.piece;
+    fromCell.piece = null;
     this._node.find('.chosen, .move, .attack').remove();
-    var node = this._node.find('.row:eq(' + from.row + ') .cell:eq(' + from.col + ') .piece');
-    this._node.find('.row:eq(' + to.row + ') .cell:eq(' + to.col + ')').append(node);
+    var node = fromCell.node.find('.piece');
+    toCell.node.append(node);
     this._piece = null;
 };
 
 Board.prototype._removePiece = function(row, col) {
-    this._field[row][col] = null;
-    this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ') .piece').remove();
+    var cell = this._field[row][col];
+    cell.piece = null;
+    cell.node.find('.piece').remove();
 };
 
 Board.prototype.update = function(update) {
