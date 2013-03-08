@@ -1,7 +1,8 @@
-var Player = function(color, id, name, avatar) {
+var Player = function(color) {
     this._color = color;
-    this._name = name;
-    this._avatar = avatar;
+    this._id = null;
+    this._name = null;
+    this._avatar = null;
     this._node = $('.players .' + color);
 };
 
@@ -13,15 +14,18 @@ Player.prototype.turn = function(isPlayingNow) {
     this._node.toggleClass('playing', isPlayingNow);
 };
 
-Player.prototype.init = function() {
-    this._node.attr('title', this._name);
-    this._node.css('background-image', 'url(' + this._avatar + ')');
+Player.prototype.set = function(id, name, avatar) {
+    this._id = id;
+    this._name = name;
+    this._avatar = avatar;
+    this._node.attr('title', name);
+    this._node.css('background-image', 'url(' + avatar + ')');
 };
 
 var Players = function() {
-    this._list = {};
+    this._list = null;
     this._isLocked = false;
-    this._color = Piece.COLORS.WHITE;
+    this._color = null;
 };
 
 Players.prototype.has = function(color) {
@@ -29,9 +33,8 @@ Players.prototype.has = function(color) {
 };
 
 Players.prototype.set = function(color, id, name, avatar) {
-    var player = new Player(color, id, name, avatar);
-    player.init();
-    this._list[color] = player;
+    var player = this._list[color];
+    player.set(id, name, avatar);
 };
 
 Players.prototype.lock = function() {
@@ -57,4 +60,14 @@ Players.prototype.canPlay = function(id) {
         return false;
     }
     return true;
+};
+
+Players.prototype.init = function() {
+    this._list = {};
+    for (var i in Piece.COLORS) {
+        var color = Piece.COLORS[i];
+        this._list[color] = new Player(color);
+    }
+    this._list[Piece.COLORS.WHITE].turn(true);
+    this._list[Piece.COLORS.BLACK].turn(false);
 };

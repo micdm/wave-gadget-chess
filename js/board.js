@@ -2,7 +2,7 @@ var Board = function(users, callbacks) {
     this._node = $('.board');
     this._field = null;
     this._piece = null;
-    this._players = new Players();
+    this._players = null;
     this._users = users;
     this._callbacks = callbacks;
 };
@@ -128,6 +128,8 @@ Board.prototype._addClickListener = function() {
 };
 
 Board.prototype.init = function() {
+    this._players = new Players();
+    this._players.init();
     this._createField();
     this._createFieldTable();
     this._createPieces();

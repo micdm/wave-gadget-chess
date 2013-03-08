@@ -34,17 +34,25 @@ Gadget.prototype._onBoardUpdate = function(update) {
     state.submitDelta(delta);
 };
 
-Gadget.prototype._onStateUpdate = function() {
-    var state = wave.getState();
-    var revision = state.get('revision');
-    if (!revision) {
+Gadget.prototype._processNextUpdate = function(state, last) {
+    var revision = this._revision + 1;
+    if (revision > last) {
         return;
     }
-    for (var i = this._revision + 1; i <= revision; i += 1) {
-        var update = gadgets.json.parse(state.get('update-' + i));
-        this._board.update(update);
+    var update = gadgets.json.parse(state.get('update-' + revision));
+    this._board.update(update);
+    this._revision += 1;
+    setTimeout($.proxy(function() {
+        this._processNextUpdate(state, last);
+    }, this));
+};
+
+Gadget.prototype._onStateUpdate = function() {
+    var state = wave.getState();
+    var last = state.get('revision');
+    if (last) {
+        this._processNextUpdate(state, last);
     }
-    this._revision = revision;
 };
 
 Gadget.prototype.init = function() {
