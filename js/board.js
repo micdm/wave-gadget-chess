@@ -1,9 +1,9 @@
-var Board = function(viewer, callbacks) {
+var Board = function(users, callbacks) {
     this._node = $('.board');
     this._field = null;
     this._piece = null;
     this._players = new Players();
-    this._viewer = viewer;
+    this._users = users;
     this._callbacks = callbacks;
 };
 
@@ -73,11 +73,11 @@ Board.prototype._showAvailableMoves = function(row, col) {
 Board.prototype._callUpdate = function(data) {
     if (data.type == 'move') {
         if (!this._players.has(this._color)) {
-            var info = this._viewer.get();
+            var viewer = this._users.getViewer();
             this._callbacks.onUpdate({
                 type: 'player',
                 color: this._color,
-                info: info
+                id: viewer.id
             });
         }
         this._players.lock();
@@ -150,7 +150,7 @@ Board.prototype._removePiece = function(row, col) {
 
 Board.prototype.update = function(update) {
     if (update.type == 'player') {
-        var info = update.info;
+        var info = this._users.get(update.id);
         this._players.set(update.color, info.id, info.name, info.avatar);
     }
     if (update.type == 'remove') {

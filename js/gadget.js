@@ -1,14 +1,23 @@
-var Viewer = function() {
+var Users = function() {
 
 };
 
-Viewer.prototype.get = function() {
-    var viewer = wave.getViewer();
+Users.prototype._getInfo = function(user) {
     return {
-        id: viewer.getId(),
-        name: viewer.getDisplayName(),
-        avatar: viewer.getThumbnailUrl()
-    }
+        id: user.getId(),
+        name: user.getDisplayName(),
+        avatar: user.getThumbnailUrl()
+    };
+};
+
+Users.prototype.get = function(id) {
+    var user = wave.getParticipantById(id);
+    return this._getInfo(user);
+};
+
+Users.prototype.getViewer = function() {
+    var viewer = wave.getViewer();
+    return this._getInfo(viewer); 
 };
 
 var Gadget = function() {
@@ -43,7 +52,7 @@ Gadget.prototype.init = function() {
         if (!wave || !wave.isInWaveContainer()) {
             return;
         }
-        this._board = new Board(new Viewer(), {
+        this._board = new Board(new Users(), {
             onUpdate: $.proxy(this._onBoardUpdate, this)
         });
         this._board.init();

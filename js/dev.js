@@ -16,9 +16,9 @@ var wave = {
     },
     state: {
         revision: 5,
-        'update-1': '{"type": "player", "color": "white", "info": {"id": 1, "name": "Player 1", "avatar": "https://lh6.googleusercontent.com/-mwE_hh9x-14/AAAAAAAAAAI/AAAAAAAAE30/Iux9ke27Hs4/photo.jpg"}}',
+        'update-1': '{"type": "player", "color": "white", "id": 1}',
         'update-2': '{"type": "move", "from": {"row": 6, "col": 4}, "to": {"row": 4, "col": 4}}',
-        'update-3': '{"type": "player", "color": "black", "info": {"id": 2, "name": "Player 2", "avatar": "https://lh6.googleusercontent.com/-a4xbIaTkq4A/AAAAAAAAAAI/AAAAAAAAAec/uVZODodZNfw/photo.jpg"}}',
+        'update-3': '{"type": "player", "color": "black", "id": 2}',
         'update-4': '{"type": "move", "from": {"row": 1, "col": 4}, "to": {"row": 3, "col": 4}}',
         'update-5': '{"type": "move", "from": {"row": 6, "col": 5}, "to": {"row": 4, "col": 5}}'
     },
