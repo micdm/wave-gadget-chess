@@ -1,6 +1,12 @@
-var Piece = function(type) {
-    this._type = type;
+var Piece = function(id, color) {
+    this._id = id;
+    this._color = color;
     this._node = null;
+};
+
+Piece.COLORS = {
+    WHITE: 'white',
+    BLACK: 'black'
 };
 
 Piece.TYPES = {
@@ -12,245 +18,266 @@ Piece.TYPES = {
     KING: 'king'
 };
 
-Piece.COLORS = {
-    WHITE: 'white',
-    BLACK: 'black'
+Piece.get = function(color, implementation) {
+    if (!Piece._id) {
+        Piece._id = 0;
+    }
+    var piece = new implementation(Piece._id, color);
+    Piece._id += 1;
+    return piece;
 };
 
-Piece.prototype.hasType = function(type) {
-    return this._type == type;
+Piece.getInvertedColor = function(color) {
+    return (color == Piece.COLORS.WHITE) ? Piece.COLORS.BLACK : Piece.COLORS.WHITE;
 };
 
-Piece.prototype.hasColor = function(color) {
-    return this._color == color;
+Piece.prototype.getId = function() {
+    return this._id;
+};
+
+Piece.prototype.getColor = function() {
+    return this._color;
+};
+
+Piece.prototype.getType = function() {
+    throw new Error('not implemented');
 };
 
 Piece.prototype.getNode = function() {
     if (!this._node) {
-        this._node = $('<div class="icon piece ' + this._type + ' ' + this._color + '"></div>');
+        this._node = $('<div class="icon piece ' + this.getType() + ' ' + this._color + '"></div>');
     }
     return this._node;
 };
 
-Piece.prototype._addMove = function(field, row, col, moves) {
-    var cells = field[row];
-    if (!cells) {
+var Pawn = function() {
+    Piece.apply(this, arguments);
+};
+Pawn.prototype = new Piece();
+
+Pawn.prototype.getType = function() {
+    return Piece.TYPES.PAWN;
+};
+
+Pawn.prototype.iterateCells = function(row, col, callback) {
+    if (this.getColor() == Piece.COLORS.WHITE) {
+        callback(row - 1, col, 'move');
+        if (row == 6) {
+            callback(row - 2, col, 'move');
+        }
+        callback(row - 1, col - 1, 'attack');
+        callback(row - 1, col + 1, 'attack');
+    } else {
+        callback(row + 1, col, 'move');
+        if (row == 1) {
+            callback(row + 2, col, 'move');
+        }
+        callback(row + 1, col - 1, 'attack');
+        callback(row + 1, col + 1, 'attack');
+    }
+};
+
+var Knight = function() {
+    Piece.apply(this, arguments);
+};
+Knight.prototype = new Piece();
+
+Knight.prototype.getType = function() {
+    return Piece.TYPES.KNIGHT;
+};
+
+Knight.prototype.iterateCells = function(row, col, callback) {
+    var offsets = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]];
+    for (var i in offsets) {
+        var offset = offsets[i];
+        callback(row + offset[0], col + offset[1]);
+    }
+};
+
+var Rook = function() {
+    Piece.apply(this, arguments);
+};
+Rook.prototype = new Piece();
+
+Rook.prototype.getType = function() {
+    return Piece.TYPES.ROOK;
+};
+
+Rook.prototype.iterateCells = function(row, col, callback) {
+    for (var i = col - 1; i >= 0; i -= 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = col + 1; i < Board.SIZE; i += 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = row - 1; i >= 0; i -= 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+    for (var i = row + 1; i < Board.SIZE; i += 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+};
+
+var Bishop = function() {
+    Piece.apply(this, arguments);
+};
+Bishop.prototype = new Piece();
+
+Bishop.prototype.getType = function() {
+    return Piece.TYPES.BISHOP;
+};
+
+Bishop.prototype.iterateCells = function(row, col, callback) {
+    for (var i = row - 1, j = col - 1; i >= 0, j >= 0; i -= 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row - 1, j = col + 1; i >= 0, j < Board.SIZE; i -= 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col - 1; i < Board.SIZE, j >= 0; i += 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col + 1; i < Board.SIZE, j < Board.SIZE; i += 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+};
+
+var Queen = function() {
+    Piece.apply(this, arguments);
+};
+Queen.prototype = new Piece();
+
+Queen.prototype.getType = function() {
+    return Piece.TYPES.QUEEN;
+};
+
+Queen.prototype.iterateCells = function(row, col, callback) {
+    for (var i = col - 1; i >= 0; i -= 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = col + 1; i < Board.SIZE; i += 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = row - 1; i >= 0; i -= 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+    for (var i = row + 1; i < Board.SIZE; i += 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+    for (var i = row - 1, j = col - 1; i >= 0, j >= 0; i -= 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row - 1, j = col + 1; i >= 0, j < Board.SIZE; i -= 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col - 1; i < Board.SIZE, j >= 0; i += 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col + 1; i < Board.SIZE, j < Board.SIZE; i += 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+};
+
+var King = function() {
+    Piece.apply(this, arguments);
+};
+King.prototype = new Piece();
+
+King.prototype.getType = function() {
+    return Piece.TYPES.KING;
+};
+
+King.prototype.iterateCells = function(row, col, callback) {
+    var offsets = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+    for (var i in offsets) {
+        var offset = offsets[i];
+        callback(row + offset[0], col + offset[1]);
+    }
+};
+
+var MoveSearch = function(board, piece, checksOnly) {
+    this._board = board;
+    this._piece = piece;
+    this._checksOnly = checksOnly;
+    this._moves = [];
+};
+
+MoveSearch.prototype._willBeCheck = function(move) {
+    var changed = Board.getCopy(this._board);
+    if (move.attack) {
+        var field = changed.getField();
+        var piece = field[move.row][move.col];
+        changed.removePiece(piece);
+    }
+    changed.movePiece(this._piece, move.row, move.col);
+    return changed.isCheck();
+};
+
+MoveSearch.prototype._iterate = function(row, col, extra) {
+    var field = this._board.getField();
+    if (!(row in field)) {
         return false;
     }
-    var piece = cells[col].piece;
-    if (!piece) {
-        moves.push({
-            row: row,
-            col: col
-        });
+    if (!(col in field[row])) {
+        return false;
+    }
+    var piece = field[row][col];
+    if (!piece && (!extra || extra == 'move')) {
+        var move = {row: row, col: col};
+        if (!this._checksOnly && !this._willBeCheck(move)) {
+            this._moves.push(move);
+        }
         return true;
     }
-    if (piece.hasType(Piece.TYPES.KING)) {
+    if (piece.getType() == Piece.TYPES.KING && (!extra || extra == 'attack')) {
+        this._moves.push({row: row, col: col, check: true});
         return false;
     }
-    if (!piece.hasColor(this._color)) {
-        moves.push({
-            row: row,
-            col: col,
-            attack: true
-        });
+    if (piece.getColor() != this._color && (!extra || extra == 'attack')) {
+        var move = {row: row, col: col, attack: true};
+        if (!this._checksOnly && !this._willBeCheck(move)) {
+            this._moves.push(move);
+        }
+        return false;
     }
     return false;
 };
 
-var Pawn = function(color) {
-    this._color = color;
-};
-Pawn.prototype = new Piece(Piece.TYPES.PAWN);
-
-Pawn.prototype._addMove = function(field, row, col, isAttack, moves) {
-    var piece = field[row][col].piece;
-    if (isAttack) {
-        if (!piece) {
-            return false;
-        }
-        if (!piece.hasColor(this._color) && !piece.hasType(Piece.TYPES.KING)) {
-            moves.push({
-                row: row,
-                col: col,
-                attack: true
-            });
-            return true;            
-        }
-        return false;
-    }
-    if (piece) {
-        return false;
-    }
-    moves.push({
-        row: row,
-        col: col
-    });
-    return true;
-};
-
-Pawn.prototype.getMoves = function(field, row, col) {
-    var moves = [];
-    if (this.hasColor(Piece.COLORS.WHITE)) {
-        this._addMove(field, row - 1, col, false, moves);
-        if (row == 6) {
-            this._addMove(field, row - 2, col, false, moves);
-        }
-        this._addMove(field, row - 1, col - 1, true, moves);
-        this._addMove(field, row - 1, col + 1, true, moves);
-    } else {
-        this._addMove(field, row + 1, col, false, moves);
-        if (row == 1) {
-            this._addMove(field, row + 2, col, false, moves);
-        }
-        this._addMove(field, row + 1, col - 1, true, moves);
-        this._addMove(field, row + 1, col + 1, true, moves);
-    }
-    return moves;
-};
-
-var Knight = function(color) {
-    this._color = color;
-};
-Knight.prototype = new Piece(Piece.TYPES.KNIGHT);
-
-Knight.prototype.getMoves = function(field, row, col) {
-    var moves = [];
-    this._addMove(field, row - 2, col - 1, moves);
-    this._addMove(field, row - 2, col + 1, moves);
-    this._addMove(field, row - 1, col - 2, moves);
-    this._addMove(field, row - 1, col + 2, moves);
-    this._addMove(field, row + 1, col - 2, moves);
-    this._addMove(field, row + 1, col + 2, moves);
-    this._addMove(field, row + 2, col - 1, moves);
-    this._addMove(field, row + 2, col + 1, moves);
-    return moves;
-};
-
-var Rook = function(color) {
-    this._color = color;
-};
-Rook.prototype = new Piece(Piece.TYPES.ROOK);
-
-Rook.prototype.getMoves = function(field, row, col) {
-    var moves = [];
-    for (var i = col - 1; i >= 0; i -= 1) {
-        if (!this._addMove(field, row, i, moves)) {
-            break;
-        }
-    }
-    for (var i = col + 1; i < Board.SIZE; i += 1) {
-        if (!this._addMove(field, row, i, moves)) {
-            break;
-        }
-    }
-    for (var i = row - 1; i >= 0; i -= 1) {
-        if (!this._addMove(field, i, col, moves)) {
-            break;
-        }
-    }
-    for (var i = row + 1; i < Board.SIZE; i += 1) {
-        if (!this._addMove(field, i, col, moves)) {
-            break;
-        }
-    }
-    return moves;
-};
-
-var Bishop = function(color) {
-    this._color = color;
-};
-Bishop.prototype = new Piece(Piece.TYPES.BISHOP);
-
-Bishop.prototype.getMoves = function(field, row, col) {
-    var moves = [];
-    for (var i = row - 1, j = col - 1; i >= 0, j >= 0; i -= 1, j -= 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    for (var i = row - 1, j = col + 1; i >= 0, j < Board.SIZE; i -= 1, j += 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    for (var i = row + 1, j = col - 1; i < Board.SIZE, j >= 0; i += 1, j -= 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    for (var i = row + 1, j = col + 1; i < Board.SIZE, j < Board.SIZE; i += 1, j += 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    return moves;
-};
-
-var Queen = function(color) {
-    this._color = color;
-};
-Queen.prototype = new Piece(Piece.TYPES.QUEEN);
-
-Queen.prototype.getMoves = function(field, row, col) {
-    var moves = [];
-    for (var i = col - 1; i >= 0; i -= 1) {
-        if (!this._addMove(field, row, i, moves)) {
-            break;
-        }
-    }
-    for (var i = col + 1; i < Board.SIZE; i += 1) {
-        if (!this._addMove(field, row, i, moves)) {
-            break;
-        }
-    }
-    for (var i = row - 1; i >= 0; i -= 1) {
-        if (!this._addMove(field, i, col, moves)) {
-            break;
-        }
-    }
-    for (var i = row + 1; i < Board.SIZE; i += 1) {
-        if (!this._addMove(field, i, col, moves)) {
-            break;
-        }
-    }
-    for (var i = row - 1, j = col - 1; i >= 0, j >= 0; i -= 1, j -= 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    for (var i = row - 1, j = col + 1; i >= 0, j < Board.SIZE; i -= 1, j += 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    for (var i = row + 1, j = col - 1; i < Board.SIZE, j >= 0; i += 1, j -= 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    for (var i = row + 1, j = col + 1; i < Board.SIZE, j < Board.SIZE; i += 1, j += 1) {
-        if (!this._addMove(field, i, j, moves)) {
-            break;
-        }
-    }
-    return moves;
-};
-
-var King = function(color) {
-    this._color = color;
-};
-King.prototype = new Piece(Piece.TYPES.KING);
-
-King.prototype.getMoves = function(field, row, col) {
-    var moves = [];
-    this._addMove(field, row - 1, col - 1, moves);
-    this._addMove(field, row - 1, col, moves);
-    this._addMove(field, row - 1, col + 1, moves);
-    this._addMove(field, row, col - 1, moves);
-    this._addMove(field, row, col + 1, moves);
-    this._addMove(field, row + 1, col - 1, moves);
-    this._addMove(field, row + 1, col, moves);
-    this._addMove(field, row + 1, col + 1, moves);
-    return moves;
+MoveSearch.prototype.get = function() {
+    var id = this._piece.getId();
+    var info = this._board.getPiece(id);
+    this._piece.iterateCells(info.row, info.col, $.proxy(this._iterate, this));
+    return this._moves;
 };
