@@ -1,7 +1,8 @@
-var BoardView = function(board) {
-    this._board = board;
+var BoardView = function(board, callbacks) {
     this._piece = null;
     this._node = null;
+    this._board = board;
+    this._callbacks = callbacks;
 };
 
 BoardView.prototype._createField = function() {
@@ -24,17 +25,23 @@ BoardView.prototype._createField = function() {
     this._node = node;
 };
 
+BoardView.prototype._clearField = function() {
+    this._node.find('.move,.attack,.chosen').remove();
+};
+
 BoardView.prototype._getCell = function(row, col) {
     return this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')');
 };
 
 BoardView.prototype._onPlace = function(row, col, piece) {
+    this._clearField();
     var cell = this._getCell(row, col);
     var node = $('<div class="icon piece ' + piece.getType() + ' ' + piece.getColor() + '"></div>');
     cell.append(node);
 };
 
 BoardView.prototype._onRemove = function(row, col) {
+    this._clearField();
     var cell = this._getCell(row, col);
     cell.find('.piece').remove();
 };
@@ -77,10 +84,13 @@ BoardView.prototype._addClickListener = function() {
             this._showAvailableMoves(row, col);
         }
         if (element.hasClass('move')) {
-            
+            var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
+            this._callbacks.onMove(piece, row, col);
         }
         if (element.hasClass('attack')) {
-            
+            var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
+            this._callbacks.onAttack(row, col);
+            this._callbacks.onMove(piece, row, col);
         }
     }, this));    
 };

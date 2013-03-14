@@ -6,24 +6,39 @@ var Game = function(users, callbacks) {
     this._callbacks = callbacks;
 };
 
-Game.prototype._callUpdate = function(data) {
-    if (data.type == 'move') {
-        if (!this._players.has()) {
-            var viewer = this._users.getViewer();
-            this._callbacks.onUpdate({
-                type: 'player',
-                color: this._players.getColor(),
-                id: viewer.id
-            });
-        }
-        this._players.lock();
+Game.prototype._onMovePiece = function(piece, row, col) {
+    if (!this._players.has()) {
+        var viewer = this._users.getViewer();
+        this._callbacks.onUpdate({
+            type: 'player',
+            color: this._players.getColor(),
+            id: viewer.id
+        });
     }
-    this._callbacks.onUpdate(data);
+    var id = piece.getId();
+    var info = this._board.getPiece(id);
+    this._callbacks.onUpdate({
+        type: 'move',
+        from: {row: info.row, col: info.col},
+        to: {row: row, col: col}
+    });
+    this._players.lock();
+};
+
+Game.prototype._onAttackPiece = function(row, col) {
+    this._callbacks.onUpdate({
+        type: 'remove',
+        row: row,
+        col: col
+    });
 };
 
 Game.prototype._initBoard = function() {
     this._board = new Board();
-    this._boardView = new BoardView(this._board);
+    this._boardView = new BoardView(this._board, {
+        onMove: $.proxy(this._onMovePiece, this),
+        onAttack: $.proxy(this._onAttackPiece, this)
+    });
     this._boardView.init();
 };
 
