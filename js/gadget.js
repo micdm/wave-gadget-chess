@@ -1,9 +1,9 @@
 var Gadget = function() {
     this._revision = 0;
-    this._board = null;
+    this._game = null;
 };
 
-Gadget.prototype._onBoardUpdate = function(update) {
+Gadget.prototype._onGameUpdate = function(update) {
     var state = wave.getState();
     var revision = state.get('revision') || 0;
     revision += 1;
@@ -18,7 +18,7 @@ Gadget.prototype._processNextUpdate = function(state, last) {
         return;
     }
     var update = gadgets.json.parse(state.get('update-' + revision));
-    this._board.update(update);
+    this._game.update(update);
     this._revision += 1;
     setTimeout($.proxy(function() {
         this._processNextUpdate(state, last);
@@ -38,10 +38,10 @@ Gadget.prototype.init = function() {
         if (!wave || !wave.isInWaveContainer()) {
             return;
         }
-        this._board = new Board(new Users(), {
-            onUpdate: $.proxy(this._onBoardUpdate, this)
+        this._game = new Game(new Users(), {
+            onUpdate: $.proxy(this._onGameUpdate, this)
         });
-        this._board.init();
+        this._game.init();
         gadgets.window.adjustHeight();
         wave.setStateCallback($.proxy(this._onStateUpdate, this));
     }, this));
