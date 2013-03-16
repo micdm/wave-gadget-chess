@@ -1,7 +1,7 @@
 var Board = function() {
+    EventEmitter.mixin(this);
     this._field = null;
     this._pieces = null;
-    this._callbacks = null;
     this._createField();
 };
 
@@ -30,17 +30,11 @@ Board.prototype._createField = function() {
     this._pieces = {};
 };
 
-Board.prototype.setCallbacks = function(onPlace, onRemove) {
-    this._callbacks = {onPlace: onPlace, onRemove: onRemove};
-};
-
 Board.prototype.placePiece = function(row, col, piece) {
     this._field[row][col] = piece;
     var id = piece.getId();
     this._pieces[id] = {row: row, col: col, piece: piece};
-    if (this._callbacks) {
-        this._callbacks.onPlace(row, col, piece);
-    }
+    this.emit('place', row, col, piece);
 };
 
 Board.prototype.movePiece = function(piece, row, col) {
@@ -48,14 +42,10 @@ Board.prototype.movePiece = function(piece, row, col) {
     var info = this._pieces[id];
     this._field[row][col] = piece;
     this._field[info.row][info.col] = null;
-    if (this._callbacks) {
-        this._callbacks.onRemove(info.row, info.col);
-    }
+    this.emit('remove', info.row, info.col);
     info.row = row;
     info.col = col;
-    if (this._callbacks) {
-        this._callbacks.onPlace(row, col, piece);
-    }
+    this.emit('place', row, col, piece);
 };
 
 Board.prototype.removePiece = function(piece) {
@@ -63,9 +53,7 @@ Board.prototype.removePiece = function(piece) {
     var info = this._pieces[id];
     this._field[info.row][info.col] = null;
     delete this._pieces[id];
-    if (this._callbacks) {
-        this._callbacks.onRemove(info.row, info.col);
-    }
+    this.emit('remove', info.row, info.col);
 };
 
 Board.prototype.getPieces = function() {

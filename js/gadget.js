@@ -38,10 +38,8 @@ Gadget.prototype.init = function() {
         if (!wave || !wave.isInWaveContainer()) {
             return;
         }
-        this._game = new Game(new Users(), {
-            onUpdate: $.proxy(this._onGameUpdate, this)
-        });
-        this._game.init();
+        this._game = new Game(new Users());
+        this._game.on('update', $.proxy(this._onGameUpdate, this));
         gadgets.window.adjustHeight();
         wave.setStateCallback($.proxy(this._onStateUpdate, this));
     }, this));

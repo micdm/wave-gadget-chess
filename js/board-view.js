@@ -1,8 +1,8 @@
-var BoardView = function(board, callbacks) {
+var BoardView = function(board) {
+    EventEmitter.mixin(this);
     this._piece = null;
     this._node = null;
     this._board = board;
-    this._callbacks = callbacks;
 };
 
 BoardView.prototype._createField = function() {
@@ -85,18 +85,19 @@ BoardView.prototype._addClickListener = function() {
         }
         if (element.hasClass('move')) {
             var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
-            this._callbacks.onMove(piece, row, col);
+            this.emit('move', piece, row, col);
         }
         if (element.hasClass('attack')) {
             var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
-            this._callbacks.onAttack(row, col);
-            this._callbacks.onMove(piece, row, col);
+            this.emit('attack', row, col);
+            this.emit('move', piece, row, col);
         }
     }, this));    
 };
 
 BoardView.prototype.init = function() {
     this._createField();
-    this._board.setCallbacks($.proxy(this._onPlace, this), $.proxy(this._onRemove, this));
+    this._board.on('place', $.proxy(this._onPlace, this));
+    this._board.on('remove', $.proxy(this._onRemove, this));
     this._addClickListener();
 };

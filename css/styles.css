@@ -135,6 +135,6 @@
     background-color: #d18b47;
 }
 
-.players .playing {
+.players .turn {
     border-bottom: 10px solid #9acd32;
 }

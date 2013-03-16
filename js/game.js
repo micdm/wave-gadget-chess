@@ -1,23 +1,14 @@
-var Game = function(users, callbacks) {
+var Game = function(users) {
+    EventEmitter.mixin(this);
     this._board = null;
-    this._boardView = null;
     this._players = null;
-    this._users = users;
-    this._callbacks = callbacks;
+    this._init(users);
 };
 
 Game.prototype._onMovePiece = function(piece, row, col) {
-    if (!this._players.has()) {
-        var viewer = this._users.getViewer();
-        this._callbacks.onUpdate({
-            type: 'player',
-            color: this._players.getColor(),
-            id: viewer.id
-        });
-    }
     var id = piece.getId();
     var info = this._board.getPiece(id);
-    this._callbacks.onUpdate({
+    this.emit('update', {
         type: 'move',
         from: {row: info.row, col: info.col},
         to: {row: row, col: col}
@@ -26,25 +17,28 @@ Game.prototype._onMovePiece = function(piece, row, col) {
 };
 
 Game.prototype._onAttackPiece = function(row, col) {
-    this._callbacks.onUpdate({
-        type: 'remove',
-        row: row,
-        col: col
-    });
+    this.emit('update', {type: 'remove', row: row, col: col});
 };
 
 Game.prototype._initBoard = function() {
     this._board = new Board();
-    this._boardView = new BoardView(this._board, {
+    var view = new BoardView(this._board, {
         onMove: $.proxy(this._onMovePiece, this),
         onAttack: $.proxy(this._onAttackPiece, this)
     });
-    this._boardView.init();
+    view.init();
 };
 
-Game.prototype._initPlayers = function() {
-    this._players = new Players();
-    this._players.init();
+Game.prototype._onNewPlayer = function(color, player) {
+    this.emit('update', {type: 'player', color: color, id: player.getId()});
+};
+
+Game.prototype._initPlayers = function(users) {
+    this._players = new Players(users);
+    this._players.on('new', $.proxy(this._onNewPlayer, this));
+    var view = new PlayersView(this._players);
+    view.init();
+    this._players.turn();
 };
 
 Game.prototype._createPieces = function() {
@@ -55,16 +49,15 @@ Game.prototype._createPieces = function() {
     }
 };
 
-Game.prototype.init = function() {
+Game.prototype._init = function(users) {
     this._initBoard();
-    this._initPlayers();
+    this._initPlayers(users);
     this._createPieces();
 };
 
 Game.prototype.update = function(update) {
     if (update.type == 'player') {
-        var info = this._users.get(update.id);
-        this._players.set(update.color, info.id, info.name, info.avatar);
+        this._players.set(update.color, update.id);
     }
     if (update.type == 'remove') {
         var piece = this._board.getPieceByCoords(update.row, update.col);
