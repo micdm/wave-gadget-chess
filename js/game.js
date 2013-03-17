@@ -6,6 +6,11 @@ var Game = function(users) {
 };
 
 Game.prototype._onMovePiece = function(piece, row, col) {
+    if (!this._players.canPlay()) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
     var id = piece.getId();
     var info = this._board.getPiece(id);
     this.emit('update', {
@@ -13,20 +18,29 @@ Game.prototype._onMovePiece = function(piece, row, col) {
         from: {row: info.row, col: info.col},
         to: {row: row, col: col}
     });
-    this._players.lock();
 };
 
-Game.prototype._onAttackPiece = function(row, col) {
+Game.prototype._onAttackPiece = function(piece, row, col) {
+    if (!this._players.canPlay()) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var id = piece.getId();
+    var info = this._board.getPiece(id);
     this.emit('update', {type: 'remove', row: row, col: col});
+    this.emit('update', {
+        type: 'move',
+        from: {row: info.row, col: info.col},
+        to: {row: row, col: col}
+    });
 };
 
 Game.prototype._initBoard = function() {
     this._board = new Board();
-    var view = new BoardView(this._board, {
-        onMove: $.proxy(this._onMovePiece, this),
-        onAttack: $.proxy(this._onAttackPiece, this)
-    });
-    view.init();
+    var view = new BoardView(this._board);
+    view.on('move', $.proxy(this._onMovePiece, this));
+    view.on('attack', $.proxy(this._onAttackPiece, this));
 };
 
 Game.prototype._onNewPlayer = function(color, player) {

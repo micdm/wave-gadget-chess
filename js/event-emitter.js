@@ -11,7 +11,6 @@ EventEmitter.mixin = function(target) {
         callbacks[event].push(callback);
     };
     target.emit = function(event) {
-        console.log(target, 'emitts', event);
         if (!(event in callbacks)) {
             return;
         }

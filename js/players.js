@@ -17,6 +17,29 @@ Players.prototype.lock = function() {
     this._isLocked = true;
 };
 
+Players.prototype.checkForNewPlayer = function() {
+    if (this._color in this._list) {
+        return;
+    }
+    var info = this._users.getViewer();
+    this.emit('new', this._color, new Player(info.id, info.name, info.avatar));
+};
+
+Players.prototype.canPlay = function() {
+    if (this._isLocked) {
+        return false;
+    }
+    if (!(this._color in this._list)) {
+        return true;
+    }
+    var player = this._list[this._color];
+    var info = this._users.getViewer();
+    if (player.getId() != info.id) {
+        return false;
+    }
+    return true;
+};
+
 Players.prototype.turn = function() {
     this._color = (this._color == Piece.COLORS.WHITE) ? Piece.COLORS.BLACK : Piece.COLORS.WHITE;
     this._isLocked = false;

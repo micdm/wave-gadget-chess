@@ -3,6 +3,7 @@ var BoardView = function(board) {
     this._piece = null;
     this._node = null;
     this._board = board;
+    this._init();
 };
 
 BoardView.prototype._createField = function() {
@@ -83,19 +84,17 @@ BoardView.prototype._addClickListener = function() {
             this._choosePiece(row, col);
             this._showAvailableMoves(row, col);
         }
+        var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
         if (element.hasClass('move')) {
-            var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
             this.emit('move', piece, row, col);
         }
         if (element.hasClass('attack')) {
-            var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
-            this.emit('attack', row, col);
-            this.emit('move', piece, row, col);
+            this.emit('attack', piece, row, col);
         }
     }, this));    
 };
 
-BoardView.prototype.init = function() {
+BoardView.prototype._init = function() {
     this._createField();
     this._board.on('place', $.proxy(this._onPlace, this));
     this._board.on('remove', $.proxy(this._onRemove, this));
