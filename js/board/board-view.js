@@ -27,7 +27,8 @@ BoardView.prototype._createField = function() {
 };
 
 BoardView.prototype._clearField = function() {
-    this._node.find('.chosen,.check,.checkmate,.move,.attack').remove();
+    this._node.find('.move,.attack').remove();
+    this._node.find('.chosen,.check,.checkmate,.stalemate').removeClass('chosen check checkmate stalemate');
 };
 
 BoardView.prototype._getCell = function(row, col) {
@@ -52,8 +53,7 @@ BoardView.prototype._onCheck = function(color) {
     var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
-    var node = $('<div class="icon check"></div>');
-    cell.append(node);
+    cell.addClass('check');
 };
 
 BoardView.prototype._onCheckmate = function(color) {
@@ -61,8 +61,15 @@ BoardView.prototype._onCheckmate = function(color) {
     var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
-    var node = $('<div class="icon checkmate"></div>');
-    cell.append(node);
+    cell.addClass('checkmate');
+};
+
+BoardView.prototype._onStalemate = function(color) {
+    this._clearField();
+    var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
+    var coords = this._board.getPieceCoords(piece);
+    var cell = this._getCell(coords.row, coords.col);
+    cell.addClass('stalemate');
 };
 
 BoardView.prototype._addBoardListeners = function() {
@@ -70,13 +77,13 @@ BoardView.prototype._addBoardListeners = function() {
     this._board.on('remove', $.proxy(this._onRemove, this));
     this._board.on('check', $.proxy(this._onCheck, this));
     this._board.on('checkmate', $.proxy(this._onCheckmate, this));
+    this._board.on('stalemate', $.proxy(this._onStalemate, this));
 };
 
 BoardView.prototype._choosePiece = function(row, col) {
-    this._node.find('.chosen').remove();
+    this._node.find('.chosen').removeClass('chosen');
     var cell = this._getCell(row, col);
-    var node = $('<div class="icon chosen"></div>');
-    cell.append(node);
+    cell.addClass('chosen');
     this._piece = {
         row: row,
         col: col

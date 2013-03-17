@@ -60,6 +60,9 @@ Board.prototype.movePiece = function(piece, row, col) {
         this.emit('checkmate', $.proxy(function() {
             return this.isCheckmate(color) ? [color] : null;
         }, this));
+        this.emit('stalemate', $.proxy(function() {
+            return this.isStalemate(color) ? [color] : null;
+        }, this));
     }
 };
 
