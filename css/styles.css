@@ -136,6 +136,7 @@
     height: 100px;
     position: relative;
     vertical-align: middle;
+    border-bottom: 10px solid white;
 }
 
 .players .player .icon {
@@ -157,12 +158,10 @@
     top: 50px;
     width: 50px;
     height: 50px;
-    background: no-repeat center center;
+    background: no-repeat center center #eeeeee;
     background-size: 50px;
 }
 
-/*
 .players .turn {
-    border-bottom: 10px solid #9acd32;
+    border-bottom-color: #9acd32;
 }
-*/
