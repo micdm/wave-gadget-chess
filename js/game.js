@@ -6,7 +6,7 @@ var Game = function(users) {
 };
 
 Game.prototype._onMovePiece = function(piece, row, col) {
-    if (!this._players.canPlay()) {
+    if (!this._players.canPlay(piece.getColor())) {
         return;
     }
     this._players.lock();
@@ -22,7 +22,7 @@ Game.prototype._onMovePiece = function(piece, row, col) {
 };
 
 Game.prototype._onAttackPiece = function(piece, row, col) {
-    if (!this._players.canPlay()) {
+    if (!this._players.canPlay(piece.getColor())) {
         return;
     }
     this._players.lock();

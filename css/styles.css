@@ -3,6 +3,15 @@
     margin: 0;
 }
 
+.icon {
+    width: 100%;
+    height: 100%;
+    background: no-repeat url(data:image/png;base64,%% img/pieces.png base64 %%);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .board {
     display: inline-block;
     vertical-align: top;
@@ -38,15 +47,6 @@
 
 .board .row:nth-child(even) .cell:nth-child(odd), .row:nth-child(odd) .cell:nth-child(even) {
     background: #d18b47;
-}
-
-.board .icon {
-    width: 100%;
-    height: 100%;
-    background: no-repeat url(data:image/png;base64,%% img/pieces.png base64 %%);
-    position: absolute;
-    left: 0;
-    top: 0;
 }
 
 .board .piece, .move, .attack {
@@ -102,19 +102,19 @@
 }
 
 .board .chosen {
-    box-shadow: inset 0 0 20px 1px #83ca3e;
+    box-shadow: inset 0 0 20px 5px #83ca3e;
 }
 
 .board .check {
-    box-shadow: inset 0 0 20px 1px #653eca;
+    box-shadow: inset 0 0 20px 5px #653eca;
 }
 
 .board .checkmate {
-    box-shadow: inset 0 0 20px 1px #ca3e3e;
+    box-shadow: inset 0 0 20px 5px #ca3e3e;
 }
 
 .board .stalemate {
-    box-shadow: inset 0 0 20px 1px #555555;
+    box-shadow: inset 0 0 20px 5px #555555;
 }
 
 .board .move {
@@ -133,20 +133,36 @@
 .players .player {
     display: inline-block;
     width: 50px;
-    height: 50px;
-    background: no-repeat center center;
-    background-size: 40px;
+    height: 100px;
+    position: relative;
     vertical-align: middle;
 }
 
-.players .white {
-    background-color: #ffce9e;
+.players .player .icon {
+    width: 50px;
+    height: 50px;
 }
 
-.players .black {
-    background-color: #d18b47;
+.players .player.white .icon {
+    background-position: -250px 0;
 }
 
+.players .player.black .icon {
+    background-position: -250px -50px;
+}
+
+.players .player .avatar {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 50px;
+    height: 50px;
+    background: no-repeat center center;
+    background-size: 50px;
+}
+
+/*
 .players .turn {
     border-bottom: 10px solid #9acd32;
 }
+*/

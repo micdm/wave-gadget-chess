@@ -29,14 +29,17 @@ Players.prototype.checkForNewPlayer = function() {
     }, this));
 };
 
-Players.prototype.canPlay = function() {
+Players.prototype.canPlay = function(color) {
     if (this._isLocked) {
         return false;
     }
-    if (!(this._color in this._list)) {
+    if (color != this._color) {
+        return false;
+    }
+    if (!(color in this._list)) {
         return true;
     }
-    var player = this._list[this._color];
+    var player = this._list[color];
     var info = this._users.getViewer();
     if (player.getId() != info.id) {
         return false;
