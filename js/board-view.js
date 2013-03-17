@@ -27,7 +27,7 @@ BoardView.prototype._createField = function() {
 };
 
 BoardView.prototype._clearField = function() {
-    this._node.find('.move,.attack,.chosen').remove();
+    this._node.find('.chosen,.check,.checkmate,.move,.attack').remove();
 };
 
 BoardView.prototype._getCell = function(row, col) {
@@ -45,6 +45,31 @@ BoardView.prototype._onRemove = function(row, col) {
     this._clearField();
     var cell = this._getCell(row, col);
     cell.find('.piece').remove();
+};
+
+BoardView.prototype._onCheck = function(color) {
+    this._clearField();
+    var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
+    var coords = this._board.getPieceCoords(piece);
+    var cell = this._getCell(coords.row, coords.col);
+    var node = $('<div class="icon check"></div>');
+    cell.append(node);
+};
+
+BoardView.prototype._onCheckmate = function(color) {
+    this._clearField();
+    var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
+    var coords = this._board.getPieceCoords(piece);
+    var cell = this._getCell(coords.row, coords.col);
+    var node = $('<div class="icon checkmate"></div>');
+    cell.append(node);
+};
+
+BoardView.prototype._addBoardListeners = function() {
+    this._board.on('place', $.proxy(this._onPlace, this));
+    this._board.on('remove', $.proxy(this._onRemove, this));
+    this._board.on('check', $.proxy(this._onCheck, this));
+    this._board.on('checkmate', $.proxy(this._onCheckmate, this));
 };
 
 BoardView.prototype._choosePiece = function(row, col) {
@@ -86,17 +111,20 @@ BoardView.prototype._addClickListener = function() {
         }
         var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
         if (element.hasClass('move')) {
-            this.emit('move', piece, row, col);
+            this.emit('move', function() {
+                return [piece, row, col];
+            });
         }
         if (element.hasClass('attack')) {
-            this.emit('attack', piece, row, col);
+            this.emit('attack', function() {
+                return [piece, row, col];
+            });
         }
     }, this));    
 };
 
 BoardView.prototype._init = function() {
     this._createField();
-    this._board.on('place', $.proxy(this._onPlace, this));
-    this._board.on('remove', $.proxy(this._onRemove, this));
+    this._addBoardListeners();
     this._addClickListener();
 };

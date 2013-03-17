@@ -34,7 +34,9 @@ Board.prototype.placePiece = function(row, col, piece) {
     this._field[row][col] = piece;
     var id = piece.getId();
     this._pieces[id] = {row: row, col: col, piece: piece};
-    this.emit('place', row, col, piece);
+    this.emit('place', function() {
+        return [row, col, piece];
+    });
 };
 
 Board.prototype.movePiece = function(piece, row, col) {
@@ -42,10 +44,23 @@ Board.prototype.movePiece = function(piece, row, col) {
     var info = this._pieces[id];
     this._field[row][col] = piece;
     this._field[info.row][info.col] = null;
-    this.emit('remove', info.row, info.col);
+    this.emit('remove', function() {
+        return [info.row, info.col];
+    });
     info.row = row;
     info.col = col;
-    this.emit('place', row, col, piece);
+    this.emit('place', function() {
+        return [row, col, piece];
+    });
+    for (var i in Piece.COLORS) {
+        var color = Piece.COLORS[i];
+        this.emit('check', $.proxy(function() {
+            return this.isCheck(color) ? [color] : null;
+        }, this));
+        this.emit('checkmate', $.proxy(function() {
+            return this.isCheckmate(color) ? [color] : null;
+        }, this));
+    }
 };
 
 Board.prototype.removePiece = function(piece) {
@@ -53,7 +68,9 @@ Board.prototype.removePiece = function(piece) {
     var info = this._pieces[id];
     this._field[info.row][info.col] = null;
     delete this._pieces[id];
-    this.emit('remove', info.row, info.col);
+    this.emit('remove', function() {
+        return [info.row, info.col];
+    });
 };
 
 Board.prototype.getPieces = function() {
@@ -73,14 +90,25 @@ Board.prototype.getPiecesByColor = function(color) {
     return pieces;
 };
 
+Board.prototype.getPieceByCoords = function(row, col) {
+    return this._field[row][col];
+};
+
+Board.prototype.getPieceByColorAndType = function(color, type) {
+    var pieces = this.getPiecesByColor(color);
+    for (var i in pieces) {
+        var piece = pieces[i].piece;
+        if (piece.getType() == type) {
+            return piece;
+        }
+    }
+    return null;
+};
+
 Board.prototype.getPieceCoords = function(piece) {
     var id = piece.getId();
     var info = this._pieces[id];
     return {row: info.row, col: info.col};
-};
-
-Board.prototype.getPieceByCoords = function(row, col) {
-    return this._field[row][col];
 };
 
 Board.prototype.getField = function() {

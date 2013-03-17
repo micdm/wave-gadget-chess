@@ -10,7 +10,9 @@ Players.prototype.set = function(color, id) {
     var info = this._users.get(id);
     var player = new Player(info.id, info.name, info.avatar);
     this._list[color] = player;
-    this.emit('set', color, player);
+    this.emit('set', function() {
+        return [color, player];
+    });
 };
 
 Players.prototype.lock = function() {
@@ -22,7 +24,9 @@ Players.prototype.checkForNewPlayer = function() {
         return;
     }
     var info = this._users.getViewer();
-    this.emit('new', this._color, new Player(info.id, info.name, info.avatar));
+    this.emit('new', $.proxy(function() {
+        return [this._color, new Player(info.id, info.name, info.avatar)];
+    }, this));
 };
 
 Players.prototype.canPlay = function() {
@@ -43,5 +47,7 @@ Players.prototype.canPlay = function() {
 Players.prototype.turn = function() {
     this._color = (this._color == Piece.COLORS.WHITE) ? Piece.COLORS.BLACK : Piece.COLORS.WHITE;
     this._isLocked = false;
-    this.emit('turn', this._color);
+    this.emit('turn', $.proxy(function() {
+        return [this._color];
+    }, this));
 };

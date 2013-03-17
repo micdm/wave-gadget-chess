@@ -12,10 +12,12 @@ Game.prototype._onMovePiece = function(piece, row, col) {
     this._players.lock();
     this._players.checkForNewPlayer();
     var coords = this._board.getPieceCoords(piece);
-    this.emit('update', {
-        type: 'move',
-        from: {row: coords.row, col: coords.col},
-        to: {row: row, col: col}
+    this.emit('update', function() {
+        return [{
+            type: 'move',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
     });
 };
 
@@ -26,11 +28,12 @@ Game.prototype._onAttackPiece = function(piece, row, col) {
     this._players.lock();
     this._players.checkForNewPlayer();
     var coords = this._board.getPieceCoords(piece);
-    this.emit('update', {type: 'remove', row: row, col: col});
-    this.emit('update', {
-        type: 'move',
-        from: {row: coords.row, col: coords.col},
-        to: {row: row, col: col}
+    this.emit('update', function() {
+        return [{
+            type: 'attack',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
     });
 };
 
@@ -42,7 +45,13 @@ Game.prototype._initBoard = function() {
 };
 
 Game.prototype._onNewPlayer = function(color, player) {
-    this.emit('update', {type: 'player', color: color, id: player.getId()});
+    this.emit('update', function() {
+        return [{
+            type: 'player',
+            color: color,
+            id: player.getId()}
+        ];
+    });
 };
 
 Game.prototype._initPlayers = function(users) {
@@ -71,13 +80,16 @@ Game.prototype.update = function(update) {
     if (update.type == 'player') {
         this._players.set(update.color, update.id);
     }
-    if (update.type == 'remove') {
-        var piece = this._board.getPieceByCoords(update.row, update.col);
-        this._board.removePiece(piece);
-    }
     if (update.type == 'move') {
         var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.movePiece(piece, update.to.row, update.to.col);
+        this._players.turn();
+    }
+    if (update.type == 'attack') {
+        var victim = this._board.getPieceByCoords(update.to.row, update.to.col);
+        this._board.removePiece(victim);
+        var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.movePiece(attacker, update.to.row, update.to.col);
         this._players.turn();
     }
 };

@@ -10,13 +10,17 @@ EventEmitter.mixin = function(target) {
         }
         callbacks[event].push(callback);
     };
-    target.emit = function(event) {
+    target.emit = function(event, getArguments) {
         if (!(event in callbacks)) {
+            return;
+        }
+        var args = getArguments();
+        if (!args) {
             return;
         }
         var handlers = callbacks[event];
         for (var i in handlers) {
-            handlers[i].apply(null, Array.apply(null, arguments).slice(1));
+            handlers[i].apply(null, args);
         }
     };
 };

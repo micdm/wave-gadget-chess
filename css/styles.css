@@ -105,12 +105,20 @@
     background-position: 0 -100px;
 }
 
-.board .move {
+.board .check {
+    background-position: -50px -100px;
+}
+
+.board .checkmate {
     background-position: -100px -100px;
 }
 
+.board .move {
+    background-position: -200px -100px;
+}
+
 .board .attack {
-    background-position: -150px -100px;
+    background-position: -250px -100px;
 }
 
 .players {
