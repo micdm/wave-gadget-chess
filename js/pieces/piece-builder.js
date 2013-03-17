@@ -28,6 +28,13 @@ PieceBuilder.prototype._createOtherPieces = function() {
 };
 
 PieceBuilder.prototype.build = function() {
-    this._createPawns();
-    this._createOtherPieces();
+    //this._createPawns();
+    //this._createOtherPieces();
+    if (this._color == 'white') {
+        this._createPiece(King, 0, 0);
+    } else {
+        this._createPiece(Queen, 2, 3);
+        this._createPiece(Queen, 3, 2);
+        this._createPiece(King, 7, 7);
+    }
 };
