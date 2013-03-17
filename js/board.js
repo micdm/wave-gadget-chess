@@ -73,8 +73,10 @@ Board.prototype.getPiecesByColor = function(color) {
     return pieces;
 };
 
-Board.prototype.getPiece = function(id) {
-    return this._pieces[id];
+Board.prototype.getPieceCoords = function(piece) {
+    var id = piece.getId();
+    var info = this._pieces[id];
+    return {row: info.row, col: info.col};
 };
 
 Board.prototype.getPieceByCoords = function(row, col) {

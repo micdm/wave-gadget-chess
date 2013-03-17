@@ -11,11 +11,10 @@ Game.prototype._onMovePiece = function(piece, row, col) {
     }
     this._players.lock();
     this._players.checkForNewPlayer();
-    var id = piece.getId();
-    var info = this._board.getPiece(id);
+    var coords = this._board.getPieceCoords(piece);
     this.emit('update', {
         type: 'move',
-        from: {row: info.row, col: info.col},
+        from: {row: coords.row, col: coords.col},
         to: {row: row, col: col}
     });
 };
@@ -26,12 +25,11 @@ Game.prototype._onAttackPiece = function(piece, row, col) {
     }
     this._players.lock();
     this._players.checkForNewPlayer();
-    var id = piece.getId();
-    var info = this._board.getPiece(id);
+    var coords = this._board.getPieceCoords(piece);
     this.emit('update', {type: 'remove', row: row, col: col});
     this.emit('update', {
         type: 'move',
-        from: {row: info.row, col: info.col},
+        from: {row: coords.row, col: coords.col},
         to: {row: row, col: col}
     });
 };

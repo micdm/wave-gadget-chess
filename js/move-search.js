@@ -52,8 +52,7 @@ MoveSearch.prototype._iterate = function(row, col, extra) {
 };
 
 MoveSearch.prototype.get = function() {
-    var id = this._piece.getId();
-    var info = this._board.getPiece(id);
-    this._piece.iterateCells(info.row, info.col, $.proxy(this._iterate, this));
+    var coords = this._board.getPieceCoords(this._piece);
+    this._piece.iterateCells(coords.row, coords.col, $.proxy(this._iterate, this));
     return this._moves;
 };
