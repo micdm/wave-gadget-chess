@@ -2,6 +2,7 @@ var Board = function() {
     EventEmitter.mixin(this);
     this._field = null;
     this._pieces = null;
+    this._moved = [];
     this._createField();
 };
 
@@ -49,6 +50,9 @@ Board.prototype.movePiece = function(piece, row, col) {
     });
     info.row = row;
     info.col = col;
+    if (!this.isMoved(piece)) {
+        this._moved.push(piece);
+    }
     this.emit('place', function() {
         return [row, col, piece];
     });
@@ -112,6 +116,10 @@ Board.prototype.getPieceCoords = function(piece) {
     var id = piece.getId();
     var info = this._pieces[id];
     return {row: info.row, col: info.col};
+};
+
+Board.prototype.isMoved = function(piece) {
+    return $.inArray(piece, this._moved) != -1;
 };
 
 Board.prototype.getField = function() {

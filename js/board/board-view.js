@@ -27,7 +27,7 @@ BoardView.prototype._createField = function() {
 };
 
 BoardView.prototype._clearField = function() {
-    this._node.find('.move,.attack').remove();
+    this._node.find('.move,.attack,.long-castling,.short-castling').remove();
     this._node.find('.chosen,.check,.checkmate,.stalemate').removeClass('chosen check checkmate stalemate');
 };
 
@@ -97,12 +97,12 @@ BoardView.prototype._showAvailableMoves = function(row, col) {
     var moves = search.get();
     for (var i in moves) {
         var move = moves[i];
-        if (move.check) {
-            continue;
+        var cell = this._getCell(move.row, move.col);
+        var type = move.type;
+        if (type != 'check') {
+            var node = $('<div class="icon ' + type + '"></div>');
+            cell.append(node);
         }
-        var cell = this._getCell(move.row, move.col);;
-        var node = $('<div class="icon ' + (move.attack ? 'attack' : 'move') + '"></div>');
-        cell.append(node);
     }
 };
 
@@ -117,6 +117,10 @@ BoardView.prototype._addClickListener = function() {
             this._showAvailableMoves(row, col);
         }
         var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
+        var types = ['move', 'attack', 'long-castling', 'short-castling'];
+        for (var i in types) {
+            var type = types[i];
+        }
         if (element.hasClass('move')) {
             this.emit('move', function() {
                 return [piece, row, col];
@@ -125,6 +129,16 @@ BoardView.prototype._addClickListener = function() {
         if (element.hasClass('attack')) {
             this.emit('attack', function() {
                 return [piece, row, col];
+            });
+        }
+        if (element.hasClass('long-castling')) {
+            this.emit('castling', function() {
+                return [piece, 'long'];
+            });
+        }
+        if (element.hasClass('short-castling')) {
+            this.emit('castling', function() {
+                return [piece, 'short'];
             });
         }
     }, this));    

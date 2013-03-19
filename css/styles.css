@@ -41,16 +41,36 @@
     position: relative;
 }
 
-.board .row:nth-child(even) .cell:nth-child(even), .row:nth-child(odd) .cell:nth-child(odd) {
+.board .row:nth-child(even) .cell:nth-child(even),
+.row:nth-child(odd) .cell:nth-child(odd) {
     background: #ffce9e;
 }
 
-.board .row:nth-child(even) .cell:nth-child(odd), .row:nth-child(odd) .cell:nth-child(even) {
+.board .row:nth-child(even) .cell:nth-child(odd),
+.row:nth-child(odd) .cell:nth-child(even) {
     background: #d18b47;
 }
 
-.board .piece, .move, .attack {
+.board .piece,
+.board .move,
+.board .attack,
+.board .long-castling,
+.board .short-castling {
     cursor: pointer;
+}
+
+.board .move,
+.board .attack,
+.board .long-castling,
+.board .short-castling {
+    opacity: 0.5;
+}
+
+.board .move:hover,
+.board .attack:hover,
+.board .long-castling:hover,
+.board .short-castling:hover {
+    opacity: 1;
 }
 
 .board .white.pawn {
@@ -118,11 +138,16 @@
 }
 
 .board .move {
-    background-position: -200px -100px;
+    background-position: 0 -100px;
 }
 
 .board .attack {
-    background-position: -250px -100px;
+    background-position: -50px -100px;
+}
+
+.board .long-castling,
+.board .short-castling {
+    background-position: -100px -100px;
 }
 
 .players {

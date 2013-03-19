@@ -37,11 +37,28 @@ Game.prototype._onAttackPiece = function(piece, row, col) {
     });
 };
 
+Game.prototype._onCastling = function(piece, length) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    this.emit('update', function() {
+        return [{
+            type: 'castling',
+            color: piece.getColor(),
+            length: length
+        }];
+    });
+};
+
 Game.prototype._initBoard = function() {
     this._board = new Board();
     var view = new BoardView(this._board);
     view.on('move', $.proxy(this._onMovePiece, this));
     view.on('attack', $.proxy(this._onAttackPiece, this));
+    view.on('castling', $.proxy(this._onCastling, this));
+    
 };
 
 Game.prototype._onNewPlayer = function(color, player) {
@@ -90,6 +107,19 @@ Game.prototype.update = function(update) {
         this._board.removePiece(victim);
         var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.movePiece(attacker, update.to.row, update.to.col);
+        this._players.turn();
+    }
+    if (update.type == 'castling') {
+        var king = this._board.getPieceByColorAndType(update.color, Piece.TYPES.KING);
+        var coords = this._board.getPieceCoords(king);
+        var rook = this._board.getPieceByCoords(coords.row, update.length == 'long' ? 0 : 7);
+        if (update.length == 'long') {
+            this._board.movePiece(king, coords.row, 2);
+            this._board.movePiece(rook, coords.row, 3);
+        } else {
+            this._board.movePiece(king, coords.row, 6);
+            this._board.movePiece(rook, coords.row, 5);
+        }
         this._players.turn();
     }
 };

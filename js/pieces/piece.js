@@ -42,6 +42,10 @@ Piece.prototype.getType = function() {
     throw new Error('not implemented');
 };
 
+Piece.prototype.iterateMoves = function(row, col, callback) {
+    throw new Error('not implemented');
+};
+
 var Pawn = function() {
     Piece.apply(this, arguments);
 };
@@ -51,7 +55,7 @@ Pawn.prototype.getType = function() {
     return Piece.TYPES.PAWN;
 };
 
-Pawn.prototype.iterateCells = function(row, col, callback) {
+Pawn.prototype.iterateMoves = function(row, col, callback) {
     if (this.getColor() == Piece.COLORS.WHITE) {
         callback(row - 1, col, 'move');
         if (row == 6) {
@@ -78,7 +82,7 @@ Knight.prototype.getType = function() {
     return Piece.TYPES.KNIGHT;
 };
 
-Knight.prototype.iterateCells = function(row, col, callback) {
+Knight.prototype.iterateMoves = function(row, col, callback) {
     var offsets = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]];
     for (var i in offsets) {
         var offset = offsets[i];
@@ -95,7 +99,7 @@ Rook.prototype.getType = function() {
     return Piece.TYPES.ROOK;
 };
 
-Rook.prototype.iterateCells = function(row, col, callback) {
+Rook.prototype.iterateMoves = function(row, col, callback) {
     for (var i = col - 1; i >= 0; i -= 1) {
         if (!callback(row, i)) {
             break;
@@ -127,7 +131,7 @@ Bishop.prototype.getType = function() {
     return Piece.TYPES.BISHOP;
 };
 
-Bishop.prototype.iterateCells = function(row, col, callback) {
+Bishop.prototype.iterateMoves = function(row, col, callback) {
     for (var i = row - 1, j = col - 1; i >= 0, j >= 0; i -= 1, j -= 1) {
         if (!callback(i, j)) {
             break;
@@ -159,7 +163,7 @@ Queen.prototype.getType = function() {
     return Piece.TYPES.QUEEN;
 };
 
-Queen.prototype.iterateCells = function(row, col, callback) {
+Queen.prototype.iterateMoves = function(row, col, callback) {
     for (var i = col - 1; i >= 0; i -= 1) {
         if (!callback(row, i)) {
             break;
@@ -211,7 +215,7 @@ King.prototype.getType = function() {
     return Piece.TYPES.KING;
 };
 
-King.prototype.iterateCells = function(row, col, callback) {
+King.prototype.iterateMoves = function(row, col, callback) {
     var offsets = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
     for (var i in offsets) {
         var offset = offsets[i];
