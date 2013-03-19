@@ -54,6 +54,7 @@
 .board .piece,
 .board .move,
 .board .attack,
+.board .en-passant,
 .board .long-castling,
 .board .short-castling {
     cursor: pointer;
@@ -61,6 +62,7 @@
 
 .board .move,
 .board .attack,
+.board .en-passant,
 .board .long-castling,
 .board .short-castling {
     opacity: 0.5;
@@ -68,6 +70,7 @@
 
 .board .move:hover,
 .board .attack:hover,
+.board .en-passant:hover,
 .board .long-castling:hover,
 .board .short-castling:hover {
     opacity: 1;
@@ -145,6 +148,7 @@
     background-position: -50px -100px;
 }
 
+.board .en-passant,
 .board .long-castling,
 .board .short-castling {
     background-position: -100px -100px;

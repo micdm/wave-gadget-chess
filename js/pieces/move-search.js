@@ -17,14 +17,7 @@ MoveSearch.prototype._willBeCheck = function(row, col) {
 };
 
 MoveSearch.prototype._checkMove = function(row, col, extra) {
-    var field = this._board.getField();
-    if (!(row in field)) {
-        return false;
-    }
-    if (!(col in field[row])) {
-        return false;
-    }
-    var piece = field[row][col];
+    var piece = this._board.getPieceByCoords(row, col);
     if (!piece) {
         if (extra && extra != 'move') {
             return false;
@@ -52,8 +45,46 @@ MoveSearch.prototype._checkMove = function(row, col, extra) {
     return false;
 };
 
-MoveSearch.prototype._addPawnExtraMoves = function(row, col) {
-    
+MoveSearch.prototype._canEnPassant = function(fromRow, fromCol, toRow, toCol) {
+    if (!this._board.areCoordsCorrect(toRow, toCol)) {
+        return false;
+    }
+    var piece = this._board.getPieceByCoords(fromRow, toCol);
+    if (!piece) {
+        return false;
+    }
+    if (piece.getColor() == this._piece.getColor()) {
+        return false;
+    }
+    if (piece.getType() != Piece.TYPES.PAWN) {
+        return false;
+    }
+    var lastMove = this._board.getLastMove();
+    if (!lastMove) {
+        return false;
+    }
+    if (piece != lastMove.piece) {
+        return false;
+    }
+    if (Math.abs(lastMove.row - fromRow) != 2) {
+        return false;
+    }
+    return true;
+};
+
+MoveSearch.prototype._checkForEnPassant = function(fromRow, fromCol, type) {
+    var toRow = (this._piece.getColor() == Piece.COLORS.WHITE) ? fromRow - 1 : fromRow + 1;
+    var toCol = (type == 'left') ? fromCol - 1 : fromCol + 1;
+    if (this._canEnPassant(fromRow, fromCol, toRow, toCol)) {
+        var move = {row: toRow, col: toCol, type: 'en-passant'}; 
+        this._moves.push(move);
+    }
+};
+
+MoveSearch.prototype._addPawnExtraMoves = function() {
+    var coords = this._board.getPieceCoords(this._piece);
+    this._checkForEnPassant(coords.row, coords.col, 'left');
+    this._checkForEnPassant(coords.row, coords.col, 'right');
 };
 
 MoveSearch.prototype._canCastling = function(row, col, type) {

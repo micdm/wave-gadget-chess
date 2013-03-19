@@ -27,7 +27,7 @@ BoardView.prototype._createField = function() {
 };
 
 BoardView.prototype._clearField = function() {
-    this._node.find('.move,.attack,.long-castling,.short-castling').remove();
+    this._node.find('.move,.attack,.en-passant,.long-castling,.short-castling').remove();
     this._node.find('.chosen,.check,.checkmate,.stalemate').removeClass('chosen check checkmate stalemate');
 };
 
@@ -128,6 +128,11 @@ BoardView.prototype._addClickListener = function() {
         }
         if (element.hasClass('attack')) {
             this.emit('attack', function() {
+                return [piece, row, col];
+            });
+        }
+        if (element.hasClass('en-passant')) {
+            this.emit('en-passant', function() {
                 return [piece, row, col];
             });
         }

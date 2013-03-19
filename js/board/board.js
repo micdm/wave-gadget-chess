@@ -3,6 +3,7 @@ var Board = function() {
     this._field = null;
     this._pieces = null;
     this._moved = [];
+    this._lastMove = null;
     this._createField();
 };
 
@@ -48,11 +49,12 @@ Board.prototype.movePiece = function(piece, row, col) {
     this.emit('remove', function() {
         return [info.row, info.col];
     });
-    info.row = row;
-    info.col = col;
     if (!this.isMoved(piece)) {
         this._moved.push(piece);
     }
+    this._lastMove = {piece: piece, row: info.row, col: info.col};
+    info.row = row;
+    info.col = col;
     this.emit('place', function() {
         return [row, col, piece];
     });
@@ -78,6 +80,16 @@ Board.prototype.removePiece = function(piece) {
     this.emit('remove', function() {
         return [info.row, info.col];
     });
+};
+
+Board.prototype.areCoordsCorrect = function(row, col) {
+    if (!(row in this._field)) {
+        return false;
+    }
+    if (!(col in this._field[row])) {
+        return false;
+    }
+    return true;
 };
 
 Board.prototype.getPieces = function() {
@@ -122,8 +134,8 @@ Board.prototype.isMoved = function(piece) {
     return $.inArray(piece, this._moved) != -1;
 };
 
-Board.prototype.getField = function() {
-    return this._field;
+Board.prototype.getLastMove = function() {
+    return this._lastMove;
 };
 
 Board.prototype.isCheck = function(color) {
