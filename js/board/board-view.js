@@ -27,8 +27,8 @@ BoardView.prototype._createField = function() {
 };
 
 BoardView.prototype._clearField = function() {
-    this._node.find('.move,.attack,.en-passant,.long-castling,.short-castling').remove();
-    this._node.find('.chosen,.check,.checkmate,.stalemate').removeClass('chosen check checkmate stalemate');
+    this._node.find('.move, .attack, .en-passant, .promotion, .long-castling, .short-castling').remove();
+    this._node.find('.chosen, .check, .checkmate, .stalemate').removeClass('chosen check checkmate stalemate');
 };
 
 BoardView.prototype._getCell = function(row, col) {
@@ -80,18 +80,7 @@ BoardView.prototype._addBoardListeners = function() {
     this._board.on('stalemate', $.proxy(this._onStalemate, this));
 };
 
-BoardView.prototype._choosePiece = function(row, col) {
-    this._node.find('.chosen').removeClass('chosen');
-    var cell = this._getCell(row, col);
-    cell.addClass('chosen');
-    this._piece = {
-        row: row,
-        col: col
-    };
-};
-
 BoardView.prototype._showAvailableMoves = function(row, col) {
-    this._node.find('.move, .attack').remove();
     var piece = this._board.getPieceByCoords(row, col);
     var search = new MoveSearch(this._board, piece);
     var moves = search.get();
@@ -106,6 +95,48 @@ BoardView.prototype._showAvailableMoves = function(row, col) {
     }
 };
 
+BoardView.prototype._choosePiece = function(row, col) {
+    this._clearField();
+    var cell = this._getCell(row, col);
+    cell.addClass('chosen');
+    this._piece = {row: row, col: col};
+    this._showAvailableMoves(row, col);
+};
+
+BoardView.prototype._showPromotionDialog = function(element, callback) {
+    this._node.find('.promotion-dialog').remove();
+    var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
+    var color = piece.getColor();
+    var dialog = $(
+        '<div class="promotion-dialog"> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.KNIGHT + '"></div> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.ROOK + '"></div> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.BISHOP + '"></div> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.QUEEN + '"></div> \
+        </div>'
+    );
+    var offset = element.offset();
+    dialog.offset(offset);
+    dialog.click(function(event) {
+        var element = $(event.target);
+        if (element.hasClass('knight')) {
+            callback(Piece.TYPES.KNIGHT);
+        }
+        if (element.hasClass('rook')) {
+            callback(Piece.TYPES.ROOK);
+        }
+        if (element.hasClass('bishop')) {
+            callback(Piece.TYPES.BISHOP);
+        }
+        if (element.hasClass('queen')) {
+            callback(Piece.TYPES.QUEEN);
+        }
+        dialog.remove();
+        return false;
+    });
+    this._node.append(dialog);
+};
+
 BoardView.prototype._addClickListener = function() {
     this._node.click($.proxy(function(event) {
         var offset = this._node.offset();
@@ -114,13 +145,8 @@ BoardView.prototype._addClickListener = function() {
         var element = $(event.target);
         if (element.hasClass('piece')) {
             this._choosePiece(row, col);
-            this._showAvailableMoves(row, col);
         }
         var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
-        var types = ['move', 'attack', 'long-castling', 'short-castling'];
-        for (var i in types) {
-            var type = types[i];
-        }
         if (element.hasClass('move')) {
             this.emit('move', function() {
                 return [piece, row, col];
@@ -136,6 +162,13 @@ BoardView.prototype._addClickListener = function() {
                 return [piece, row, col];
             });
         }
+        if (element.hasClass('promotion')) {
+            this._showPromotionDialog(element, $.proxy(function(replacement) {
+                this.emit('promotion', function() {
+                    return [piece, row, col, replacement];
+                });
+            }, this));
+        }
         if (element.hasClass('long-castling')) {
             this.emit('castling', function() {
                 return [piece, 'long'];
@@ -146,6 +179,7 @@ BoardView.prototype._addClickListener = function() {
                 return [piece, 'short'];
             });
         }
+        return false;
     }, this));    
 };
 

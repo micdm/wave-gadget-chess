@@ -17,10 +17,32 @@ Piece.TYPES = {
     KING: 'king'
 };
 
-Piece.get = function(color, implementation) {
+Piece._getImplementationForType = function(type) {
+    if (type == Piece.TYPES.PAWN) {
+        return Pawn;
+    }
+    if (type == Piece.TYPES.KNIGHT) {
+        return Knight;
+    }
+    if (type == Piece.TYPES.ROOK) {
+        return Rook;
+    }
+    if (type == Piece.TYPES.BISHOP) {
+        return Bishop;
+    }
+    if (type == Piece.TYPES.QUEEN) {
+        return Queen;
+    }
+    if (type == Piece.TYPES.KING) {
+        return King;
+    }
+};
+
+Piece.get = function(color, type) {
     if (!Piece._id) {
         Piece._id = 0;
     }
+    var implementation = Piece._getImplementationForType(type);
     var piece = new implementation(Piece._id, color);
     Piece._id += 1;
     return piece;

@@ -10,11 +10,1462 @@
 <html>
     <head>
         <style>
-            
+            * {
+    padding: 0;
+    margin: 0;
+}
+
+.icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    background: no-repeat url(data:image/png;base64,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);
+}
+
+.board {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.board .number {
+    display: inline-block;
+    width: 25px;
+    height: 50px;
+    text-align: center;
+    vertical-align: top;
+    line-height: 50px;
+}
+
+.board .letter {
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    text-align: center;
+    line-height: 25px;
+}
+
+.board .cell {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: relative;
+}
+
+.board .row:nth-child(even) .cell:nth-child(even),
+.row:nth-child(odd) .cell:nth-child(odd) {
+    background: #ffce9e;
+}
+
+.board .row:nth-child(even) .cell:nth-child(odd),
+.row:nth-child(odd) .cell:nth-child(even) {
+    background: #d18b47;
+}
+
+.board .piece,
+.board .move,
+.board .attack,
+.board .en-passant,
+.board .promotion,
+.board .long-castling,
+.board .short-castling {
+    cursor: pointer;
+}
+
+.board .move,
+.board .attack,
+.board .en-passant,
+.board .promotion,
+.board .long-castling,
+.board .short-castling {
+    opacity: 0.5;
+}
+
+.board .move:hover,
+.board .attack:hover,
+.board .en-passant:hover,
+.board .promotion:hover,
+.board .long-castling:hover,
+.board .short-castling:hover {
+    opacity: 1;
+}
+
+.board .white.pawn {
+    background-position: 0 0; 
+}
+
+.board .white.knight {
+    background-position: -50px 0; 
+}
+
+.board .white.rook {
+    background-position: -100px 0; 
+}
+
+.white.bishop {
+    background-position: -150px 0; 
+}
+
+.board .white.queen {
+    background-position: -200px 0; 
+}
+
+.board .white.king {
+    background-position: -250px 0; 
+}
+
+.board .black.pawn {
+    background-position: 0 -50px; 
+}
+
+.board .black.knight {
+    background-position: -50px -50px; 
+}
+
+.board .black.rook {
+    background-position: -100px -50px; 
+}
+
+.board .black.bishop {
+    background-position: -150px -50px; 
+}
+
+.board .black.queen {
+    background-position: -200px -50px; 
+}
+
+.board .black.king {
+    background-position: -250px -50px; 
+}
+
+.board .chosen {
+    box-shadow: inset 0 0 20px 5px #83ca3e;
+}
+
+.board .check {
+    box-shadow: inset 0 0 20px 5px #653eca;
+}
+
+.board .checkmate {
+    box-shadow: inset 0 0 20px 5px #ca3e3e;
+}
+
+.board .stalemate {
+    box-shadow: inset 0 0 20px 5px #555555;
+}
+
+.board .move {
+    background-position: 0 -100px;
+}
+
+.board .attack {
+    background-position: -50px -100px;
+}
+
+.board .en-passant,
+.board .promotion,
+.board .long-castling,
+.board .short-castling {
+    background-position: -100px -100px;
+}
+
+.promotion-dialog {
+    position: absolute;
+    width: 200px;
+    box-shadow: 0 0 20px 0 black;
+    margin: 5px;
+    z-index: 1;
+}
+
+.promotion-dialog .icon {
+    position: static;
+    float: left;
+}
+
+.promotion-dialog .icon:nth-child(odd){
+    background-color: #ffce9e;
+}
+
+.promotion-dialog .icon:nth-child(even) {
+    background-color: #d18b47;
+}
+
+.promotion-dialog .icon:hover{
+    background-color: white;
+}
+
+.players {
+    display: inline-block;
+    margin: 10px 0 0 10px;
+}
+
+.players .player {
+    display: inline-block;
+    width: 50px;
+    height: 100px;
+    position: relative;
+    vertical-align: middle;
+    border-bottom: 10px solid white;
+}
+
+.players .player .icon {
+    width: 50px;
+    height: 50px;
+}
+
+.players .player.white .icon {
+    background-position: -250px 0;
+}
+
+.players .player.black .icon {
+    background-position: -250px -50px;
+}
+
+.players .player .avatar {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 50px;
+    height: 50px;
+    background: no-repeat center center #eeeeee;
+    background-size: 50px;
+}
+
+.players .turn {
+    border-bottom-color: #9acd32;
+}
+
         </style>
     </head>
     <body>
+        <div class="board"></div>
+        <div class="players">
+            <div class="player white">
+                <div class="icon"></div>
+                <div class="avatar"></div>
+            </div>
+            VS 
+            <div class="player black">
+                <div class="icon"></div>
+                <div class="avatar"></div>
+            </div>
+        </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script>
+            (function() {
+                var EventEmitter = function() {
+    
+};
+
+EventEmitter.mixin = function(target) {
+    var callbacks = {};
+    target.on = function(event, callback) {
+        if (!(event in callbacks)) {
+            callbacks[event] = [];
+        }
+        callbacks[event].push(callback);
+    };
+    target.emit = function(event, getArguments) {
+        if (!(event in callbacks)) {
+            return;
+        }
+        var args = getArguments();
+        if (!args) {
+            return;
+        }
+        var handlers = callbacks[event];
+        for (var i in handlers) {
+            handlers[i].apply(null, args);
+        }
+    };
+};
+
+                var Piece = function(id, color) {
+    this._id = id;
+    this._color = color;
+};
+
+Piece.COLORS = {
+    WHITE: 'white',
+    BLACK: 'black'
+};
+
+Piece.TYPES = {
+    PAWN: 'pawn',
+    KNIGHT: 'knight',
+    ROOK: 'rook',
+    BISHOP: 'bishop',
+    QUEEN: 'queen',
+    KING: 'king'
+};
+
+Piece._getImplementationForType = function(type) {
+    if (type == Piece.TYPES.PAWN) {
+        return Pawn;
+    }
+    if (type == Piece.TYPES.KNIGHT) {
+        return Knight;
+    }
+    if (type == Piece.TYPES.ROOK) {
+        return Rook;
+    }
+    if (type == Piece.TYPES.BISHOP) {
+        return Bishop;
+    }
+    if (type == Piece.TYPES.QUEEN) {
+        return Queen;
+    }
+    if (type == Piece.TYPES.KING) {
+        return King;
+    }
+};
+
+Piece.get = function(color, type) {
+    if (!Piece._id) {
+        Piece._id = 0;
+    }
+    var implementation = Piece._getImplementationForType(type);
+    var piece = new implementation(Piece._id, color);
+    Piece._id += 1;
+    return piece;
+};
+
+Piece.getInvertedColor = function(color) {
+    return (color == Piece.COLORS.WHITE) ? Piece.COLORS.BLACK : Piece.COLORS.WHITE;
+};
+
+Piece.prototype.getId = function() {
+    return this._id;
+};
+
+Piece.prototype.getColor = function() {
+    return this._color;
+};
+
+Piece.prototype.getType = function() {
+    throw new Error('not implemented');
+};
+
+Piece.prototype.iterateMoves = function(row, col, callback) {
+    throw new Error('not implemented');
+};
+
+var Pawn = function() {
+    Piece.apply(this, arguments);
+};
+Pawn.prototype = new Piece();
+
+Pawn.prototype.getType = function() {
+    return Piece.TYPES.PAWN;
+};
+
+Pawn.prototype.iterateMoves = function(row, col, callback) {
+    if (this.getColor() == Piece.COLORS.WHITE) {
+        callback(row - 1, col, 'move');
+        if (row == 6) {
+            callback(row - 2, col, 'move');
+        }
+        callback(row - 1, col - 1, 'attack');
+        callback(row - 1, col + 1, 'attack');
+    } else {
+        callback(row + 1, col, 'move');
+        if (row == 1) {
+            callback(row + 2, col, 'move');
+        }
+        callback(row + 1, col - 1, 'attack');
+        callback(row + 1, col + 1, 'attack');
+    }
+};
+
+var Knight = function() {
+    Piece.apply(this, arguments);
+};
+Knight.prototype = new Piece();
+
+Knight.prototype.getType = function() {
+    return Piece.TYPES.KNIGHT;
+};
+
+Knight.prototype.iterateMoves = function(row, col, callback) {
+    var offsets = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]];
+    for (var i in offsets) {
+        var offset = offsets[i];
+        callback(row + offset[0], col + offset[1]);
+    }
+};
+
+var Rook = function() {
+    Piece.apply(this, arguments);
+};
+Rook.prototype = new Piece();
+
+Rook.prototype.getType = function() {
+    return Piece.TYPES.ROOK;
+};
+
+Rook.prototype.iterateMoves = function(row, col, callback) {
+    for (var i = col - 1; i >= 0; i -= 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = col + 1; i < Board.SIZE; i += 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = row - 1; i >= 0; i -= 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+    for (var i = row + 1; i < Board.SIZE; i += 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+};
+
+var Bishop = function() {
+    Piece.apply(this, arguments);
+};
+Bishop.prototype = new Piece();
+
+Bishop.prototype.getType = function() {
+    return Piece.TYPES.BISHOP;
+};
+
+Bishop.prototype.iterateMoves = function(row, col, callback) {
+    for (var i = row - 1, j = col - 1; i >= 0, j >= 0; i -= 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row - 1, j = col + 1; i >= 0, j < Board.SIZE; i -= 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col - 1; i < Board.SIZE, j >= 0; i += 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col + 1; i < Board.SIZE, j < Board.SIZE; i += 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+};
+
+var Queen = function() {
+    Piece.apply(this, arguments);
+};
+Queen.prototype = new Piece();
+
+Queen.prototype.getType = function() {
+    return Piece.TYPES.QUEEN;
+};
+
+Queen.prototype.iterateMoves = function(row, col, callback) {
+    for (var i = col - 1; i >= 0; i -= 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = col + 1; i < Board.SIZE; i += 1) {
+        if (!callback(row, i)) {
+            break;
+        }
+    }
+    for (var i = row - 1; i >= 0; i -= 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+    for (var i = row + 1; i < Board.SIZE; i += 1) {
+        if (!callback(i, col)) {
+            break;
+        }
+    }
+    for (var i = row - 1, j = col - 1; i >= 0, j >= 0; i -= 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row - 1, j = col + 1; i >= 0, j < Board.SIZE; i -= 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col - 1; i < Board.SIZE, j >= 0; i += 1, j -= 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+    for (var i = row + 1, j = col + 1; i < Board.SIZE, j < Board.SIZE; i += 1, j += 1) {
+        if (!callback(i, j)) {
+            break;
+        }
+    }
+};
+
+var King = function() {
+    Piece.apply(this, arguments);
+};
+King.prototype = new Piece();
+
+King.prototype.getType = function() {
+    return Piece.TYPES.KING;
+};
+
+King.prototype.iterateMoves = function(row, col, callback) {
+    var offsets = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+    for (var i in offsets) {
+        var offset = offsets[i];
+        callback(row + offset[0], col + offset[1]);
+    }
+};
+
+                var PieceBuilder = function(color, board) {
+    this._color = color;
+    this._board = board;
+};
+
+PieceBuilder.prototype._createPiece = function(type, row, col) {
+    var piece = Piece.get(this._color, type);
+    this._board.placePiece(row, col, piece);
+};
+
+PieceBuilder.prototype._createPawns = function() {
+    var row = this._color == Piece.COLORS.WHITE ? 6 : 1;
+    for (var col = 0; col < 8; col += 1) {
+        this._createPiece(Piece.TYPES.PAWN, row, col);
+    }
+};
+
+PieceBuilder.prototype._createOtherPieces = function() {
+    var row = this._color == Piece.COLORS.WHITE ? 7 : 0;
+    this._createPiece(Piece.TYPES.ROOK, row, 0);
+    this._createPiece(Piece.TYPES.KNIGHT, row, 1);
+    this._createPiece(Piece.TYPES.BISHOP, row, 2);
+    this._createPiece(Piece.TYPES.QUEEN, row, 3);
+    this._createPiece(Piece.TYPES.KING, row, 4);
+    this._createPiece(Piece.TYPES.BISHOP, row, 5);
+    this._createPiece(Piece.TYPES.KNIGHT, row, 6);
+    this._createPiece(Piece.TYPES.ROOK, row, 7);
+};
+
+PieceBuilder.prototype.build = function() {
+    this._createPawns();
+    this._createOtherPieces();
+};
+
+                var MoveSearch = function(board, piece, checksOnly) {
+    this._board = board;
+    this._piece = piece;
+    this._checksOnly = checksOnly;
+    this._moves = [];
+};
+
+MoveSearch.prototype._willBeCheck = function(row, col) {
+    var changed = Board.getCopy(this._board);
+    var piece = changed.getPieceByCoords(row, col);
+    if (piece) {
+        changed.removePiece(piece);
+    }
+    changed.movePiece(this._piece, row, col);
+    var color = this._piece.getColor();
+    return changed.isCheck(color);
+};
+
+MoveSearch.prototype._checkMove = function(row, col, extra) {
+    if (!this._board.areCoordsCorrect(row, col)) {
+        return false;
+    }
+    var piece = this._board.getPieceByCoords(row, col);
+    if (!piece) {
+        if (extra && extra != 'move') {
+            return false;
+        }
+        if (!this._checksOnly && !this._willBeCheck(row, col)) {
+            var move = {row: row, col: col, type: 'move'};
+            this._moves.push(move);
+        }
+        return true;
+    }
+    if (piece.getColor() != this._piece.getColor()) {
+        if (extra && extra != 'attack') {
+            return false;
+        }
+        if (piece.getType() == Piece.TYPES.KING) {
+            this._moves.push({row: row, col: col, type: 'check'});
+            return false;
+        }
+        if (!this._checksOnly && !this._willBeCheck(row, col)) {
+            var move = {row: row, col: col, type: 'attack'};
+            this._moves.push(move);
+        }
+        return false;
+    }
+    return false;
+};
+
+MoveSearch.prototype._canEnPassant = function(fromRow, fromCol, toRow, toCol) {
+    if (!this._board.areCoordsCorrect(toRow, toCol)) {
+        return false;
+    }
+    var piece = this._board.getPieceByCoords(fromRow, toCol);
+    if (!piece) {
+        return false;
+    }
+    if (piece.getColor() == this._piece.getColor()) {
+        return false;
+    }
+    if (piece.getType() != Piece.TYPES.PAWN) {
+        return false;
+    }
+    var lastMove = this._board.getLastMove();
+    if (!lastMove) {
+        return false;
+    }
+    if (piece != lastMove.piece) {
+        return false;
+    }
+    if (Math.abs(lastMove.row - fromRow) != 2) {
+        return false;
+    }
+    if (this._willBeCheck(toRow, toCol)) {
+        return false;
+    }
+    return true;
+};
+
+MoveSearch.prototype._checkForEnPassant = function(fromRow, fromCol, type) {
+    var toRow = (this._piece.getColor() == Piece.COLORS.WHITE) ? fromRow - 1 : fromRow + 1;
+    var toCol = (type == 'left') ? fromCol - 1 : fromCol + 1;
+    if (this._canEnPassant(fromRow, fromCol, toRow, toCol)) {
+        var move = {row: toRow, col: toCol, type: 'en-passant'}; 
+        this._moves.push(move);
+    }
+};
+
+MoveSearch.prototype._canPromotion = function(toRow, toCol) {
+    var piece = this._board.getPieceByCoords(toRow, toCol);
+    if (piece) {
+        return false;
+    }
+    if (this._willBeCheck(toRow, toCol)) {
+        return false;
+    }
+    return true;
+};
+
+MoveSearch.prototype._checkForPromotion = function(fromRow, fromCol) {
+    var toRow = (this._piece.getColor() == Piece.COLORS.WHITE) ? 0 : 7;
+    var toCol = fromCol;
+    if (this._canPromotion(toRow, toCol)) {
+        for (var i in this._moves) {
+            var move = this._moves[i];
+            if (move.row == toRow && move.col == toCol) {
+                move.type = 'promotion';
+                break;
+            }
+        }
+    }
+};
+
+MoveSearch.prototype._addPawnExtraMoves = function() {
+    var coords = this._board.getPieceCoords(this._piece);
+    this._checkForEnPassant(coords.row, coords.col, 'left');
+    this._checkForEnPassant(coords.row, coords.col, 'right');
+    this._checkForPromotion(coords.row, coords.col);
+};
+
+MoveSearch.prototype._canCastling = function(row, col, length) {
+    if (this._board.isMoved(this._piece)) {
+        return null;
+    }
+    var corner = (length == 'long') ? 0 : 7;
+    var piece = this._board.getPieceByCoords(row, corner);
+    if (!piece) {
+        return false;
+    }
+    var color = this._piece.getColor();
+    if (piece.getColor() != color) {
+        return false;
+    }
+    if (piece.getType() != Piece.TYPES.ROOK) {
+        return false;
+    }
+    if (this._board.isMoved(piece)) {
+        return false;
+    }
+    var step = (length == 'long') ? -1 : 1;
+    for (var i = col + step; i != corner; i += step) {
+        if (this._board.getPieceByCoords(row, i)) {
+            return false;
+        }
+    }
+    if (this._board.isCheck(color)) {
+        return false;
+    }
+    for (var i = col + step, j = 0; j < 2; i += step, j += 1) {
+        if (this._willBeCheck(row, i)) {
+            return false;
+        }
+    }
+    return true;
+};
+
+MoveSearch.prototype._checkForCastling = function(row, col, length) {
+    if (this._canCastling(row, col, length)) {
+        var col = (length == 'long') ? 2 : 6;
+        var type = (length == 'long') ? 'long-castling' : 'short-castling';
+        var move = {row: row, col: col, type: type};
+        this._moves.push(move);
+    }
+};
+
+MoveSearch.prototype._addKingExtraMoves = function() {
+    var coords = this._board.getPieceCoords(this._piece);
+    this._checkForCastling(coords.row, coords.col, 'long');
+    this._checkForCastling(coords.row, coords.col, 'short');
+};
+
+MoveSearch.prototype._addExtraMoves = function() {
+    var type = this._piece.getType();
+    if (type == Piece.TYPES.PAWN) {
+        this._addPawnExtraMoves();
+    }
+    if (type == Piece.TYPES.KING) {
+        this._addKingExtraMoves();
+    }
+};
+
+MoveSearch.prototype.get = function() {
+    var coords = this._board.getPieceCoords(this._piece);
+    this._piece.iterateMoves(coords.row, coords.col, $.proxy(this._checkMove, this));
+    if (!this._checksOnly) {
+        this._addExtraMoves();
+    }
+    return this._moves;
+};
+
+                var Player = function(id, name, avatar) {
+    this._id = id;
+    this._name = name;
+    this._avatar = avatar;
+};
+
+Player.prototype.getId = function() {
+    return this._id;
+};
+
+Player.prototype.getName = function() {
+    return this._name;
+};
+
+Player.prototype.getAvatar = function() {
+    return this._avatar;
+};
+
+                var Players = function(users) {
+    EventEmitter.mixin(this);
+    this._users = users;
+    this._list = {};
+    this._isLocked = false;
+    this._color = null;
+};
+
+Players.prototype.set = function(color, id) {
+    var info = this._users.get(id);
+    var player = new Player(info.id, info.name, info.avatar);
+    this._list[color] = player;
+    this.emit('set', function() {
+        return [color, player];
+    });
+};
+
+Players.prototype.lock = function() {
+    this._isLocked = true;
+};
+
+Players.prototype.checkForNewPlayer = function() {
+    if (this._color in this._list) {
+        return;
+    }
+    var info = this._users.getViewer();
+    this.emit('new', $.proxy(function() {
+        return [this._color, new Player(info.id, info.name, info.avatar)];
+    }, this));
+};
+
+Players.prototype.canPlay = function(color) {
+    if (this._isLocked) {
+        return false;
+    }
+    if (color != this._color) {
+        return false;
+    }
+    if (!(color in this._list)) {
+        return true;
+    }
+    var player = this._list[color];
+    var info = this._users.getViewer();
+    if (player.getId() != info.id) {
+        return false;
+    }
+    return true;
+};
+
+Players.prototype.turn = function() {
+    this._color = (this._color == Piece.COLORS.WHITE) ? Piece.COLORS.BLACK : Piece.COLORS.WHITE;
+    this._isLocked = false;
+    this.emit('turn', $.proxy(function() {
+        return [this._color];
+    }, this));
+};
+
+                var PlayersView = function(players) {
+    this._players = players;
+    this._node = $('.players');
+};
+
+PlayersView.prototype._onSetPlayer = function(color, player) {
+    var node = this._node.find('.player.' + color + ' .avatar');
+    node.attr('title', player.getName());
+    node.css('background-image', 'url(' + player.getAvatar() + ')');
+};
+
+PlayersView.prototype._onTurn = function(color) {
+    this._node.find('.turn').removeClass('turn');
+    var node = this._node.find('.' + color);
+    node.addClass('turn');
+};
+
+PlayersView.prototype.init = function() {
+    this._players.on('set', $.proxy(this._onSetPlayer, this));
+    this._players.on('turn', $.proxy(this._onTurn, this));
+};
+
+                var Board = function() {
+    EventEmitter.mixin(this);
+    this._field = null;
+    this._pieces = null;
+    this._moved = [];
+    this._lastMove = null;
+    this._createField();
+};
+
+Board.SIZE = 8;
+Board.CELL_SIZE = 50;
+
+Board.getCopy = function(board) {
+    var copy = new Board();
+    var pieces = board.getPieces();
+    for (var i in pieces) {
+        var info = pieces[i];
+        copy.placePiece(info.row, info.col, info.piece);
+    }
+    return copy;
+};
+
+Board.prototype._createField = function() {
+    this._field = [];
+    for (var i = 0; i < Board.SIZE; i += 1) {
+        var row = [];
+        for (var j = 0; j < Board.SIZE; j += 1) {
+            row.push(null);
+        }
+        this._field.push(row);
+    }
+    this._pieces = {};
+};
+
+Board.prototype.placePiece = function(row, col, piece) {
+    this._field[row][col] = piece;
+    var id = piece.getId();
+    this._pieces[id] = {row: row, col: col, piece: piece};
+    this.emit('place', function() {
+        return [row, col, piece];
+    });
+};
+
+Board.prototype.movePiece = function(piece, row, col) {
+    var id = piece.getId();
+    var info = this._pieces[id];
+    this._field[row][col] = piece;
+    this._field[info.row][info.col] = null;
+    this.emit('remove', function() {
+        return [info.row, info.col];
+    });
+    if (!this.isMoved(piece)) {
+        this._moved.push(piece);
+    }
+    this._lastMove = {piece: piece, row: info.row, col: info.col};
+    info.row = row;
+    info.col = col;
+    this.emit('place', function() {
+        return [row, col, piece];
+    });
+    for (var i in Piece.COLORS) {
+        var color = Piece.COLORS[i];
+        this.emit('check', $.proxy(function() {
+            return this.isCheck(color) ? [color] : null;
+        }, this));
+        this.emit('checkmate', $.proxy(function() {
+            return this.isCheckmate(color) ? [color] : null;
+        }, this));
+        this.emit('stalemate', $.proxy(function() {
+            return this.isStalemate(color) ? [color] : null;
+        }, this));
+    }
+};
+
+Board.prototype.removePiece = function(piece) {
+    var id = piece.getId();
+    var info = this._pieces[id];
+    this._field[info.row][info.col] = null;
+    delete this._pieces[id];
+    this.emit('remove', function() {
+        return [info.row, info.col];
+    });
+};
+
+Board.prototype.areCoordsCorrect = function(row, col) {
+    if (!(row in this._field)) {
+        return false;
+    }
+    if (!(col in this._field[row])) {
+        return false;
+    }
+    return true;
+};
+
+Board.prototype.getPieces = function() {
+    return this._pieces;
+};
+
+Board.prototype.getPiecesByColor = function(color) {
+    var pieces = {};
+    for (var i in this._pieces) {
+        var info = this._pieces[i];
+        var piece = info.piece;
+        if (piece.getColor() == color) {
+            var id = piece.getId();
+            pieces[id] = info;
+        }
+    }
+    return pieces;
+};
+
+Board.prototype.getPieceByCoords = function(row, col) {
+    return this._field[row][col];
+};
+
+Board.prototype.getPieceByColorAndType = function(color, type) {
+    var pieces = this.getPiecesByColor(color);
+    for (var i in pieces) {
+        var piece = pieces[i].piece;
+        if (piece.getType() == type) {
+            return piece;
+        }
+    }
+    return null;
+};
+
+Board.prototype.getPieceCoords = function(piece) {
+    var id = piece.getId();
+    var info = this._pieces[id];
+    return {row: info.row, col: info.col};
+};
+
+Board.prototype.isMoved = function(piece) {
+    return $.inArray(piece, this._moved) != -1;
+};
+
+Board.prototype.getLastMove = function() {
+    return this._lastMove;
+};
+
+Board.prototype.isCheck = function(color) {
+    var inverted = Piece.getInvertedColor(color);
+    var pieces = this.getPiecesByColor(inverted);
+    for (var i in pieces) {
+        var piece = pieces[i].piece;
+        var search = new MoveSearch(this, piece, true);
+        var moves = search.get();
+        for (var j in moves) {
+            if (moves[j].type == 'check') {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+Board.prototype._hasMoves = function(color) {
+    var pieces = this.getPiecesByColor(color);
+    for (var i in pieces) {
+        var piece = pieces[i].piece;
+        var search = new MoveSearch(this, piece);
+        var moves = search.get();
+        if (moves.length) {
+            return true;
+        }
+    }
+    return false;
+};
+
+Board.prototype.isCheckmate = function(color) {
+    return this.isCheck(color) && !this._hasMoves(color);
+};
+
+Board.prototype.isStalemate = function(color) {
+    return !this.isCheck(color) && !this._hasMoves(color);
+};
+
+                var BoardView = function(board) {
+    EventEmitter.mixin(this);
+    this._piece = null;
+    this._node = null;
+    this._board = board;
+    this._init();
+};
+
+BoardView.prototype._createField = function() {
+    var node = $('.board');
+    for (var i = 0; i < Board.SIZE; i += 1) {
+        var row = $('<div class="row"></div>');
+        for (var j = 0; j < Board.SIZE; j += 1) {
+            var cell = $('<div class="cell"></div>');
+            row.append(cell);
+        }
+        row.append('<div class="number">' + (Board.SIZE - i) + '</div>');
+        node.append(row);
+    }
+    var row = $('<div></div>');
+    for (var i = 0; i < Board.SIZE; i += 1) {
+        var letter = String.fromCharCode(97 + i);
+        row.append('<div class="letter">' + letter + '</div>');
+    }
+    node.append(row);
+    this._node = node;
+};
+
+BoardView.prototype._clearField = function() {
+    this._node.find('.move, .attack, .en-passant, .promotion, .long-castling, .short-castling').remove();
+    this._node.find('.chosen, .check, .checkmate, .stalemate').removeClass('chosen check checkmate stalemate');
+};
+
+BoardView.prototype._getCell = function(row, col) {
+    return this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')');
+};
+
+BoardView.prototype._onPlace = function(row, col, piece) {
+    this._clearField();
+    var cell = this._getCell(row, col);
+    var node = $('<div class="icon piece ' + piece.getType() + ' ' + piece.getColor() + '"></div>');
+    cell.append(node);
+};
+
+BoardView.prototype._onRemove = function(row, col) {
+    this._clearField();
+    var cell = this._getCell(row, col);
+    cell.find('.piece').remove();
+};
+
+BoardView.prototype._onCheck = function(color) {
+    this._clearField();
+    var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
+    var coords = this._board.getPieceCoords(piece);
+    var cell = this._getCell(coords.row, coords.col);
+    cell.addClass('check');
+};
+
+BoardView.prototype._onCheckmate = function(color) {
+    this._clearField();
+    var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
+    var coords = this._board.getPieceCoords(piece);
+    var cell = this._getCell(coords.row, coords.col);
+    cell.addClass('checkmate');
+};
+
+BoardView.prototype._onStalemate = function(color) {
+    this._clearField();
+    var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
+    var coords = this._board.getPieceCoords(piece);
+    var cell = this._getCell(coords.row, coords.col);
+    cell.addClass('stalemate');
+};
+
+BoardView.prototype._addBoardListeners = function() {
+    this._board.on('place', $.proxy(this._onPlace, this));
+    this._board.on('remove', $.proxy(this._onRemove, this));
+    this._board.on('check', $.proxy(this._onCheck, this));
+    this._board.on('checkmate', $.proxy(this._onCheckmate, this));
+    this._board.on('stalemate', $.proxy(this._onStalemate, this));
+};
+
+BoardView.prototype._showAvailableMoves = function(row, col) {
+    var piece = this._board.getPieceByCoords(row, col);
+    var search = new MoveSearch(this._board, piece);
+    var moves = search.get();
+    for (var i in moves) {
+        var move = moves[i];
+        var cell = this._getCell(move.row, move.col);
+        var type = move.type;
+        if (type != 'check') {
+            var node = $('<div class="icon ' + type + '"></div>');
+            cell.append(node);
+        }
+    }
+};
+
+BoardView.prototype._choosePiece = function(row, col) {
+    this._clearField();
+    var cell = this._getCell(row, col);
+    cell.addClass('chosen');
+    this._piece = {row: row, col: col};
+    this._showAvailableMoves(row, col);
+};
+
+BoardView.prototype._showPromotionDialog = function(element, callback) {
+    this._node.find('.promotion-dialog').remove();
+    var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
+    var color = piece.getColor();
+    var dialog = $(
+        '<div class="promotion-dialog"> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.KNIGHT + '"></div> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.ROOK + '"></div> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.BISHOP + '"></div> \
+            <div class="icon piece ' + color + ' ' + Piece.TYPES.QUEEN + '"></div> \
+        </div>'
+    );
+    var offset = element.offset();
+    dialog.offset(offset);
+    dialog.click(function(event) {
+        var element = $(event.target);
+        if (element.hasClass('knight')) {
+            callback(Piece.TYPES.KNIGHT);
+        }
+        if (element.hasClass('rook')) {
+            callback(Piece.TYPES.ROOK);
+        }
+        if (element.hasClass('bishop')) {
+            callback(Piece.TYPES.BISHOP);
+        }
+        if (element.hasClass('queen')) {
+            callback(Piece.TYPES.QUEEN);
+        }
+        dialog.remove();
+        return false;
+    });
+    this._node.append(dialog);
+};
+
+BoardView.prototype._addClickListener = function() {
+    this._node.click($.proxy(function(event) {
+        var offset = this._node.offset();
+        var row = Math.floor((event.pageY - offset.top) / Board.CELL_SIZE);
+        var col = Math.floor((event.pageX - offset.left) / Board.CELL_SIZE);
+        var element = $(event.target);
+        if (element.hasClass('piece')) {
+            this._choosePiece(row, col);
+        }
+        var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
+        if (element.hasClass('move')) {
+            this.emit('move', function() {
+                return [piece, row, col];
+            });
+        }
+        if (element.hasClass('attack')) {
+            this.emit('attack', function() {
+                return [piece, row, col];
+            });
+        }
+        if (element.hasClass('en-passant')) {
+            this.emit('en-passant', function() {
+                return [piece, row, col];
+            });
+        }
+        if (element.hasClass('promotion')) {
+            this._showPromotionDialog(element, $.proxy(function(replacement) {
+                this.emit('promotion', function() {
+                    return [piece, row, col, replacement];
+                });
+            }, this));
+        }
+        if (element.hasClass('long-castling')) {
+            this.emit('castling', function() {
+                return [piece, 'long'];
+            });
+        }
+        if (element.hasClass('short-castling')) {
+            this.emit('castling', function() {
+                return [piece, 'short'];
+            });
+        }
+        return false;
+    }, this));    
+};
+
+BoardView.prototype._init = function() {
+    this._createField();
+    this._addBoardListeners();
+    this._addClickListener();
+};
+
+                var Game = function(users) {
+    EventEmitter.mixin(this);
+    this._board = null;
+    this._players = null;
+    this._init(users);
+};
+
+Game.prototype._onMovePiece = function(piece, row, col) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'move',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
+    });
+};
+
+Game.prototype._onAttackPiece = function(piece, row, col) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'attack',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
+    });
+};
+
+Game.prototype._onEnPassant = function(piece, row, col) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'en-passant',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
+    });
+};
+
+Game.prototype._onPromotion = function(piece, row, col, replacement) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'promotion',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col},
+            replacement: replacement
+        }];
+    });
+};
+
+Game.prototype._onCastling = function(piece, length) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    this.emit('update', function() {
+        return [{
+            type: 'castling',
+            color: piece.getColor(),
+            length: length
+        }];
+    });
+};
+
+Game.prototype._initBoard = function() {
+    this._board = new Board();
+    var view = new BoardView(this._board);
+    view.on('move', $.proxy(this._onMovePiece, this));
+    view.on('attack', $.proxy(this._onAttackPiece, this));
+    view.on('en-passant', $.proxy(this._onEnPassant, this));
+    view.on('promotion', $.proxy(this._onPromotion, this));
+    view.on('castling', $.proxy(this._onCastling, this));
+    
+};
+
+Game.prototype._onNewPlayer = function(color, player) {
+    this.emit('update', function() {
+        return [{
+            type: 'player',
+            color: color,
+            id: player.getId()}
+        ];
+    });
+};
+
+Game.prototype._initPlayers = function(users) {
+    this._players = new Players(users);
+    this._players.on('new', $.proxy(this._onNewPlayer, this));
+    var view = new PlayersView(this._players);
+    view.init();
+    this._players.turn();
+};
+
+Game.prototype._createPieces = function() {
+    for (var i in Piece.COLORS) {
+        var color = Piece.COLORS[i];
+        var builder = new PieceBuilder(color, this._board);
+        builder.build();
+    }
+};
+
+Game.prototype._init = function(users) {
+    this._initBoard();
+    this._initPlayers(users);
+    this._createPieces();
+};
+
+Game.prototype.update = function(update) {
+    if (update.type == 'player') {
+        this._players.set(update.color, update.id);
+    }
+    if (update.type == 'move') {
+        var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.movePiece(piece, update.to.row, update.to.col);
+        this._players.turn();
+    }
+    if (update.type == 'attack') {
+        var victim = this._board.getPieceByCoords(update.to.row, update.to.col);
+        this._board.removePiece(victim);
+        var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.movePiece(attacker, update.to.row, update.to.col);
+        this._players.turn();
+    }
+    if (update.type == 'en-passant') {
+        var victim = this._board.getPieceByCoords(update.from.row, update.to.col);
+        this._board.removePiece(victim);
+        var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.movePiece(attacker, update.to.row, update.to.col);
+        this._players.turn();
+    }
+    if (update.type == 'promotion') {
+        var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.removePiece(piece);
+        var replacement = Piece.get(piece.getColor(), update.replacement);
+        this._board.placePiece(update.to.row, update.to.col, replacement);
+        this._players.turn();
+    }
+    if (update.type == 'castling') {
+        var king = this._board.getPieceByColorAndType(update.color, Piece.TYPES.KING);
+        var coords = this._board.getPieceCoords(king);
+        var rook = this._board.getPieceByCoords(coords.row, update.length == 'long' ? 0 : 7);
+        if (update.length == 'long') {
+            this._board.movePiece(king, coords.row, 2);
+            this._board.movePiece(rook, coords.row, 3);
+        } else {
+            this._board.movePiece(king, coords.row, 6);
+            this._board.movePiece(rook, coords.row, 5);
+        }
+        this._players.turn();
+    }
+};
+
+                var Users = function() {
+
+};
+
+Users.prototype._getInfo = function(user) {
+    return {
+        id: user.getId(),
+        name: user.getDisplayName(),
+        avatar: user.getThumbnailUrl()
+    };
+};
+
+Users.prototype.get = function(id) {
+    var user = wave.getParticipantById(id);
+    return this._getInfo(user);
+};
+
+Users.prototype.getViewer = function() {
+    var viewer = wave.getViewer();
+    return this._getInfo(viewer); 
+};
+
+                var Gadget = function() {
+    this._revision = 0;
+    this._game = null;
+};
+
+Gadget.prototype._onGameUpdate = function(update) {
+    var state = wave.getState();
+    var revision = state.get('revision') || 0;
+    revision += 1;
+    var delta = {revision: revision};
+    delta['update-' + revision] = gadgets.json.stringify(update);
+    state.submitDelta(delta);
+};
+
+Gadget.prototype._processNextUpdate = function(state, last) {
+    var revision = this._revision + 1;
+    if (revision > last) {
+        return;
+    }
+    var update = gadgets.json.parse(state.get('update-' + revision));
+    this._game.update(update);
+    this._revision += 1;
+    setTimeout($.proxy(function() {
+        this._processNextUpdate(state, last);
+    }, this));
+};
+
+Gadget.prototype._onStateUpdate = function() {
+    var state = wave.getState();
+    var last = state.get('revision');
+    if (last) {
+        this._processNextUpdate(state, last);
+    }
+};
+
+Gadget.prototype.init = function() {
+    gadgets.util.registerOnLoadHandler($.proxy(function() {
+        if (!wave || !wave.isInWaveContainer()) {
+            return;
+        }
+        this._game = new Game(new Users());
+        this._game.on('update', $.proxy(this._onGameUpdate, this));
+        gadgets.window.adjustHeight();
+        wave.setStateCallback($.proxy(this._onStateUpdate, this));
+    }, this));
+};
+
+                var gadget = new Gadget();
+                gadget.init();
+            })();
+        </script>
     </body>
 </html>
 

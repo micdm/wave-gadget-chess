@@ -146,7 +146,7 @@ Board.prototype.isCheck = function(color) {
         var search = new MoveSearch(this, piece, true);
         var moves = search.get();
         for (var j in moves) {
-            if (moves[j].check) {
+            if (moves[j].type == 'check') {
                 return true;
             }
         }

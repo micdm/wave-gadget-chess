@@ -4,12 +4,12 @@
 }
 
 .icon {
-    width: 100%;
-    height: 100%;
-    background: no-repeat url(data:image/png;base64,%% img/pieces.png base64 %%);
     position: absolute;
     left: 0;
     top: 0;
+    width: 50px;
+    height: 50px;
+    background: no-repeat url(data:image/png;base64,%% img/pieces.png base64 %%);
 }
 
 .board {
@@ -55,6 +55,7 @@
 .board .move,
 .board .attack,
 .board .en-passant,
+.board .promotion,
 .board .long-castling,
 .board .short-castling {
     cursor: pointer;
@@ -63,6 +64,7 @@
 .board .move,
 .board .attack,
 .board .en-passant,
+.board .promotion,
 .board .long-castling,
 .board .short-castling {
     opacity: 0.5;
@@ -71,6 +73,7 @@
 .board .move:hover,
 .board .attack:hover,
 .board .en-passant:hover,
+.board .promotion:hover,
 .board .long-castling:hover,
 .board .short-castling:hover {
     opacity: 1;
@@ -149,9 +152,35 @@
 }
 
 .board .en-passant,
+.board .promotion,
 .board .long-castling,
 .board .short-castling {
     background-position: -100px -100px;
+}
+
+.promotion-dialog {
+    position: absolute;
+    width: 200px;
+    box-shadow: 0 0 20px 0 black;
+    margin: 5px;
+    z-index: 1;
+}
+
+.promotion-dialog .icon {
+    position: static;
+    float: left;
+}
+
+.promotion-dialog .icon:nth-child(odd){
+    background-color: #ffce9e;
+}
+
+.promotion-dialog .icon:nth-child(even) {
+    background-color: #d18b47;
+}
+
+.promotion-dialog .icon:hover{
+    background-color: white;
 }
 
 .players {

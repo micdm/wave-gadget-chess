@@ -17,6 +17,9 @@ MoveSearch.prototype._willBeCheck = function(row, col) {
 };
 
 MoveSearch.prototype._checkMove = function(row, col, extra) {
+    if (!this._board.areCoordsCorrect(row, col)) {
+        return false;
+    }
     var piece = this._board.getPieceByCoords(row, col);
     if (!piece) {
         if (extra && extra != 'move') {
@@ -69,6 +72,9 @@ MoveSearch.prototype._canEnPassant = function(fromRow, fromCol, toRow, toCol) {
     if (Math.abs(lastMove.row - fromRow) != 2) {
         return false;
     }
+    if (this._willBeCheck(toRow, toCol)) {
+        return false;
+    }
     return true;
 };
 
@@ -81,22 +87,49 @@ MoveSearch.prototype._checkForEnPassant = function(fromRow, fromCol, type) {
     }
 };
 
+MoveSearch.prototype._canPromotion = function(toRow, toCol) {
+    var piece = this._board.getPieceByCoords(toRow, toCol);
+    if (piece) {
+        return false;
+    }
+    if (this._willBeCheck(toRow, toCol)) {
+        return false;
+    }
+    return true;
+};
+
+MoveSearch.prototype._checkForPromotion = function(fromRow, fromCol) {
+    var toRow = (this._piece.getColor() == Piece.COLORS.WHITE) ? 0 : 7;
+    var toCol = fromCol;
+    if (this._canPromotion(toRow, toCol)) {
+        for (var i in this._moves) {
+            var move = this._moves[i];
+            if (move.row == toRow && move.col == toCol) {
+                move.type = 'promotion';
+                break;
+            }
+        }
+    }
+};
+
 MoveSearch.prototype._addPawnExtraMoves = function() {
     var coords = this._board.getPieceCoords(this._piece);
     this._checkForEnPassant(coords.row, coords.col, 'left');
     this._checkForEnPassant(coords.row, coords.col, 'right');
+    this._checkForPromotion(coords.row, coords.col);
 };
 
-MoveSearch.prototype._canCastling = function(row, col, type) {
+MoveSearch.prototype._canCastling = function(row, col, length) {
     if (this._board.isMoved(this._piece)) {
         return null;
     }
-    var corner = (type == 'long') ? 0 : 7;
+    var corner = (length == 'long') ? 0 : 7;
     var piece = this._board.getPieceByCoords(row, corner);
     if (!piece) {
         return false;
     }
-    if (piece.getColor() != this._piece.getColor()) {
+    var color = this._piece.getColor();
+    if (piece.getColor() != color) {
         return false;
     }
     if (piece.getType() != Piece.TYPES.ROOK) {
@@ -105,11 +138,14 @@ MoveSearch.prototype._canCastling = function(row, col, type) {
     if (this._board.isMoved(piece)) {
         return false;
     }
-    var step = (type == 'long') ? -1 : 1;
+    var step = (length == 'long') ? -1 : 1;
     for (var i = col + step; i != corner; i += step) {
         if (this._board.getPieceByCoords(row, i)) {
             return false;
         }
+    }
+    if (this._board.isCheck(color)) {
+        return false;
     }
     for (var i = col + step, j = 0; j < 2; i += step, j += 1) {
         if (this._willBeCheck(row, i)) {
@@ -119,16 +155,19 @@ MoveSearch.prototype._canCastling = function(row, col, type) {
     return true;
 };
 
+MoveSearch.prototype._checkForCastling = function(row, col, length) {
+    if (this._canCastling(row, col, length)) {
+        var col = (length == 'long') ? 2 : 6;
+        var type = (length == 'long') ? 'long-castling' : 'short-castling';
+        var move = {row: row, col: col, type: type};
+        this._moves.push(move);
+    }
+};
+
 MoveSearch.prototype._addKingExtraMoves = function() {
     var coords = this._board.getPieceCoords(this._piece);
-    if (this._canCastling(coords.row, coords.col, 'long')) {
-        var move = {row: coords.row, col: 2, type: 'long-castling'};
-        this._moves.push(move);
-    }
-    if (this._canCastling(coords.row, coords.col, 'short')) {
-        var move = {row: coords.row, col: 6, type: 'short-castling'};
-        this._moves.push(move);
-    }
+    this._checkForCastling(coords.row, coords.col, 'long');
+    this._checkForCastling(coords.row, coords.col, 'short');
 };
 
 MoveSearch.prototype._addExtraMoves = function() {
@@ -144,6 +183,8 @@ MoveSearch.prototype._addExtraMoves = function() {
 MoveSearch.prototype.get = function() {
     var coords = this._board.getPieceCoords(this._piece);
     this._piece.iterateMoves(coords.row, coords.col, $.proxy(this._checkMove, this));
-    this._addExtraMoves();
+    if (!this._checksOnly) {
+        this._addExtraMoves();
+    }
     return this._moves;
 };
