@@ -201,15 +201,10 @@
 .players .player {
     display: inline-block;
     width: 40px;
-    height: 80px;
+    height: 120px;
     position: relative;
     vertical-align: middle;
     border-bottom: 10px solid white;
-}
-
-.players .player .icon {
-    width: 40px;
-    height: 40px;
 }
 
 .players .player.white .icon {
@@ -230,8 +225,16 @@
     background-size: 40px;
 }
 
-.players .turn {
-    border-bottom-color: #9acd32;
+.players .clock {
+    position: absolute;
+    left: 0;
+    top: 80px;
+    width: 40px;
+    height: 26px;
+}
+
+.players .turn .clock {
+    background: no-repeat center center url(data:image/png;base64,%% img/clock.png base64 %%);
 }
 
 .hint {
