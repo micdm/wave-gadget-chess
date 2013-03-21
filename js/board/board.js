@@ -57,18 +57,17 @@ Board.prototype.movePiece = function(piece, row, col) {
     this.emit('place', function() {
         return [row, col, piece];
     });
-    for (var i in Piece.COLORS) {
-        var color = Piece.COLORS[i];
-        this.emit('check', $.proxy(function() {
-            return this.isCheck(color) ? [color] : null;
-        }, this));
-        this.emit('checkmate', $.proxy(function() {
-            return this.isCheckmate(color) ? [color] : null;
-        }, this));
-        this.emit('stalemate', $.proxy(function() {
-            return this.isStalemate(color) ? [color] : null;
-        }, this));
-    }
+    var color = piece.getColor();
+    var inverted = Piece.getInvertedColor(color);
+    this.emit('check', $.proxy(function() {
+        return this.isCheck(inverted) ? [inverted] : null;
+    }, this));
+    this.emit('checkmate', $.proxy(function() {
+        return this.isCheckmate(inverted) ? [inverted] : null;
+    }, this));
+    this.emit('stalemate', $.proxy(function() {
+        return this.isStalemate(inverted) ? [inverted] : null;
+    }, this));
 };
 
 Board.prototype.removePiece = function(piece) {
