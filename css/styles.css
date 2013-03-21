@@ -1,6 +1,7 @@
 * {
     padding: 0;
     margin: 0;
+    font-size: 14px;
 }
 
 .icon {
@@ -33,6 +34,10 @@
     height: 20px;
     text-align: center;
     line-height: 20px;
+}
+
+.board .row {
+    height: 40px;
 }
 
 .board .cell {
