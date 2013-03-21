@@ -6,6 +6,8 @@ var BoardView = function(board) {
     this._init();
 };
 
+BoardView.CELL_SIZE = 40;
+
 BoardView.prototype._createField = function() {
     var node = $('.board');
     for (var i = 0; i < Board.SIZE; i += 1) {
@@ -140,8 +142,8 @@ BoardView.prototype._showPromotionDialog = function(element, callback) {
 BoardView.prototype._addClickListener = function() {
     this._node.click($.proxy(function(event) {
         var offset = this._node.offset();
-        var row = Math.floor((event.pageY - offset.top) / Board.CELL_SIZE);
-        var col = Math.floor((event.pageX - offset.left) / Board.CELL_SIZE);
+        var row = Math.floor((event.pageY - offset.top) / BoardView.CELL_SIZE);
+        var col = Math.floor((event.pageX - offset.left) / BoardView.CELL_SIZE);
         var element = $(event.target);
         if (element.hasClass('piece')) {
             this._choosePiece(row, col);

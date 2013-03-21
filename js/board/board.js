@@ -8,7 +8,6 @@ var Board = function() {
 };
 
 Board.SIZE = 8;
-Board.CELL_SIZE = 50;
 
 Board.getCopy = function(board) {
     var copy = new Board();

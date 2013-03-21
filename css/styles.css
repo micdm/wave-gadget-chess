@@ -7,8 +7,8 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     background: no-repeat url(data:image/png;base64,%% img/pieces.png base64 %%);
 }
 
@@ -19,25 +19,25 @@
 
 .board .number {
     display: inline-block;
-    width: 25px;
-    height: 50px;
+    width: 20px;
+    height: 40px;
     text-align: center;
     vertical-align: top;
-    line-height: 50px;
+    line-height: 40px;
 }
 
 .board .letter {
     display: inline-block;
-    width: 50px;
-    height: 25px;
+    width: 40px;
+    height: 20px;
     text-align: center;
-    line-height: 25px;
+    line-height: 20px;
 }
 
 .board .cell {
     display: inline-block;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     position: relative;
 }
 
@@ -84,47 +84,47 @@
 }
 
 .board .white.knight {
-    background-position: -50px 0; 
+    background-position: -40px 0; 
 }
 
 .board .white.rook {
-    background-position: -100px 0; 
+    background-position: -80px 0; 
 }
 
 .white.bishop {
-    background-position: -150px 0; 
+    background-position: -120px 0; 
 }
 
 .board .white.queen {
-    background-position: -200px 0; 
+    background-position: -160px 0; 
 }
 
 .board .white.king {
-    background-position: -250px 0; 
+    background-position: -200px 0; 
 }
 
 .board .black.pawn {
-    background-position: 0 -50px; 
+    background-position: 0 -40px; 
 }
 
 .board .black.knight {
-    background-position: -50px -50px; 
+    background-position: -40px -40px; 
 }
 
 .board .black.rook {
-    background-position: -100px -50px; 
+    background-position: -80px -40px; 
 }
 
 .board .black.bishop {
-    background-position: -150px -50px; 
+    background-position: -120px -40px; 
 }
 
 .board .black.queen {
-    background-position: -200px -50px; 
+    background-position: -160px -40px; 
 }
 
 .board .black.king {
-    background-position: -250px -50px; 
+    background-position: -200px -40px; 
 }
 
 .board .chosen {
@@ -144,23 +144,23 @@
 }
 
 .board .move {
-    background-position: 0 -100px;
+    background-position: 0 -80px;
 }
 
 .board .attack {
-    background-position: -50px -100px;
+    background-position: -40px -80px;
 }
 
 .board .en-passant,
 .board .promotion,
 .board .long-castling,
 .board .short-castling {
-    background-position: -100px -100px;
+    background-position: -80px -80px;
 }
 
 .promotion-dialog {
     position: absolute;
-    width: 200px;
+    width: 160px;
     box-shadow: 0 0 20px 0 black;
     margin: 5px;
     z-index: 1;
@@ -190,34 +190,34 @@
 
 .players .player {
     display: inline-block;
-    width: 50px;
-    height: 100px;
+    width: 40px;
+    height: 80px;
     position: relative;
     vertical-align: middle;
     border-bottom: 10px solid white;
 }
 
 .players .player .icon {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 }
 
 .players .player.white .icon {
-    background-position: -250px 0;
+    background-position: -200px 0;
 }
 
 .players .player.black .icon {
-    background-position: -250px -50px;
+    background-position: -200px -40px;
 }
 
 .players .player .avatar {
     position: absolute;
     left: 0;
-    top: 50px;
-    width: 50px;
-    height: 50px;
+    top: 40px;
+    width: 40px;
+    height: 40px;
     background: no-repeat center center #eeeeee;
-    background-size: 50px;
+    background-size: 40px;
 }
 
 .players .turn {
