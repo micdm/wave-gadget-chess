@@ -10,8 +10,8 @@ var BoardView = function(board) {
 BoardView.CELL_SIZE = 40;
 
 BoardView.prototype._createField = function() {
-    var node = $('.board');
-    node.empty();
+    this._node = $('.board');
+    this._node.empty();
     for (var i = 0; i < Board.SIZE; i += 1) {
         var row = $('<div class="row"></div>');
         for (var j = 0; j < Board.SIZE; j += 1) {
@@ -20,7 +20,7 @@ BoardView.prototype._createField = function() {
         }
         var number = this._isRotated ? i + 1 : Board.SIZE - i;
         row.append('<div class="number">' + number + '</div>');
-        node.append(row);
+        this._node.append(row);
     }
     var row = $('<div></div>');
     for (var i = 0; i < Board.SIZE; i += 1) {
@@ -28,8 +28,7 @@ BoardView.prototype._createField = function() {
         row.append('<div class="letter">' + letter + '</div>');
     }
     row.append('<button class="rotate" title="Rotate board"></button>');
-    node.append(row);
-    this._node = node;
+    this._node.append(row);
 };
 
 BoardView.prototype._clearField = function() {
@@ -81,6 +80,7 @@ BoardView.prototype._onCheckmate = function(color) {
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
     cell.addClass('checkmate');
+    this._deinit();
 };
 
 BoardView.prototype._onStalemate = function(color) {
@@ -89,6 +89,7 @@ BoardView.prototype._onStalemate = function(color) {
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
     cell.addClass('stalemate');
+    this._deinit();
 };
 
 BoardView.prototype._addBoardListeners = function() {
@@ -223,4 +224,12 @@ BoardView.prototype._init = function() {
     this._createField();
     this._addBoardListeners();
     this._addClickListener();
+};
+
+BoardView.prototype._removeClickListener = function() {
+    this._node.unbind('click');
+};
+
+BoardView.prototype._deinit = function() {
+    this._removeClickListener();
 };
