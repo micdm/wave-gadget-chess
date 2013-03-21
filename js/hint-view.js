@@ -8,15 +8,16 @@ HintView.prototype._setText = function(text) {
 };
 
 HintView.prototype._onCheck = function(color) {
-    this._setText('Check to ' + color + '!');
+    this._setText('Check to ' + color);
 };
 
 HintView.prototype._onCheckmate = function(color) {
-    this._setText('Checkmate to ' + color + '!');
+    var inverted = Piece.getInvertedColor(color);
+    this._setText('Checkmate to ' + color + ', ' + inverted + ' wins');
 };
 
 HintView.prototype._onStalemate = function(color) {
-    this._setText('Stalemate to ' + color + '!');
+    this._setText('Stalemate to ' + color);
 };
 
 HintView.prototype._addBoardListeners = function(board) {
