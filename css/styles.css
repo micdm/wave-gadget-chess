@@ -13,8 +13,9 @@
 }
 
 .board {
-    display: inline-block;
-    vertical-align: top;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .board .number {
@@ -192,8 +193,9 @@
 }
 
 .players {
-    display: inline-block;
-    margin: 10px 0 0 10px;
+    position: absolute;
+    left: 350px;
+    top: 0;
 }
 
 .players .player {
@@ -230,4 +232,11 @@
 
 .players .turn {
     border-bottom-color: #9acd32;
+}
+
+.hint {
+    position: absolute;
+    left: 350px;
+    top: 250px;
+    width: 150px;
 }

@@ -110,8 +110,11 @@ Game.prototype._initPlayers = function(users) {
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
     var view = new PlayersView(this._players);
-    view.init();
     this._players.turn();
+};
+
+Game.prototype._initHint = function() {
+    var view = new HintView(this._board, this._players);
 };
 
 Game.prototype._createPieces = function() {
@@ -125,6 +128,7 @@ Game.prototype._createPieces = function() {
 Game.prototype._init = function(users) {
     this._initBoard();
     this._initPlayers(users);
+    this._initHint();
     this._createPieces();
 };
 

@@ -1,6 +1,7 @@
 var PlayersView = function(players) {
     this._players = players;
-    this._node = $('.players');
+    this._node = null;
+    this._init();
 };
 
 PlayersView.prototype._onSetPlayer = function(color, player) {
@@ -15,7 +16,8 @@ PlayersView.prototype._onTurn = function(color) {
     node.addClass('turn');
 };
 
-PlayersView.prototype.init = function() {
+PlayersView.prototype._init = function() {
+    this._node = $('.players');
     this._players.on('set', $.proxy(this._onSetPlayer, this));
     this._players.on('turn', $.proxy(this._onTurn, this));
 };
