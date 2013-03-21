@@ -28,7 +28,7 @@ var wave = {
         new Participant(3, 'Spectator', '')
     ],
     getViewer: function() {
-        return wave.participants[2];
+        return wave.participants[1];
     },
     getState: function() {
         return {

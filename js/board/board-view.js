@@ -3,6 +3,7 @@ var BoardView = function(board) {
     this._piece = null;
     this._node = null;
     this._board = board;
+    this._isRotated = false;
     this._init();
 };
 
@@ -10,20 +11,23 @@ BoardView.CELL_SIZE = 40;
 
 BoardView.prototype._createField = function() {
     var node = $('.board');
+    node.empty();
     for (var i = 0; i < Board.SIZE; i += 1) {
         var row = $('<div class="row"></div>');
         for (var j = 0; j < Board.SIZE; j += 1) {
             var cell = $('<div class="cell"></div>');
             row.append(cell);
         }
-        row.append('<div class="number">' + (Board.SIZE - i) + '</div>');
+        var number = this._isRotated ? i + 1 : Board.SIZE - i;
+        row.append('<div class="number">' + number + '</div>');
         node.append(row);
     }
     var row = $('<div></div>');
     for (var i = 0; i < Board.SIZE; i += 1) {
-        var letter = String.fromCharCode(97 + i);
+        var letter = String.fromCharCode(this._isRotated ? 104 - i : 97 + i);
         row.append('<div class="letter">' + letter + '</div>');
     }
+    row.append('<button class="rotate" title="Rotate board"></button>');
     node.append(row);
     this._node = node;
 };
@@ -33,15 +37,28 @@ BoardView.prototype._clearField = function() {
     this._node.find('.chosen, .check, .checkmate, .stalemate').removeClass('chosen check checkmate stalemate');
 };
 
+BoardView.prototype._getCoords = function(row, col) {
+    if (this._isRotated) {
+        row = Board.SIZE - row - 1;
+        col = Board.SIZE - col - 1;
+    }
+    return {row: row, col: col};
+};
+
 BoardView.prototype._getCell = function(row, col) {
-    return this._node.find('.row:eq(' + row + ') .cell:eq(' + col + ')');
+    var coords = this._getCoords(row, col);
+    return this._node.find('.row:eq(' + coords.row + ') .cell:eq(' + coords.col + ')');
+};
+
+BoardView.prototype._placePiece = function(row, col, piece) {
+    var cell = this._getCell(row, col);
+    var node = $('<div class="icon piece ' + piece.getType() + ' ' + piece.getColor() + '"></div>');
+    cell.append(node);
 };
 
 BoardView.prototype._onPlace = function(row, col, piece) {
     this._clearField();
-    var cell = this._getCell(row, col);
-    var node = $('<div class="icon piece ' + piece.getType() + ' ' + piece.getColor() + '"></div>');
-    cell.append(node);
+    this._placePiece(row, col, piece);
 };
 
 BoardView.prototype._onRemove = function(row, col) {
@@ -80,6 +97,16 @@ BoardView.prototype._addBoardListeners = function() {
     this._board.on('check', $.proxy(this._onCheck, this));
     this._board.on('checkmate', $.proxy(this._onCheckmate, this));
     this._board.on('stalemate', $.proxy(this._onStalemate, this));
+};
+
+BoardView.prototype._rotateBoard = function() {
+    this._isRotated = !this._isRotated;
+    this._createField();
+    var pieces = this._board.getPieces();
+    for (var i in pieces) {
+        var info = pieces[i];
+        this._placePiece(info.row, info.col, info.piece);
+    }
 };
 
 BoardView.prototype._showAvailableMoves = function(row, col) {
@@ -144,30 +171,37 @@ BoardView.prototype._addClickListener = function() {
         var offset = this._node.offset();
         var row = Math.floor((event.pageY - offset.top) / BoardView.CELL_SIZE);
         var col = Math.floor((event.pageX - offset.left) / BoardView.CELL_SIZE);
+        var coords = this._getCoords(row, col);
         var element = $(event.target);
+        if (element.hasClass('rotate')) {
+            this._rotateBoard();
+        }
         if (element.hasClass('piece')) {
-            this._choosePiece(row, col);
+            this._choosePiece(coords.row, coords.col);
+        }
+        if (!this._piece) {
+            return false;
         }
         var piece = this._board.getPieceByCoords(this._piece.row, this._piece.col);
         if (element.hasClass('move')) {
             this.emit('move', function() {
-                return [piece, row, col];
+                return [piece, coords.row, coords.col];
             });
         }
         if (element.hasClass('attack')) {
             this.emit('attack', function() {
-                return [piece, row, col];
+                return [piece, coords.row, coords.col];
             });
         }
         if (element.hasClass('en-passant')) {
             this.emit('en-passant', function() {
-                return [piece, row, col];
+                return [piece, coords.row, coords.col];
             });
         }
         if (element.hasClass('promotion')) {
             this._showPromotionDialog(element, $.proxy(function(replacement) {
                 this.emit('promotion', function() {
-                    return [piece, row, col, replacement];
+                    return [piece, coords.row, coords.col, replacement];
                 });
             }, this));
         }

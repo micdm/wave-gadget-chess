@@ -158,6 +158,14 @@
     background-position: -80px -80px;
 }
 
+.board .rotate {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    background: no-repeat center center url(data:image/png;base64,%% img/rotate.png base64 %%);
+    cursor: pointer;
+}
+
 .promotion-dialog {
     position: absolute;
     width: 160px;
