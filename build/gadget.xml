@@ -145,10 +145,6 @@
     background-position: -200px -40px; 
 }
 
-.board .chosen {
-    box-shadow: inset 0 0 20px 5px #83ca3e;
-}
-
 .board .check {
     box-shadow: inset 0 0 20px 5px #653eca;
 }
@@ -159,6 +155,10 @@
 
 .board .stalemate {
     box-shadow: inset 0 0 20px 5px #555555;
+}
+
+.board .chosen {
+    box-shadow: inset 0 0 20px 5px #83ca3e;
 }
 
 .board .move {
@@ -1088,9 +1088,13 @@ BoardView.prototype._createField = function() {
     this._node.append(row);
 };
 
-BoardView.prototype._clearField = function() {
-    this._node.find('.move, .attack, .en-passant, .promotion, .long-castling, .short-castling').remove();
-    this._node.find('.chosen, .check, .checkmate, .stalemate').removeClass('chosen check checkmate stalemate');
+BoardView.prototype._clearField = function(only) {
+    if (!only || only == 'moves') {
+        this._node.find('.move, .attack, .en-passant, .promotion, .long-castling, .short-castling').remove();
+    }
+    if (!only || only == 'pieces') {
+        this._node.find('.chosen, .check, .checkmate, .stalemate').removeClass('chosen check checkmate stalemate');
+    }
 };
 
 BoardView.prototype._getCoords = function(row, col) {
@@ -1168,6 +1172,7 @@ BoardView.prototype._rotateBoard = function() {
 };
 
 BoardView.prototype._showAvailableMoves = function(row, col) {
+    this._clearField('moves');
     var piece = this._board.getPieceByCoords(row, col);
     var search = new MoveSearch(this._board, piece);
     var moves = search.get();
@@ -1183,7 +1188,7 @@ BoardView.prototype._showAvailableMoves = function(row, col) {
 };
 
 BoardView.prototype._choosePiece = function(row, col) {
-    this._clearField();
+    this._node.find('.chosen').removeClass('chosen');
     var cell = this._getCell(row, col);
     cell.addClass('chosen');
     this._piece = {row: row, col: col};
@@ -1300,6 +1305,10 @@ HintView.prototype._setText = function(text) {
     this._node.text(text);
 };
 
+HintView.prototype._clear = function(text) {
+    this._setText('');
+};
+
 HintView.prototype._onCheck = function(color) {
     this._setText('Check to ' + color);
 };
@@ -1314,6 +1323,8 @@ HintView.prototype._onStalemate = function(color) {
 };
 
 HintView.prototype._addBoardListeners = function(board) {
+    board.on('place', $.proxy(this._clear, this));
+    board.on('remove', $.proxy(this._clear, this));
     board.on('check', $.proxy(this._onCheck, this));
     board.on('checkmate', $.proxy(this._onCheckmate, this));
     board.on('stalemate', $.proxy(this._onStalemate, this));
@@ -1324,7 +1335,7 @@ HintView.prototype._onPlayerSet = function(color) {
         this._setText('Move any black piece to join the game');
     }
     if (color == Piece.COLORS.BLACK) {
-        this._setText('');
+        this._clear();
     }
 };
 
