@@ -1,15 +1,28 @@
 var Gadget = function() {
     this._revision = 0;
     this._game = null;
+    this._updates = [];
+    this._init();
 };
 
 Gadget.prototype._onGameUpdate = function(update) {
-    var state = wave.getState();
-    var revision = state.get('revision') || 0;
-    revision += 1;
-    var delta = {revision: revision};
-    delta['update-' + revision] = gadgets.json.stringify(update);
-    state.submitDelta(delta);
+    this._updates.push(update);
+    if (this._updates.length > 1) {
+        return;
+    }
+    setTimeout($.proxy(function() {
+        var state = wave.getState();
+        var revision = state.get('revision') || 0;
+        var delta = {};
+        for (var i in this._updates) {
+            var update = this._updates[i];
+            revision += 1;
+            delta['update-' + revision] = gadgets.json.stringify(update);
+        }
+        delta.revision = revision;
+        state.submitDelta(delta);
+        this._updates = [];
+    }, this), 0);
 };
 
 Gadget.prototype._processNextUpdate = function(state, last) {
@@ -33,7 +46,7 @@ Gadget.prototype._onStateUpdate = function() {
     }
 };
 
-Gadget.prototype.init = function() {
+Gadget.prototype._init = function() {
     gadgets.util.registerOnLoadHandler($.proxy(function() {
         if (!wave || !wave.isInWaveContainer()) {
             return;
