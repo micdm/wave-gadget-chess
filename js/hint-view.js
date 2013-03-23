@@ -7,6 +7,10 @@ HintView.prototype._setText = function(text) {
     this._node.text(text);
 };
 
+HintView.prototype._clear = function(text) {
+    this._setText('');
+};
+
 HintView.prototype._onCheck = function(color) {
     this._setText('Check to ' + color);
 };
@@ -21,6 +25,8 @@ HintView.prototype._onStalemate = function(color) {
 };
 
 HintView.prototype._addBoardListeners = function(board) {
+    board.on('place', $.proxy(this._clear, this));
+    board.on('remove', $.proxy(this._clear, this));
     board.on('check', $.proxy(this._onCheck, this));
     board.on('checkmate', $.proxy(this._onCheckmate, this));
     board.on('stalemate', $.proxy(this._onStalemate, this));
@@ -31,7 +37,7 @@ HintView.prototype._onPlayerSet = function(color) {
         this._setText('Move any black piece to join the game');
     }
     if (color == Piece.COLORS.BLACK) {
-        this._setText('');
+        this._clear();
     }
 };
 
