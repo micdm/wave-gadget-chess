@@ -159,7 +159,8 @@ Game.prototype.update = function(update) {
         var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.removePiece(piece);
         var replacement = Piece.get(piece.getColor(), update.replacement);
-        this._board.placePiece(update.to.row, update.to.col, replacement);
+        this._board.placePiece(update.from.row, update.from.col, replacement);
+        this._board.movePiece(replacement, update.to.row, update.to.col);
         this._players.turn();
     }
     if (update.type == 'castling') {
