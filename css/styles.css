@@ -206,10 +206,9 @@
 .players .player {
     display: inline-block;
     width: 40px;
-    height: 120px;
+    height: 80px;
     position: relative;
     vertical-align: middle;
-    border-bottom: 10px solid white;
 }
 
 .players .player.white .icon {
@@ -232,10 +231,10 @@
 
 .players .clock {
     position: absolute;
-    left: 0;
-    top: 80px;
-    width: 40px;
-    height: 26px;
+    left: -10px;
+    top: 70px;
+    width: 20px;
+    height: 20px;
 }
 
 .players .turn .clock {
