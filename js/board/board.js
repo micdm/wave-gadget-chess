@@ -45,17 +45,15 @@ Board.prototype.movePiece = function(piece, row, col) {
     var info = this._pieces[id];
     this._field[row][col] = piece;
     this._field[info.row][info.col] = null;
-    this.emit('remove', function() {
-        return [info.row, info.col];
-    });
     if (!this.isMoved(piece)) {
         this._moved.push(piece);
     }
-    this._lastMove = {piece: piece, row: info.row, col: info.col};
+    var lastMove = {piece: piece, row: info.row, col: info.col};
+    this._lastMove = lastMove;
     info.row = row;
     info.col = col;
-    this.emit('place', function() {
-        return [row, col, piece];
+    this.emit('move', function() {
+        return [lastMove.row, lastMove.col, row, col, piece];
     });
     var color = piece.getColor();
     var inverted = Piece.getInvertedColor(color);

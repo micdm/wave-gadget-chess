@@ -168,11 +168,11 @@ Game.prototype.update = function(update) {
         var coords = this._board.getPieceCoords(king);
         var rook = this._board.getPieceByCoords(coords.row, update.length == 'long' ? 0 : 7);
         if (update.length == 'long') {
-            this._board.movePiece(king, coords.row, 2);
             this._board.movePiece(rook, coords.row, 3);
+            this._board.movePiece(king, coords.row, 2);
         } else {
-            this._board.movePiece(king, coords.row, 6);
             this._board.movePiece(rook, coords.row, 5);
+            this._board.movePiece(king, coords.row, 6);
         }
         this._players.turn();
     }

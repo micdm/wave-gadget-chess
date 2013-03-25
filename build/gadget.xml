@@ -146,19 +146,23 @@
 }
 
 .board .check {
-    box-shadow: inset 0 0 20px 5px #653eca;
+    box-shadow: inset 0 0 20px 5px #b44eca;
 }
 
 .board .checkmate {
-    box-shadow: inset 0 0 20px 5px #ca3e3e;
+    box-shadow: inset 0 0 20px 5px #ca0000;
 }
 
 .board .stalemate {
     box-shadow: inset 0 0 20px 5px #555555;
 }
 
+.board .last-move {
+    box-shadow: inset 0 0 20px 0 #4ecac1;
+}
+
 .board .chosen {
-    box-shadow: inset 0 0 20px 5px #83ca3e;
+    box-shadow: inset 0 0 20px 5px #8bca4e;
 }
 
 .board .move {
@@ -588,14 +592,8 @@ PieceBuilder.prototype._createOtherPieces = function() {
 };
 
 PieceBuilder.prototype.build = function() {
-//    this._createPawns();
-//    this._createOtherPieces();
-    
-    if (this._color == 'white') {
-        this._createPiece(Piece.TYPES.PAWN, 1, 5);
-    } else {
-        this._createPiece(Piece.TYPES.KING, 0, 0);
-    }
+    this._createPawns();
+    this._createOtherPieces();
 };
 
                 var MoveSearch = function(board, piece, checksOnly) {
@@ -935,17 +933,15 @@ Board.prototype.movePiece = function(piece, row, col) {
     var info = this._pieces[id];
     this._field[row][col] = piece;
     this._field[info.row][info.col] = null;
-    this.emit('remove', function() {
-        return [info.row, info.col];
-    });
     if (!this.isMoved(piece)) {
         this._moved.push(piece);
     }
-    this._lastMove = {piece: piece, row: info.row, col: info.col};
+    var lastMove = {piece: piece, row: info.row, col: info.col};
+    this._lastMove = lastMove;
     info.row = row;
     info.col = col;
-    this.emit('place', function() {
-        return [row, col, piece];
+    this.emit('move', function() {
+        return [lastMove.row, lastMove.col, row, col, piece];
     });
     var color = piece.getColor();
     var inverted = Piece.getInvertedColor(color);
@@ -1124,15 +1120,30 @@ BoardView.prototype._placePiece = function(row, col, piece) {
     cell.append(node);
 };
 
+BoardView.prototype._removePiece = function(row, col) {
+    var cell = this._getCell(row, col);
+    cell.find('.piece').remove();
+};
+
 BoardView.prototype._onPlace = function(row, col, piece) {
     this._clearField();
     this._placePiece(row, col, piece);
 };
 
+BoardView.prototype._onMove = function(fromRow, fromCol, toRow, toCol, piece) {
+    this._clearField();
+    this._removePiece(fromRow, fromCol);
+    this._node.find('.last-move').removeClass('last-move');
+    var cell = this._getCell(fromRow, fromCol);
+    cell.addClass('last-move');
+    this._placePiece(toRow, toCol, piece);
+    var cell = this._getCell(toRow, toCol);
+    cell.addClass('last-move');
+};
+
 BoardView.prototype._onRemove = function(row, col) {
     this._clearField();
-    var cell = this._getCell(row, col);
-    cell.find('.piece').remove();
+    this._removePiece(row, col);
 };
 
 BoardView.prototype._onCheck = function(color) {
@@ -1163,6 +1174,7 @@ BoardView.prototype._onStalemate = function(color) {
 
 BoardView.prototype._addBoardListeners = function() {
     this._board.on('place', $.proxy(this._onPlace, this));
+    this._board.on('move', $.proxy(this._onMove, this));
     this._board.on('remove', $.proxy(this._onRemove, this));
     this._board.on('check', $.proxy(this._onCheck, this));
     this._board.on('checkmate', $.proxy(this._onCheckmate, this));
@@ -1317,11 +1329,7 @@ HintView.prototype._clear = function(section) {
     this._set(section, '');
 };
 
-HintView.prototype._onPlace = function(color) {
-    this._clear('piece');
-};
-
-HintView.prototype._onRemove = function(color) {
+HintView.prototype._onMove = function() {
     this._clear('piece');
 };
 
@@ -1339,8 +1347,7 @@ HintView.prototype._onStalemate = function(color) {
 };
 
 HintView.prototype._addBoardListeners = function(board) {
-    board.on('place', $.proxy(this._onPlace, this));
-    board.on('remove', $.proxy(this._onRemove, this));
+    board.on('move', $.proxy(this._onMove, this));
     board.on('check', $.proxy(this._onCheck, this));
     board.on('checkmate', $.proxy(this._onCheckmate, this));
     board.on('stalemate', $.proxy(this._onStalemate, this));
@@ -1536,11 +1543,11 @@ Game.prototype.update = function(update) {
         var coords = this._board.getPieceCoords(king);
         var rook = this._board.getPieceByCoords(coords.row, update.length == 'long' ? 0 : 7);
         if (update.length == 'long') {
-            this._board.movePiece(king, coords.row, 2);
             this._board.movePiece(rook, coords.row, 3);
+            this._board.movePiece(king, coords.row, 2);
         } else {
-            this._board.movePiece(king, coords.row, 6);
             this._board.movePiece(rook, coords.row, 5);
+            this._board.movePiece(king, coords.row, 6);
         }
         this._players.turn();
     }

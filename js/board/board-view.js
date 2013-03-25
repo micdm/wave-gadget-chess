@@ -59,15 +59,30 @@ BoardView.prototype._placePiece = function(row, col, piece) {
     cell.append(node);
 };
 
+BoardView.prototype._removePiece = function(row, col) {
+    var cell = this._getCell(row, col);
+    cell.find('.piece').remove();
+};
+
 BoardView.prototype._onPlace = function(row, col, piece) {
     this._clearField();
     this._placePiece(row, col, piece);
 };
 
+BoardView.prototype._onMove = function(fromRow, fromCol, toRow, toCol, piece) {
+    this._clearField();
+    this._removePiece(fromRow, fromCol);
+    this._node.find('.last-move').removeClass('last-move');
+    var cell = this._getCell(fromRow, fromCol);
+    cell.addClass('last-move');
+    this._placePiece(toRow, toCol, piece);
+    var cell = this._getCell(toRow, toCol);
+    cell.addClass('last-move');
+};
+
 BoardView.prototype._onRemove = function(row, col) {
     this._clearField();
-    var cell = this._getCell(row, col);
-    cell.find('.piece').remove();
+    this._removePiece(row, col);
 };
 
 BoardView.prototype._onCheck = function(color) {
@@ -98,6 +113,7 @@ BoardView.prototype._onStalemate = function(color) {
 
 BoardView.prototype._addBoardListeners = function() {
     this._board.on('place', $.proxy(this._onPlace, this));
+    this._board.on('move', $.proxy(this._onMove, this));
     this._board.on('remove', $.proxy(this._onRemove, this));
     this._board.on('check', $.proxy(this._onCheck, this));
     this._board.on('checkmate', $.proxy(this._onCheckmate, this));

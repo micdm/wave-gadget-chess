@@ -11,11 +11,7 @@ HintView.prototype._clear = function(section) {
     this._set(section, '');
 };
 
-HintView.prototype._onPlace = function(color) {
-    this._clear('piece');
-};
-
-HintView.prototype._onRemove = function(color) {
+HintView.prototype._onMove = function() {
     this._clear('piece');
 };
 
@@ -33,8 +29,7 @@ HintView.prototype._onStalemate = function(color) {
 };
 
 HintView.prototype._addBoardListeners = function(board) {
-    board.on('place', $.proxy(this._onPlace, this));
-    board.on('remove', $.proxy(this._onRemove, this));
+    board.on('move', $.proxy(this._onMove, this));
     board.on('check', $.proxy(this._onCheck, this));
     board.on('checkmate', $.proxy(this._onCheckmate, this));
     board.on('stalemate', $.proxy(this._onStalemate, this));
