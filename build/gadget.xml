@@ -1589,25 +1589,17 @@ Gadget.prototype._onGameUpdate = function(update) {
     }, this), 0);
 };
 
-Gadget.prototype._processNextUpdate = function(state, last) {
-    var revision = this._revision + 1;
-    if (revision > last) {
-        return;
-    }
-    var update = gadgets.json.parse(state.get('update-' + revision));
-    this._game.update(update);
-    this._revision += 1;
-    setTimeout($.proxy(function() {
-        this._processNextUpdate(state, last);
-    }, this));
-};
-
 Gadget.prototype._onStateUpdate = function() {
     var state = wave.getState();
-    var last = state.get('revision');
-    if (last) {
-        this._processNextUpdate(state, last);
+    var revision = state.get('revision');
+    if (!revision) {
+        return;
     }
+    for (var i = this._revision + 1; i <= revision; i += 1) {
+        var update = gadgets.json.parse(state.get('update-' + i));
+        this._game.update(update);
+    }
+    this._revision = revision;
 };
 
 Gadget.prototype._init = function() {
