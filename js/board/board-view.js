@@ -4,6 +4,7 @@ var BoardView = function(board) {
     this._node = null;
     this._board = board;
     this._isRotated = false;
+    this._isFinished = false;
     this._init();
 };
 
@@ -99,7 +100,7 @@ BoardView.prototype._onCheckmate = function(color) {
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
     cell.addClass('checkmate');
-    this._deinit();
+    this._isFinished = true;
 };
 
 BoardView.prototype._onStalemate = function(color) {
@@ -108,7 +109,7 @@ BoardView.prototype._onStalemate = function(color) {
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
     cell.addClass('stalemate');
-    this._deinit();
+    this._isFinished = true;
 };
 
 BoardView.prototype._addBoardListeners = function() {
@@ -198,6 +199,9 @@ BoardView.prototype._addClickListener = function() {
         if (element.hasClass('rotate')) {
             this._rotateBoard();
         }
+        if (this._isFinished) {
+            return false;
+        }
         if (element.hasClass('piece')) {
             this._choosePiece(coords.row, coords.col);
         }
@@ -245,12 +249,4 @@ BoardView.prototype._init = function() {
     this._createField();
     this._addBoardListeners();
     this._addClickListener();
-};
-
-BoardView.prototype._removeClickListener = function() {
-    this._node.unbind('click');
-};
-
-BoardView.prototype._deinit = function() {
-    this._removeClickListener();
 };
