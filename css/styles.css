@@ -5,11 +5,6 @@
 }
 
 .icon {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 40px;
-    height: 40px;
     background: no-repeat url(data:image/png;base64,%% img/pieces.png base64 %%);
 }
 
@@ -85,6 +80,14 @@
     opacity: 1;
 }
 
+.board .icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+}
+
 .board .white.pawn {
     background-position: 0 0; 
 }
@@ -97,7 +100,7 @@
     background-position: -80px 0; 
 }
 
-.white.bishop {
+.board .white.bishop {
     background-position: -120px 0; 
 }
 
@@ -210,16 +213,24 @@
 .players .player {
     display: inline-block;
     width: 40px;
-    height: 80px;
+    height: 245px;
     position: relative;
-    vertical-align: middle;
+    vertical-align: -200px;
 }
 
-.players .player.white .icon {
+.players .player-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.players .white .player-icon {
     background-position: -200px 0;
 }
 
-.players .player.black .icon {
+.players .black .player-icon {
     background-position: -200px -40px;
 }
 
@@ -234,15 +245,72 @@
 }
 
 .players .clock {
+    display: none;
     position: absolute;
     left: -10px;
     top: 70px;
     width: 20px;
     height: 20px;
+    background: no-repeat center center url(data:image/png;base64,%% img/clock.png base64 %%);
 }
 
 .players .turn .clock {
-    background: no-repeat center center url(data:image/png;base64,%% img/clock.png base64 %%);
+    display: block;
+}
+
+.players .taken {
+    position: absolute;
+    left: 0;
+    top: 85px;
+    width: 40px;
+    height: 160px;
+}
+
+.players .taken .icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-size: 120px;
+}
+
+.players .taken .white.pawn {
+    background-position: 0 0; 
+}
+
+.players .taken .white.knight {
+    background-position: -20px 0; 
+}
+
+.players .taken .white.rook {
+    background-position: -40px 0; 
+}
+
+.players .taken .white.bishop {
+    background-position: -60px 0; 
+}
+
+.players .taken .white.queen {
+    background-position: -80px 0; 
+}
+
+.players .taken .black.pawn {
+    background-position: 0 -20px; 
+}
+
+.players .taken .black.knight {
+    background-position: -20px -20px; 
+}
+
+.players .taken .black.rook {
+    background-position: -40px -20px; 
+}
+
+.players .taken .black.bishop {
+    background-position: -60px -20px; 
+}
+
+.players .taken .black.queen {
+    background-position: -80px -20px; 
 }
 
 .hint {

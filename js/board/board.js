@@ -68,7 +68,7 @@ Board.prototype.movePiece = function(piece, row, col) {
     }, this));
 };
 
-Board.prototype.removePiece = function(piece) {
+Board.prototype.removePiece = function(piece, isAttack) {
     var id = piece.getId();
     var info = this._pieces[id];
     this._field[info.row][info.col] = null;
@@ -76,6 +76,11 @@ Board.prototype.removePiece = function(piece) {
     this.emit('remove', function() {
         return [info.row, info.col];
     });
+    if (isAttack) {
+        this.emit('attack', function() {
+            return [piece];
+        });
+    }
 };
 
 Board.prototype.areCoordsCorrect = function(row, col) {

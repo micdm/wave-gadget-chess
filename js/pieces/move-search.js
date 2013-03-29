@@ -9,7 +9,7 @@ MoveSearch.prototype._willBeCheck = function(row, col) {
     var changed = Board.getCopy(this._board);
     var piece = changed.getPieceByCoords(row, col);
     if (piece) {
-        changed.removePiece(piece);
+        changed.removePiece(piece, true);
     }
     changed.movePiece(this._piece, row, col);
     var color = this._piece.getColor();

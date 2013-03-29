@@ -109,7 +109,7 @@ Game.prototype._onNewPlayer = function(color, player) {
 Game.prototype._initPlayers = function(users) {
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
-    var view = new PlayersView(this._players);
+    var view = new PlayersView(this._board, this._players);
     this._players.turn();
 };
 
@@ -143,14 +143,14 @@ Game.prototype.update = function(update) {
     }
     if (update.type == 'attack') {
         var victim = this._board.getPieceByCoords(update.to.row, update.to.col);
-        this._board.removePiece(victim);
+        this._board.removePiece(victim, true);
         var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.movePiece(attacker, update.to.row, update.to.col);
         this._players.turn();
     }
     if (update.type == 'en-passant') {
         var victim = this._board.getPieceByCoords(update.from.row, update.to.col);
-        this._board.removePiece(victim);
+        this._board.removePiece(victim, true);
         var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.movePiece(attacker, update.to.row, update.to.col);
         this._players.turn();
