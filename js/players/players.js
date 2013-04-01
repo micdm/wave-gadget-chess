@@ -6,6 +6,19 @@ var Players = function(users) {
     this._color = null;
 };
 
+Players.prototype.getCurrentColor = function() {
+    return this._color;
+};
+
+Players.prototype.isViewerNowMoving = function() {
+    if (!(this._color in this._list)) {
+        return false;
+    }
+    var id = this._list[this._color].getId();
+    var info = this._users.getViewer();
+    return id == info.id;
+};
+
 Players.prototype.set = function(color, id) {
     var info = this._users.get(id);
     var player = new Player(info.id, info.name, info.avatar);
@@ -53,4 +66,10 @@ Players.prototype.turn = function() {
     this.emit('turn', $.proxy(function() {
         return [this._color];
     }, this));
+};
+
+Players.prototype.giveUp = function(color) {
+    this.emit('give-up', function() {
+        return [color];
+    });
 };

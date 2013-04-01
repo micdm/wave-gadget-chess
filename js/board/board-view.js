@@ -1,8 +1,9 @@
-var BoardView = function(board) {
+var BoardView = function(board, players) {
     EventEmitter.mixin(this);
     this._piece = null;
     this._node = null;
     this._board = board;
+    this._players = players;
     this._isRotated = false;
     this._isFinished = false;
     this._init();
@@ -119,6 +120,14 @@ BoardView.prototype._addBoardListeners = function() {
     this._board.on('check', $.proxy(this._onCheck, this));
     this._board.on('checkmate', $.proxy(this._onCheckmate, this));
     this._board.on('stalemate', $.proxy(this._onStalemate, this));
+};
+
+BoardView.prototype._onGiveUp = function() {
+    this._isFinished = true;
+};
+
+BoardView.prototype._addPlayersListeners = function() {
+    this._players.on('give-up', $.proxy(this._onGiveUp, this));
 };
 
 BoardView.prototype._rotateBoard = function() {
@@ -248,5 +257,6 @@ BoardView.prototype._addClickListener = function() {
 BoardView.prototype._init = function() {
     this._createField();
     this._addBoardListeners();
+    this._addPlayersListeners();
     this._addClickListener();
 };

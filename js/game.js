@@ -86,8 +86,7 @@ Game.prototype._onCastling = function(piece, length) {
 };
 
 Game.prototype._initBoard = function() {
-    this._board = new Board();
-    var view = new BoardView(this._board);
+    var view = new BoardView(this._board, this._players);
     view.on('move', $.proxy(this._onMovePiece, this));
     view.on('attack', $.proxy(this._onAttackPiece, this));
     view.on('en-passant', $.proxy(this._onEnPassant, this));
@@ -106,11 +105,23 @@ Game.prototype._onNewPlayer = function(color, player) {
     });
 };
 
-Game.prototype._initPlayers = function(users) {
-    this._players = new Players(users);
-    this._players.on('new', $.proxy(this._onNewPlayer, this));
+Game.prototype._onGiveUp = function(color) {
+    if (!this._players.canPlay(color)) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    this.emit('update', function() {
+        return [{
+            type: 'give-up',
+            color: color
+        }];
+    });
+};
+
+Game.prototype._initPlayers = function() {
     var view = new PlayersView(this._board, this._players);
-    this._players.turn();
+    view.on('give-up', $.proxy(this._onGiveUp, this));
 };
 
 Game.prototype._initHint = function() {
@@ -126,10 +137,14 @@ Game.prototype._createPieces = function() {
 };
 
 Game.prototype._init = function(users) {
+    this._board = new Board();
+    this._players = new Players(users);
+    this._players.on('new', $.proxy(this._onNewPlayer, this));
     this._initBoard();
-    this._initPlayers(users);
+    this._initPlayers();
     this._initHint();
     this._createPieces();
+    this._players.turn();
 };
 
 Game.prototype.update = function(update) {
@@ -175,5 +190,8 @@ Game.prototype.update = function(update) {
             this._board.movePiece(king, coords.row, 6);
         }
         this._players.turn();
+    }
+    if (update.type == 'give-up') {
+        this._players.giveUp(update.color);
     }
 };

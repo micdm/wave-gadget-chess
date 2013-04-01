@@ -1,6 +1,12 @@
 var PlayersView = function(board, players) {
+    EventEmitter.mixin(this);
+    this._players = players;
     this._node = null;
-    this._init(board, players);
+    this._init(board);
+};
+
+PlayersView.prototype._getGiveUpButton = function() {
+    return this._node.find('.give-up-button');
 };
 
 PlayersView.prototype._onAttack = function(piece) {
@@ -26,15 +32,38 @@ PlayersView.prototype._onTurn = function(color) {
     this._node.find('.turn').removeClass('turn');
     var node = this._node.find('.player.' + color);
     node.addClass('turn');
+    var button = this._getGiveUpButton();
+    var needShow = this._players.isViewerNowMoving();
+    button.toggleClass('visible', needShow);
 };
 
-PlayersView.prototype._addPlayersListeners = function(players) {
-    players.on('set', $.proxy(this._onSetPlayer, this));
-    players.on('turn', $.proxy(this._onTurn, this));
+PlayersView.prototype._onGiveUp = function() {
+    var button = this._getGiveUpButton();
+    button.removeClass('visible');
 };
 
-PlayersView.prototype._init = function(board, players) {
+PlayersView.prototype._addPlayersListeners = function() {
+    this._players.on('set', $.proxy(this._onSetPlayer, this));
+    this._players.on('turn', $.proxy(this._onTurn, this));
+    this._players.on('give-up', $.proxy(this._onGiveUp, this));
+};
+
+PlayersView.prototype._addClickListener = function() {
+    this._node.click($.proxy(function(event) {
+        var element = $(event.target);
+        if (element.hasClass('give-up-button')) {
+            var color = this._players.getCurrentColor();
+            this.emit('give-up', function() {
+                return [color];
+            });
+        }
+        return false;
+    }, this));
+};
+
+PlayersView.prototype._init = function(board) {
     this._node = $('.players');
     this._addBoardListeners(board);
-    this._addPlayersListeners(players);
+    this._addPlayersListeners();
+    this._addClickListener();
 };

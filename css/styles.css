@@ -263,7 +263,6 @@
     left: 0;
     top: 85px;
     width: 40px;
-    height: 160px;
 }
 
 .players .taken .icon {
@@ -313,9 +312,23 @@
     background-position: -80px -20px; 
 }
 
+.players .buttons {
+    position: absolute;
+    top: 270px;
+}
+
+.players .buttons .give-up-button {
+    display: none;
+    padding: 3px;
+}
+
+.players .buttons .give-up-button.visible {
+    display: inline-block;
+}
+
 .hint {
     position: absolute;
     left: 350px;
-    top: 250px;
+    top: 305px;
     width: 150px;
 }

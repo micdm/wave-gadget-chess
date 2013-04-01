@@ -16,16 +16,16 @@ HintView.prototype._onMove = function() {
 };
 
 HintView.prototype._onCheck = function(color) {
-    this._set('piece', 'Check to ' + color);
+    this._set('piece', 'Check to the ' + color);
 };
 
 HintView.prototype._onCheckmate = function(color) {
     var inverted = Piece.getInvertedColor(color);
-    this._set('piece', 'Checkmate to ' + color + ', ' + inverted + ' wins');
+    this._set('piece', 'Checkmate to the ' + color + ', the ' + inverted + ' wins');
 };
 
 HintView.prototype._onStalemate = function(color) {
-    this._set('piece', 'Stalemate to ' + color);
+    this._set('piece', 'Stalemate to the ' + color);
 };
 
 HintView.prototype._addBoardListeners = function(board) {
@@ -44,8 +44,14 @@ HintView.prototype._onPlayerSet = function(color) {
     }
 };
 
+HintView.prototype._onGiveUp = function(color) {
+    var inverted = Piece.getInvertedColor(color);
+    this._set('player', 'The ' + color + ' has given up, the ' + inverted + ' wins');
+};
+
 HintView.prototype._addPlayersListeners = function(players) {
     players.on('set', $.proxy(this._onPlayerSet, this));
+    players.on('give-up', $.proxy(this._onGiveUp, this));
 };
 
 HintView.prototype._init = function(board, players) {

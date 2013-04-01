@@ -275,7 +275,6 @@
     left: 0;
     top: 85px;
     width: 40px;
-    height: 160px;
 }
 
 .players .taken .icon {
@@ -325,10 +324,24 @@
     background-position: -80px -20px; 
 }
 
+.players .buttons {
+    position: absolute;
+    top: 270px;
+}
+
+.players .buttons .give-up-button {
+    display: none;
+    padding: 3px;
+}
+
+.players .buttons .give-up-button.visible {
+    display: inline-block;
+}
+
 .hint {
     position: absolute;
     left: 350px;
-    top: 250px;
+    top: 305px;
     width: 150px;
 }
 
@@ -349,6 +362,9 @@
                 <div class="avatar"></div>
                 <div class="clock" title="Now moving"></div>
                 <div class="taken" title="Taken pieces"></div>
+            </div>
+            <div class="buttons">
+                <input type="button" value="Give Up" class="give-up-button">
             </div>
         </div>
         <div class="hint">
@@ -883,6 +899,19 @@ Player.prototype.getAvatar = function() {
     this._color = null;
 };
 
+Players.prototype.getCurrentColor = function() {
+    return this._color;
+};
+
+Players.prototype.isViewerNowMoving = function() {
+    if (!(this._color in this._list)) {
+        return false;
+    }
+    var id = this._list[this._color].getId();
+    var info = this._users.getViewer();
+    return id == info.id;
+};
+
 Players.prototype.set = function(color, id) {
     var info = this._users.get(id);
     var player = new Player(info.id, info.name, info.avatar);
@@ -932,9 +961,21 @@ Players.prototype.turn = function() {
     }, this));
 };
 
+Players.prototype.giveUp = function(color) {
+    this.emit('give-up', function() {
+        return [color];
+    });
+};
+
                 var PlayersView = function(board, players) {
+    EventEmitter.mixin(this);
+    this._players = players;
     this._node = null;
-    this._init(board, players);
+    this._init(board);
+};
+
+PlayersView.prototype._getGiveUpButton = function() {
+    return this._node.find('.give-up-button');
 };
 
 PlayersView.prototype._onAttack = function(piece) {
@@ -960,17 +1001,40 @@ PlayersView.prototype._onTurn = function(color) {
     this._node.find('.turn').removeClass('turn');
     var node = this._node.find('.player.' + color);
     node.addClass('turn');
+    var button = this._getGiveUpButton();
+    var needShow = this._players.isViewerNowMoving();
+    button.toggleClass('visible', needShow);
 };
 
-PlayersView.prototype._addPlayersListeners = function(players) {
-    players.on('set', $.proxy(this._onSetPlayer, this));
-    players.on('turn', $.proxy(this._onTurn, this));
+PlayersView.prototype._onGiveUp = function() {
+    var button = this._getGiveUpButton();
+    button.removeClass('visible');
 };
 
-PlayersView.prototype._init = function(board, players) {
+PlayersView.prototype._addPlayersListeners = function() {
+    this._players.on('set', $.proxy(this._onSetPlayer, this));
+    this._players.on('turn', $.proxy(this._onTurn, this));
+    this._players.on('give-up', $.proxy(this._onGiveUp, this));
+};
+
+PlayersView.prototype._addClickListener = function() {
+    this._node.click($.proxy(function(event) {
+        var element = $(event.target);
+        if (element.hasClass('give-up-button')) {
+            var color = this._players.getCurrentColor();
+            this.emit('give-up', function() {
+                return [color];
+            });
+        }
+        return false;
+    }, this));
+};
+
+PlayersView.prototype._init = function(board) {
     this._node = $('.players');
     this._addBoardListeners(board);
-    this._addPlayersListeners(players);
+    this._addPlayersListeners();
+    this._addClickListener();
 };
 
                 var Board = function() {
@@ -1151,11 +1215,12 @@ Board.prototype.isStalemate = function(color) {
     return !this.isCheck(color) && !this._hasMoves(color);
 };
 
-                var BoardView = function(board) {
+                var BoardView = function(board, players) {
     EventEmitter.mixin(this);
     this._piece = null;
     this._node = null;
     this._board = board;
+    this._players = players;
     this._isRotated = false;
     this._isFinished = false;
     this._init();
@@ -1272,6 +1337,14 @@ BoardView.prototype._addBoardListeners = function() {
     this._board.on('check', $.proxy(this._onCheck, this));
     this._board.on('checkmate', $.proxy(this._onCheckmate, this));
     this._board.on('stalemate', $.proxy(this._onStalemate, this));
+};
+
+BoardView.prototype._onGiveUp = function() {
+    this._isFinished = true;
+};
+
+BoardView.prototype._addPlayersListeners = function() {
+    this._players.on('give-up', $.proxy(this._onGiveUp, this));
 };
 
 BoardView.prototype._rotateBoard = function() {
@@ -1401,6 +1474,7 @@ BoardView.prototype._addClickListener = function() {
 BoardView.prototype._init = function() {
     this._createField();
     this._addBoardListeners();
+    this._addPlayersListeners();
     this._addClickListener();
 };
 
@@ -1422,16 +1496,16 @@ HintView.prototype._onMove = function() {
 };
 
 HintView.prototype._onCheck = function(color) {
-    this._set('piece', 'Check to ' + color);
+    this._set('piece', 'Check to the ' + color);
 };
 
 HintView.prototype._onCheckmate = function(color) {
     var inverted = Piece.getInvertedColor(color);
-    this._set('piece', 'Checkmate to ' + color + ', ' + inverted + ' wins');
+    this._set('piece', 'Checkmate to the ' + color + ', the ' + inverted + ' wins');
 };
 
 HintView.prototype._onStalemate = function(color) {
-    this._set('piece', 'Stalemate to ' + color);
+    this._set('piece', 'Stalemate to the ' + color);
 };
 
 HintView.prototype._addBoardListeners = function(board) {
@@ -1450,8 +1524,14 @@ HintView.prototype._onPlayerSet = function(color) {
     }
 };
 
+HintView.prototype._onGiveUp = function(color) {
+    var inverted = Piece.getInvertedColor(color);
+    this._set('player', 'The ' + color + ' has given up, the ' + inverted + ' wins');
+};
+
 HintView.prototype._addPlayersListeners = function(players) {
     players.on('set', $.proxy(this._onPlayerSet, this));
+    players.on('give-up', $.proxy(this._onGiveUp, this));
 };
 
 HintView.prototype._init = function(board, players) {
@@ -1549,8 +1629,7 @@ Game.prototype._onCastling = function(piece, length) {
 };
 
 Game.prototype._initBoard = function() {
-    this._board = new Board();
-    var view = new BoardView(this._board);
+    var view = new BoardView(this._board, this._players);
     view.on('move', $.proxy(this._onMovePiece, this));
     view.on('attack', $.proxy(this._onAttackPiece, this));
     view.on('en-passant', $.proxy(this._onEnPassant, this));
@@ -1569,11 +1648,23 @@ Game.prototype._onNewPlayer = function(color, player) {
     });
 };
 
-Game.prototype._initPlayers = function(users) {
-    this._players = new Players(users);
-    this._players.on('new', $.proxy(this._onNewPlayer, this));
+Game.prototype._onGiveUp = function(color) {
+    if (!this._players.canPlay(color)) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    this.emit('update', function() {
+        return [{
+            type: 'give-up',
+            color: color
+        }];
+    });
+};
+
+Game.prototype._initPlayers = function() {
     var view = new PlayersView(this._board, this._players);
-    this._players.turn();
+    view.on('give-up', $.proxy(this._onGiveUp, this));
 };
 
 Game.prototype._initHint = function() {
@@ -1589,10 +1680,14 @@ Game.prototype._createPieces = function() {
 };
 
 Game.prototype._init = function(users) {
+    this._board = new Board();
+    this._players = new Players(users);
+    this._players.on('new', $.proxy(this._onNewPlayer, this));
     this._initBoard();
-    this._initPlayers(users);
+    this._initPlayers();
     this._initHint();
     this._createPieces();
+    this._players.turn();
 };
 
 Game.prototype.update = function(update) {
@@ -1638,6 +1733,9 @@ Game.prototype.update = function(update) {
             this._board.movePiece(king, coords.row, 6);
         }
         this._players.turn();
+    }
+    if (update.type == 'give-up') {
+        this._players.giveUp(update.color);
     }
 };
 
