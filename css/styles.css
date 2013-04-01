@@ -251,7 +251,7 @@
     top: 70px;
     width: 20px;
     height: 20px;
-    background: no-repeat center center url(data:image/png;base64,%% img/clock.png base64 %%);
+    background: no-repeat center center url(data:image/png;base64,%% img/clock.gif base64 %%);
 }
 
 .players .turn .clock {
