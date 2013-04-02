@@ -32,13 +32,23 @@ BoardView.prototype._createField = function() {
     this._node.append(row);
 };
 
-BoardView.prototype._clearField = function(only) {
-    if (!only || only == 'moves') {
-        this._node.find('.move, .attack, .en-passant, .promotion, .long-castling, .short-castling').remove();
-    }
-    if (!only || only == 'pieces') {
-        this._node.find('.chosen, .check, .checkmate, .stalemate').removeClass('chosen check checkmate stalemate');
-    }
+BoardView.prototype._removeChosenMarker = function() {
+    this._node.find('.chosen').removeClass('chosen');
+    this._piece = null;
+};
+
+BoardView.prototype._removeMoveMarkers = function() {
+    this._node.find('.move, .attack, .en-passant, .promotion, .long-castling, .short-castling').remove();
+};
+
+BoardView.prototype._removeCheckMarker = function() {
+    this._node.find('.check').removeClass('check');
+};
+
+BoardView.prototype._removeAllMarkers = function() {
+    this._removeChosenMarker();
+    this._removeMoveMarkers();
+    this._removeCheckMarker();
 };
 
 BoardView.prototype._getCoords = function(row, col) {
@@ -66,12 +76,12 @@ BoardView.prototype._removePiece = function(row, col) {
 };
 
 BoardView.prototype._onPlace = function(row, col, piece) {
-    this._clearField();
+    this._removeAllMarkers();
     this._placePiece(row, col, piece);
 };
 
 BoardView.prototype._onMove = function(fromRow, fromCol, toRow, toCol, piece) {
-    this._clearField();
+    this._removeAllMarkers();
     this._removePiece(fromRow, fromCol);
     this._node.find('.last-move').removeClass('last-move');
     var cell = this._getCell(fromRow, fromCol);
@@ -82,12 +92,12 @@ BoardView.prototype._onMove = function(fromRow, fromCol, toRow, toCol, piece) {
 };
 
 BoardView.prototype._onRemove = function(row, col) {
-    this._clearField();
+    this._removeAllMarkers();
     this._removePiece(row, col);
 };
 
 BoardView.prototype._onCheck = function(color) {
-    this._clearField();
+    this._removeAllMarkers();
     var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
@@ -95,7 +105,7 @@ BoardView.prototype._onCheck = function(color) {
 };
 
 BoardView.prototype._onCheckmate = function(color) {
-    this._clearField();
+    this._removeAllMarkers();
     var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
@@ -103,7 +113,7 @@ BoardView.prototype._onCheckmate = function(color) {
 };
 
 BoardView.prototype._onStalemate = function(color) {
-    this._clearField();
+    this._removeAllMarkers();
     var piece = this._board.getPieceByColorAndType(color, Piece.TYPES.KING);
     var coords = this._board.getPieceCoords(piece);
     var cell = this._getCell(coords.row, coords.col);
@@ -130,7 +140,7 @@ BoardView.prototype._rotateBoard = function() {
 };
 
 BoardView.prototype._showAvailableMoves = function(row, col) {
-    this._clearField('moves');
+    this._removeMoveMarkers();
     var piece = this._board.getPieceByCoords(row, col);
     var search = new MoveSearch(this._board, piece);
     var moves = search.get();
@@ -145,12 +155,17 @@ BoardView.prototype._showAvailableMoves = function(row, col) {
     }
 };
 
-BoardView.prototype._choosePiece = function(row, col) {
-    this._node.find('.chosen').removeClass('chosen');
+BoardView.prototype._selectPiece = function(row, col) {
+    this._removeChosenMarker();
     var cell = this._getCell(row, col);
     cell.addClass('chosen');
     this._piece = {row: row, col: col};
     this._showAvailableMoves(row, col);
+};
+
+BoardView.prototype._deselectPiece = function() {
+    this._removeChosenMarker();
+    this._removeMoveMarkers();
 };
 
 BoardView.prototype._showPromotionDialog = function(element, callback) {
@@ -201,7 +216,11 @@ BoardView.prototype._addClickListener = function() {
             return false;
         }
         if (element.hasClass('piece')) {
-            this._choosePiece(coords.row, coords.col);
+            if (this._piece && this._piece.row == coords.row && this._piece.col == coords.col) {
+                this._deselectPiece();
+            } else {
+                this._selectPiece(coords.row, coords.col);
+            }
         }
         if (!this._piece) {
             return false;
