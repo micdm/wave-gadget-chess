@@ -1,12 +1,8 @@
-var PlayersView = function(board, players) {
+var PlayersView = function(board, players, state) {
     EventEmitter.mixin(this);
     this._players = players;
     this._node = null;
-    this._init(board);
-};
-
-PlayersView.prototype._getGiveUpButton = function() {
-    return this._node.find('.give-up-button');
+    this._init(board, state);
 };
 
 PlayersView.prototype._onAttack = function(piece) {
@@ -32,20 +28,22 @@ PlayersView.prototype._onTurn = function(color) {
     this._node.find('.turn').removeClass('turn');
     var node = this._node.find('.player.' + color);
     node.addClass('turn');
-    var button = this._getGiveUpButton();
     var needShow = this._players.isViewerNowMoving();
-    button.toggleClass('visible', needShow);
-};
-
-PlayersView.prototype._onGiveUp = function() {
-    var button = this._getGiveUpButton();
-    button.removeClass('visible');
+    this._node.find('.give-up-button').toggleClass('visible', needShow);
 };
 
 PlayersView.prototype._addPlayersListeners = function() {
     this._players.on('set', $.proxy(this._onSetPlayer, this));
     this._players.on('turn', $.proxy(this._onTurn, this));
-    this._players.on('give-up', $.proxy(this._onGiveUp, this));
+};
+
+PlayersView.prototype._onEnd = function() {
+    this._node.find('.turn').removeClass('turn');
+    this._node.find('.give-up-button').removeClass('visible');
+};
+
+PlayersView.prototype._addStateListeners = function(state) {
+    state.on('end', $.proxy(this._onEnd, this));
 };
 
 PlayersView.prototype._addClickListener = function() {
@@ -61,9 +59,10 @@ PlayersView.prototype._addClickListener = function() {
     }, this));
 };
 
-PlayersView.prototype._init = function(board) {
+PlayersView.prototype._init = function(board, state) {
     this._node = $('.players');
     this._addBoardListeners(board);
     this._addPlayersListeners();
+    this._addStateListeners(state);
     this._addClickListener();
 };

@@ -2,6 +2,7 @@ var Game = function(users) {
     EventEmitter.mixin(this);
     this._board = null;
     this._players = null;
+    this._state = null;
     this._init(users);
 };
 
@@ -86,7 +87,7 @@ Game.prototype._onCastling = function(piece, length) {
 };
 
 Game.prototype._initBoard = function() {
-    var view = new BoardView(this._board, this._players);
+    var view = new BoardView(this._board, this._state);
     view.on('move', $.proxy(this._onMovePiece, this));
     view.on('attack', $.proxy(this._onAttackPiece, this));
     view.on('en-passant', $.proxy(this._onEnPassant, this));
@@ -120,7 +121,7 @@ Game.prototype._onGiveUp = function(color) {
 };
 
 Game.prototype._initPlayers = function() {
-    var view = new PlayersView(this._board, this._players);
+    var view = new PlayersView(this._board, this._players, this._state);
     view.on('give-up', $.proxy(this._onGiveUp, this));
 };
 
@@ -140,6 +141,7 @@ Game.prototype._init = function(users) {
     this._board = new Board();
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
+    this._state = new GameState(this._board, this._players);
     this._initBoard();
     this._initPlayers();
     this._initHint();
@@ -147,28 +149,34 @@ Game.prototype._init = function(users) {
     this._players.turn();
 };
 
-Game.prototype.update = function(update) {
+Game.prototype._handleUpdate = function(update) {
     if (update.type == 'player') {
         this._players.set(update.color, update.id);
+        return true;
     }
+    if (update.type == 'give-up') {
+        this._players.giveUp(update.color);
+        return true;
+    }
+    return false;
+};
+
+Game.prototype._handleMove = function(update) {
     if (update.type == 'move') {
         var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.movePiece(piece, update.to.row, update.to.col);
-        this._players.turn();
     }
     if (update.type == 'attack') {
         var victim = this._board.getPieceByCoords(update.to.row, update.to.col);
         this._board.removePiece(victim, true);
         var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.movePiece(attacker, update.to.row, update.to.col);
-        this._players.turn();
     }
     if (update.type == 'en-passant') {
         var victim = this._board.getPieceByCoords(update.from.row, update.to.col);
         this._board.removePiece(victim, true);
         var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
         this._board.movePiece(attacker, update.to.row, update.to.col);
-        this._players.turn();
     }
     if (update.type == 'promotion') {
         var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
@@ -176,7 +184,6 @@ Game.prototype.update = function(update) {
         var replacement = Piece.get(piece.getColor(), update.replacement);
         this._board.placePiece(update.from.row, update.from.col, replacement);
         this._board.movePiece(replacement, update.to.row, update.to.col);
-        this._players.turn();
     }
     if (update.type == 'castling') {
         var king = this._board.getPieceByColorAndType(update.color, Piece.TYPES.KING);
@@ -189,9 +196,13 @@ Game.prototype.update = function(update) {
             this._board.movePiece(rook, coords.row, 5);
             this._board.movePiece(king, coords.row, 6);
         }
+    }
+    if (!this._state.isEnded()) {
         this._players.turn();
     }
-    if (update.type == 'give-up') {
-        this._players.giveUp(update.color);
-    }
+    return true;
+};
+
+Game.prototype.update = function(update) {
+    this._handleUpdate(update) || this._handleMove(update);
 };
