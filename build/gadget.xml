@@ -6,11 +6,8 @@
     </ModulePrefs>
     <Content type="html">
     <![CDATA[
-        <!DOCTYPE html>
-<html>
-    <head>
         <style>
-            * {
+    * {
     padding: 0;
     margin: 0;
     font-size: 14px;
@@ -345,36 +342,34 @@
     width: 150px;
 }
 
-        </style>
-    </head>
-    <body>
-        <div class="board"></div>
-        <div class="players">
-            <div class="player white">
-                <div class="icon player-icon"></div>
-                <div class="avatar"></div>
-                <div class="clock" title="Now moving"></div>
-                <div class="taken" title="Taken pieces"></div>
-            </div>
-            VS 
-            <div class="player black">
-                <div class="icon player-icon"></div>
-                <div class="avatar"></div>
-                <div class="clock" title="Now moving"></div>
-                <div class="taken" title="Taken pieces"></div>
-            </div>
-            <div class="buttons">
-                <input type="button" value="Give Up" class="give-up-button">
-            </div>
-        </div>
-        <div class="hint">
-            <div class="player-hint"></div>
-            <div class="piece-hint"></div>
-        </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <script>
-            (function() {
-                var EventEmitter = function() {
+</style>
+<div class="board"></div>
+<div class="players">
+    <div class="player white">
+        <div class="icon player-icon"></div>
+        <div class="avatar"></div>
+        <div class="clock" title="Now moving"></div>
+        <div class="taken" title="Taken pieces"></div>
+    </div>
+    VS 
+    <div class="player black">
+        <div class="icon player-icon"></div>
+        <div class="avatar"></div>
+        <div class="clock" title="Now moving"></div>
+        <div class="taken" title="Taken pieces"></div>
+    </div>
+    <div class="buttons">
+        <input type="button" value="Give Up" class="give-up-button">
+    </div>
+</div>
+<div class="hint">
+    <div class="player-hint"></div>
+    <div class="piece-hint"></div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+    (function() {
+        var EventEmitter = function() {
     
 };
 
@@ -401,7 +396,7 @@ EventEmitter.mixin = function(target) {
     };
 };
 
-                var Piece = function(id, color) {
+        var Piece = function(id, color) {
     this._id = id;
     this._color = color;
 };
@@ -650,7 +645,7 @@ King.prototype.iterateMoves = function(row, col, callback) {
     }
 };
 
-                var PieceBuilder = function(color, board) {
+        var PieceBuilder = function(color, board) {
     this._color = color;
     this._board = board;
 };
@@ -684,7 +679,7 @@ PieceBuilder.prototype.build = function() {
     this._createOtherPieces();
 };
 
-                var MoveSearch = function(board, piece, checksOnly) {
+        var MoveSearch = function(board, piece, checksOnly) {
     this._board = board;
     this._piece = piece;
     this._checksOnly = checksOnly;
@@ -875,7 +870,7 @@ MoveSearch.prototype.get = function() {
     return this._moves;
 };
 
-                var Player = function(id, name, avatar) {
+        var Player = function(id, name, avatar) {
     this._id = id;
     this._name = name;
     this._avatar = avatar;
@@ -893,7 +888,7 @@ Player.prototype.getAvatar = function() {
     return this._avatar;
 };
 
-                var Players = function(users) {
+        var Players = function(users) {
     EventEmitter.mixin(this);
     this._users = users;
     this._list = {};
@@ -969,76 +964,7 @@ Players.prototype.giveUp = function(color) {
     });
 };
 
-                var PlayersView = function(board, players, state) {
-    EventEmitter.mixin(this);
-    this._players = players;
-    this._node = null;
-    this._init(board, state);
-};
-
-PlayersView.prototype._onAttack = function(piece) {
-    var color = piece.getColor();
-    var type = piece.getType();
-    var inverted = Piece.getInvertedColor(color);
-    var container = this._node.find('.player.' + inverted + ' .taken');
-    var node = $('<div class="icon ' + color + ' ' + type + '"></div>');
-    container.append(node);
-};
-
-PlayersView.prototype._addBoardListeners = function(board) {
-    board.on('attack', $.proxy(this._onAttack, this));
-};
-
-PlayersView.prototype._onSetPlayer = function(color, player) {
-    var node = this._node.find('.player.' + color + ' .avatar');
-    node.attr('title', player.getName());
-    node.css('background-image', 'url(' + player.getAvatar() + ')');
-};
-
-PlayersView.prototype._onTurn = function(color) {
-    this._node.find('.turn').removeClass('turn');
-    var node = this._node.find('.player.' + color);
-    node.addClass('turn');
-    var needShow = this._players.isViewerNowMoving();
-    this._node.find('.give-up-button').toggleClass('visible', needShow);
-};
-
-PlayersView.prototype._addPlayersListeners = function() {
-    this._players.on('set', $.proxy(this._onSetPlayer, this));
-    this._players.on('turn', $.proxy(this._onTurn, this));
-};
-
-PlayersView.prototype._onEnd = function() {
-    this._node.find('.turn').removeClass('turn');
-    this._node.find('.give-up-button').removeClass('visible');
-};
-
-PlayersView.prototype._addStateListeners = function(state) {
-    state.on('end', $.proxy(this._onEnd, this));
-};
-
-PlayersView.prototype._addClickListener = function() {
-    this._node.click($.proxy(function(event) {
-        var element = $(event.target);
-        if (element.hasClass('give-up-button')) {
-            var color = this._players.getCurrentColor();
-            this.emit('give-up', function() {
-                return [color];
-            });
-        }
-        return false;
-    }, this));
-};
-
-PlayersView.prototype._init = function(board, state) {
-    this._node = $('.players');
-    this._addBoardListeners(board);
-    this._addPlayersListeners();
-    this._addStateListeners(state);
-    this._addClickListener();
-};
-
-                var Board = function() {
+        var Board = function() {
     EventEmitter.mixin(this);
     this._field = null;
     this._pieces = null;
@@ -1216,7 +1142,390 @@ Board.prototype.isStalemate = function(color) {
     return !this.isCheck(color) && !this._hasMoves(color);
 };
 
-                var BoardView = function(board, state) {
+        var Game = function(users) {
+    EventEmitter.mixin(this);
+    this._board = null;
+    this._players = null;
+    this._state = null;
+    this._init(users);
+};
+
+Game.prototype._onMovePiece = function(piece, row, col) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'move',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
+    });
+};
+
+Game.prototype._onAttackPiece = function(piece, row, col) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'attack',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
+    });
+};
+
+Game.prototype._onEnPassant = function(piece, row, col) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'en-passant',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col}
+        }];
+    });
+};
+
+Game.prototype._onPromotion = function(piece, row, col, replacement) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    var coords = this._board.getPieceCoords(piece);
+    this.emit('update', function() {
+        return [{
+            type: 'promotion',
+            from: {row: coords.row, col: coords.col},
+            to: {row: row, col: col},
+            replacement: replacement
+        }];
+    });
+};
+
+Game.prototype._onCastling = function(piece, length) {
+    if (!this._players.canPlay(piece.getColor())) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    this.emit('update', function() {
+        return [{
+            type: 'castling',
+            color: piece.getColor(),
+            length: length
+        }];
+    });
+};
+
+Game.prototype._initBoard = function() {
+    var view = new BoardView(this._board, this._state);
+    view.on('move', $.proxy(this._onMovePiece, this));
+    view.on('attack', $.proxy(this._onAttackPiece, this));
+    view.on('en-passant', $.proxy(this._onEnPassant, this));
+    view.on('promotion', $.proxy(this._onPromotion, this));
+    view.on('castling', $.proxy(this._onCastling, this));
+    
+};
+
+Game.prototype._onNewPlayer = function(color, player) {
+    this.emit('update', function() {
+        return [{
+            type: 'player',
+            color: color,
+            id: player.getId()}
+        ];
+    });
+};
+
+Game.prototype._onGiveUp = function(color) {
+    if (!this._players.canPlay(color)) {
+        return;
+    }
+    this._players.lock();
+    this._players.checkForNewPlayer();
+    this.emit('update', function() {
+        return [{
+            type: 'give-up',
+            color: color
+        }];
+    });
+};
+
+Game.prototype._initPlayers = function() {
+    var view = new PlayersView(this._board, this._players, this._state);
+    view.on('give-up', $.proxy(this._onGiveUp, this));
+};
+
+Game.prototype._initHint = function() {
+    var view = new HintView(this._board, this._players);
+};
+
+Game.prototype._createPieces = function() {
+    for (var i in Piece.COLORS) {
+        var color = Piece.COLORS[i];
+        var builder = new PieceBuilder(color, this._board);
+        builder.build();
+    }
+};
+
+Game.prototype._init = function(users) {
+    this._board = new Board();
+    this._players = new Players(users);
+    this._players.on('new', $.proxy(this._onNewPlayer, this));
+    this._state = new GameState(this._board, this._players);
+    this._initBoard();
+    this._initPlayers();
+    this._initHint();
+    this._createPieces();
+    this._players.turn();
+};
+
+Game.prototype._handleUpdate = function(update) {
+    if (update.type == 'player') {
+        this._players.set(update.color, update.id);
+        return true;
+    }
+    if (update.type == 'give-up') {
+        this._players.giveUp(update.color);
+        return true;
+    }
+    return false;
+};
+
+Game.prototype._handleMove = function(update) {
+    if (update.type == 'move') {
+        var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.movePiece(piece, update.to.row, update.to.col);
+    }
+    if (update.type == 'attack') {
+        var victim = this._board.getPieceByCoords(update.to.row, update.to.col);
+        this._board.removePiece(victim, true);
+        var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.movePiece(attacker, update.to.row, update.to.col);
+    }
+    if (update.type == 'en-passant') {
+        var victim = this._board.getPieceByCoords(update.from.row, update.to.col);
+        this._board.removePiece(victim, true);
+        var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.movePiece(attacker, update.to.row, update.to.col);
+    }
+    if (update.type == 'promotion') {
+        var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
+        this._board.removePiece(piece);
+        var replacement = Piece.get(piece.getColor(), update.replacement);
+        this._board.placePiece(update.from.row, update.from.col, replacement);
+        this._board.movePiece(replacement, update.to.row, update.to.col);
+    }
+    if (update.type == 'castling') {
+        var king = this._board.getPieceByColorAndType(update.color, Piece.TYPES.KING);
+        var coords = this._board.getPieceCoords(king);
+        var rook = this._board.getPieceByCoords(coords.row, update.length == 'long' ? 0 : 7);
+        if (update.length == 'long') {
+            this._board.movePiece(rook, coords.row, 3);
+            this._board.movePiece(king, coords.row, 2);
+        } else {
+            this._board.movePiece(rook, coords.row, 5);
+            this._board.movePiece(king, coords.row, 6);
+        }
+    }
+    if (!this._state.isEnded()) {
+        this._players.turn();
+    }
+    return true;
+};
+
+Game.prototype.update = function(update) {
+    this._handleUpdate(update) || this._handleMove(update);
+};
+
+        var GameState = function(board, players) {
+    EventEmitter.mixin(this);
+    this._isEnded = false;
+    this._init(board, players);
+};
+
+GameState.prototype._onEnd = function() {
+    this._isEnded = true;
+    this.emit('end', function() {
+        return [];
+    });
+};
+
+GameState.prototype._addBoardListeners = function(board) {
+    board.on('checkmate', $.proxy(this._onEnd, this));
+    board.on('stalemate', $.proxy(this._onEnd, this));
+};
+
+GameState.prototype._addPlayersListeners = function(players) {
+    players.on('give-up', $.proxy(this._onEnd, this));
+};
+
+GameState.prototype._init = function(board, players) {
+    this._addBoardListeners(board);
+    this._addPlayersListeners(players);
+};
+
+GameState.prototype.isEnded = function() {
+    return this._isEnded;
+};
+
+        var Users = function() {
+
+};
+
+Users.prototype._getInfo = function(user) {
+    return {
+        id: user.getId(),
+        name: user.getDisplayName(),
+        avatar: user.getThumbnailUrl()
+    };
+};
+
+Users.prototype.get = function(id) {
+    var user = wave.getParticipantById(id);
+    return this._getInfo(user);
+};
+
+Users.prototype.getViewer = function() {
+    var viewer = wave.getViewer();
+    return this._getInfo(viewer); 
+};
+
+        var Gadget = function() {
+    this._revision = 0;
+    this._game = null;
+    this._updates = [];
+    this._init();
+};
+
+Gadget.prototype._onGameUpdate = function(update) {
+    this._updates.push(update);
+    if (this._updates.length > 1) {
+        return;
+    }
+    setTimeout($.proxy(function() {
+        var state = wave.getState();
+        var revision = state.get('revision') || 0;
+        var delta = {};
+        for (var i in this._updates) {
+            var update = this._updates[i];
+            revision += 1;
+            delta['update-' + revision] = gadgets.json.stringify(update);
+        }
+        delta.revision = revision;
+        state.submitDelta(delta);
+        this._updates = [];
+    }, this), 0);
+};
+
+Gadget.prototype._onStateUpdate = function() {
+    var state = wave.getState();
+    var revision = state.get('revision');
+    if (!revision) {
+        return;
+    }
+    for (var i = this._revision + 1; i <= revision; i += 1) {
+        var update = gadgets.json.parse(state.get('update-' + i));
+        this._game.update(update);
+    }
+    this._revision = revision;
+};
+
+Gadget.prototype._init = function() {
+    gadgets.util.registerOnLoadHandler($.proxy(function() {
+        if (!wave || !wave.isInWaveContainer()) {
+            return;
+        }
+        this._game = new Game(new Users());
+        this._game.on('update', $.proxy(this._onGameUpdate, this));
+        gadgets.window.adjustHeight();
+        wave.setStateCallback($.proxy(this._onStateUpdate, this));
+    }, this));
+};
+
+        var PlayersView = function(board, players, state) {
+    EventEmitter.mixin(this);
+    this._players = players;
+    this._node = null;
+    this._init(board, state);
+};
+
+PlayersView.prototype._onAttack = function(piece) {
+    var color = piece.getColor();
+    var type = piece.getType();
+    var inverted = Piece.getInvertedColor(color);
+    var container = this._node.find('.player.' + inverted + ' .taken');
+    var node = $('<div class="icon ' + color + ' ' + type + '"></div>');
+    container.append(node);
+};
+
+PlayersView.prototype._addBoardListeners = function(board) {
+    board.on('attack', $.proxy(this._onAttack, this));
+};
+
+PlayersView.prototype._onSetPlayer = function(color, player) {
+    var node = this._node.find('.player.' + color + ' .avatar');
+    node.attr('title', player.getName());
+    node.css('background-image', 'url(' + player.getAvatar() + ')');
+};
+
+PlayersView.prototype._onTurn = function(color) {
+    this._node.find('.turn').removeClass('turn');
+    var node = this._node.find('.player.' + color);
+    node.addClass('turn');
+    var needShow = this._players.isViewerNowMoving();
+    this._node.find('.give-up-button').toggleClass('visible', needShow);
+};
+
+PlayersView.prototype._addPlayersListeners = function() {
+    this._players.on('set', $.proxy(this._onSetPlayer, this));
+    this._players.on('turn', $.proxy(this._onTurn, this));
+};
+
+PlayersView.prototype._onEnd = function() {
+    this._node.find('.turn').removeClass('turn');
+    this._node.find('.give-up-button').removeClass('visible');
+};
+
+PlayersView.prototype._addStateListeners = function(state) {
+    state.on('end', $.proxy(this._onEnd, this));
+};
+
+PlayersView.prototype._addClickListener = function() {
+    this._node.click($.proxy(function(event) {
+        var element = $(event.target);
+        if (element.hasClass('give-up-button')) {
+            var color = this._players.getCurrentColor();
+            this.emit('give-up', function() {
+                return [color];
+            });
+        }
+        return false;
+    }, this));
+};
+
+PlayersView.prototype._init = function(board, state) {
+    this._node = $('.players');
+    this._addBoardListeners(board);
+    this._addPlayersListeners();
+    this._addStateListeners(state);
+    this._addClickListener();
+};
+
+        var BoardView = function(board, state) {
     EventEmitter.mixin(this);
     this._piece = null;
     this._node = null;
@@ -1467,7 +1776,7 @@ BoardView.prototype._init = function() {
     this._addClickListener();
 };
 
-                var HintView = function(board, players) {
+        var HintView = function(board, players) {
     this._node = null;
     this._init(board, players);
 };
@@ -1530,325 +1839,9 @@ HintView.prototype._init = function(board, players) {
     this._addPlayersListeners(players);
 };
 
-                var Game = function(users) {
-    EventEmitter.mixin(this);
-    this._board = null;
-    this._players = null;
-    this._state = null;
-    this._init(users);
-};
-
-Game.prototype._onMovePiece = function(piece, row, col) {
-    if (!this._players.canPlay(piece.getColor())) {
-        return;
-    }
-    this._players.lock();
-    this._players.checkForNewPlayer();
-    var coords = this._board.getPieceCoords(piece);
-    this.emit('update', function() {
-        return [{
-            type: 'move',
-            from: {row: coords.row, col: coords.col},
-            to: {row: row, col: col}
-        }];
-    });
-};
-
-Game.prototype._onAttackPiece = function(piece, row, col) {
-    if (!this._players.canPlay(piece.getColor())) {
-        return;
-    }
-    this._players.lock();
-    this._players.checkForNewPlayer();
-    var coords = this._board.getPieceCoords(piece);
-    this.emit('update', function() {
-        return [{
-            type: 'attack',
-            from: {row: coords.row, col: coords.col},
-            to: {row: row, col: col}
-        }];
-    });
-};
-
-Game.prototype._onEnPassant = function(piece, row, col) {
-    if (!this._players.canPlay(piece.getColor())) {
-        return;
-    }
-    this._players.lock();
-    this._players.checkForNewPlayer();
-    var coords = this._board.getPieceCoords(piece);
-    this.emit('update', function() {
-        return [{
-            type: 'en-passant',
-            from: {row: coords.row, col: coords.col},
-            to: {row: row, col: col}
-        }];
-    });
-};
-
-Game.prototype._onPromotion = function(piece, row, col, replacement) {
-    if (!this._players.canPlay(piece.getColor())) {
-        return;
-    }
-    this._players.lock();
-    this._players.checkForNewPlayer();
-    var coords = this._board.getPieceCoords(piece);
-    this.emit('update', function() {
-        return [{
-            type: 'promotion',
-            from: {row: coords.row, col: coords.col},
-            to: {row: row, col: col},
-            replacement: replacement
-        }];
-    });
-};
-
-Game.prototype._onCastling = function(piece, length) {
-    if (!this._players.canPlay(piece.getColor())) {
-        return;
-    }
-    this._players.lock();
-    this._players.checkForNewPlayer();
-    this.emit('update', function() {
-        return [{
-            type: 'castling',
-            color: piece.getColor(),
-            length: length
-        }];
-    });
-};
-
-Game.prototype._initBoard = function() {
-    var view = new BoardView(this._board, this._state);
-    view.on('move', $.proxy(this._onMovePiece, this));
-    view.on('attack', $.proxy(this._onAttackPiece, this));
-    view.on('en-passant', $.proxy(this._onEnPassant, this));
-    view.on('promotion', $.proxy(this._onPromotion, this));
-    view.on('castling', $.proxy(this._onCastling, this));
-    
-};
-
-Game.prototype._onNewPlayer = function(color, player) {
-    this.emit('update', function() {
-        return [{
-            type: 'player',
-            color: color,
-            id: player.getId()}
-        ];
-    });
-};
-
-Game.prototype._onGiveUp = function(color) {
-    if (!this._players.canPlay(color)) {
-        return;
-    }
-    this._players.lock();
-    this._players.checkForNewPlayer();
-    this.emit('update', function() {
-        return [{
-            type: 'give-up',
-            color: color
-        }];
-    });
-};
-
-Game.prototype._initPlayers = function() {
-    var view = new PlayersView(this._board, this._players, this._state);
-    view.on('give-up', $.proxy(this._onGiveUp, this));
-};
-
-Game.prototype._initHint = function() {
-    var view = new HintView(this._board, this._players);
-};
-
-Game.prototype._createPieces = function() {
-    for (var i in Piece.COLORS) {
-        var color = Piece.COLORS[i];
-        var builder = new PieceBuilder(color, this._board);
-        builder.build();
-    }
-};
-
-Game.prototype._init = function(users) {
-    this._board = new Board();
-    this._players = new Players(users);
-    this._players.on('new', $.proxy(this._onNewPlayer, this));
-    this._state = new GameState(this._board, this._players);
-    this._initBoard();
-    this._initPlayers();
-    this._initHint();
-    this._createPieces();
-    this._players.turn();
-};
-
-Game.prototype._handleUpdate = function(update) {
-    if (update.type == 'player') {
-        this._players.set(update.color, update.id);
-        return true;
-    }
-    if (update.type == 'give-up') {
-        this._players.giveUp(update.color);
-        return true;
-    }
-    return false;
-};
-
-Game.prototype._handleMove = function(update) {
-    if (update.type == 'move') {
-        var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
-        this._board.movePiece(piece, update.to.row, update.to.col);
-    }
-    if (update.type == 'attack') {
-        var victim = this._board.getPieceByCoords(update.to.row, update.to.col);
-        this._board.removePiece(victim, true);
-        var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
-        this._board.movePiece(attacker, update.to.row, update.to.col);
-    }
-    if (update.type == 'en-passant') {
-        var victim = this._board.getPieceByCoords(update.from.row, update.to.col);
-        this._board.removePiece(victim, true);
-        var attacker = this._board.getPieceByCoords(update.from.row, update.from.col);
-        this._board.movePiece(attacker, update.to.row, update.to.col);
-    }
-    if (update.type == 'promotion') {
-        var piece = this._board.getPieceByCoords(update.from.row, update.from.col);
-        this._board.removePiece(piece);
-        var replacement = Piece.get(piece.getColor(), update.replacement);
-        this._board.placePiece(update.from.row, update.from.col, replacement);
-        this._board.movePiece(replacement, update.to.row, update.to.col);
-    }
-    if (update.type == 'castling') {
-        var king = this._board.getPieceByColorAndType(update.color, Piece.TYPES.KING);
-        var coords = this._board.getPieceCoords(king);
-        var rook = this._board.getPieceByCoords(coords.row, update.length == 'long' ? 0 : 7);
-        if (update.length == 'long') {
-            this._board.movePiece(rook, coords.row, 3);
-            this._board.movePiece(king, coords.row, 2);
-        } else {
-            this._board.movePiece(rook, coords.row, 5);
-            this._board.movePiece(king, coords.row, 6);
-        }
-    }
-    if (!this._state.isEnded()) {
-        this._players.turn();
-    }
-    return true;
-};
-
-Game.prototype.update = function(update) {
-    this._handleUpdate(update) || this._handleMove(update);
-};
-
-                var GameState = function(board, players) {
-    EventEmitter.mixin(this);
-    this._isEnded = false;
-    this._init(board, players);
-};
-
-GameState.prototype._onEnd = function() {
-    this._isEnded = true;
-    this.emit('end', function() {
-        return [];
-    });
-};
-
-GameState.prototype._addBoardListeners = function(board) {
-    board.on('checkmate', $.proxy(this._onEnd, this));
-    board.on('stalemate', $.proxy(this._onEnd, this));
-};
-
-GameState.prototype._addPlayersListeners = function(players) {
-    players.on('give-up', $.proxy(this._onEnd, this));
-};
-
-GameState.prototype._init = function(board, players) {
-    this._addBoardListeners(board);
-    this._addPlayersListeners(players);
-};
-
-GameState.prototype.isEnded = function() {
-    return this._isEnded;
-};
-
-                var Users = function() {
-
-};
-
-Users.prototype._getInfo = function(user) {
-    return {
-        id: user.getId(),
-        name: user.getDisplayName(),
-        avatar: user.getThumbnailUrl()
-    };
-};
-
-Users.prototype.get = function(id) {
-    var user = wave.getParticipantById(id);
-    return this._getInfo(user);
-};
-
-Users.prototype.getViewer = function() {
-    var viewer = wave.getViewer();
-    return this._getInfo(viewer); 
-};
-
-                var Gadget = function() {
-    this._revision = 0;
-    this._game = null;
-    this._updates = [];
-    this._init();
-};
-
-Gadget.prototype._onGameUpdate = function(update) {
-    this._updates.push(update);
-    if (this._updates.length > 1) {
-        return;
-    }
-    setTimeout($.proxy(function() {
-        var state = wave.getState();
-        var revision = state.get('revision') || 0;
-        var delta = {};
-        for (var i in this._updates) {
-            var update = this._updates[i];
-            revision += 1;
-            delta['update-' + revision] = gadgets.json.stringify(update);
-        }
-        delta.revision = revision;
-        state.submitDelta(delta);
-        this._updates = [];
-    }, this), 0);
-};
-
-Gadget.prototype._onStateUpdate = function() {
-    var state = wave.getState();
-    var revision = state.get('revision');
-    if (!revision) {
-        return;
-    }
-    for (var i = this._revision + 1; i <= revision; i += 1) {
-        var update = gadgets.json.parse(state.get('update-' + i));
-        this._game.update(update);
-    }
-    this._revision = revision;
-};
-
-Gadget.prototype._init = function() {
-    gadgets.util.registerOnLoadHandler($.proxy(function() {
-        if (!wave || !wave.isInWaveContainer()) {
-            return;
-        }
-        this._game = new Game(new Users());
-        this._game.on('update', $.proxy(this._onGameUpdate, this));
-        gadgets.window.adjustHeight();
-        wave.setStateCallback($.proxy(this._onStateUpdate, this));
-    }, this));
-};
-
-                var gadget = new Gadget();
-            })();
-        </script>
-    </body>
-</html>
+        var gadget = new Gadget();
+    })();
+</script>
 
     ]]>
     </Content>

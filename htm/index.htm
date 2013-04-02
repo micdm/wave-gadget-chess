@@ -1,53 +1,46 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            %% css/styles.css %%
-        </style>
-    </head>
-    <body>
-        <div class="board"></div>
-        <div class="players">
-            <div class="player white">
-                <div class="icon player-icon"></div>
-                <div class="avatar"></div>
-                <div class="clock" title="Now moving"></div>
-                <div class="taken" title="Taken pieces"></div>
-            </div>
-            VS 
-            <div class="player black">
-                <div class="icon player-icon"></div>
-                <div class="avatar"></div>
-                <div class="clock" title="Now moving"></div>
-                <div class="taken" title="Taken pieces"></div>
-            </div>
-            <div class="buttons">
-                <input type="button" value="Give Up" class="give-up-button">
-            </div>
-        </div>
-        <div class="hint">
-            <div class="player-hint"></div>
-            <div class="piece-hint"></div>
-        </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <script>
-            (function() {
-                %% js/event-emitter.js %%
-                %% js/pieces/piece.js %%
-                %% js/pieces/piece-builder.js %%
-                %% js/pieces/move-search.js %%
-                %% js/players/player.js %%
-                %% js/players/players.js %%
-                %% js/players/players-view.js %%
-                %% js/board/board.js %%
-                %% js/board/board-view.js %%
-                %% js/hint-view.js %%
-                %% js/game.js %%
-                %% js/game-state.js %%
-                %% js/users.js %%
-                %% js/gadget.js %%
-                var gadget = new Gadget();
-            })();
-        </script>
-    </body>
-</html>
+<style>
+    %% css/styles.css %%
+</style>
+<div class="board"></div>
+<div class="players">
+    <div class="player white">
+        <div class="icon player-icon"></div>
+        <div class="avatar"></div>
+        <div class="clock" title="Now moving"></div>
+        <div class="taken" title="Taken pieces"></div>
+    </div>
+    VS 
+    <div class="player black">
+        <div class="icon player-icon"></div>
+        <div class="avatar"></div>
+        <div class="clock" title="Now moving"></div>
+        <div class="taken" title="Taken pieces"></div>
+    </div>
+    <div class="buttons">
+        <input type="button" value="Give Up" class="give-up-button">
+    </div>
+</div>
+<div class="hint">
+    <div class="player-hint"></div>
+    <div class="piece-hint"></div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+    (function() {
+        %% js/event-emitter.js %%
+        %% js/pieces/piece.js %%
+        %% js/pieces/piece-builder.js %%
+        %% js/pieces/move-search.js %%
+        %% js/players/player.js %%
+        %% js/players/players.js %%
+        %% js/board/board.js %%
+        %% js/game/game.js %%
+        %% js/game/game-state.js %%
+        %% js/wave/users.js %%
+        %% js/wave/gadget.js %%
+        %% js/views/players-view.js %%
+        %% js/views/board-view.js %%
+        %% js/views/hint-view.js %%
+        var gadget = new Gadget();
+    })();
+</script>
