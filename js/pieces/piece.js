@@ -79,16 +79,18 @@ Pawn.prototype.getType = function() {
 
 Pawn.prototype.iterateMoves = function(row, col, callback) {
     if (this.getColor() == Piece.COLORS.WHITE) {
-        callback(row - 1, col, 'move');
-        if (row == 6) {
-            callback(row - 2, col, 'move');
+        if (callback(row - 1, col, 'move')) {
+            if (row == 6) {
+                callback(row - 2, col, 'move');
+            }
         }
         callback(row - 1, col - 1, 'attack');
         callback(row - 1, col + 1, 'attack');
     } else {
-        callback(row + 1, col, 'move');
-        if (row == 1) {
-            callback(row + 2, col, 'move');
+        if (callback(row + 1, col, 'move')) {
+            if (row == 1) {
+                callback(row + 2, col, 'move');
+            }
         }
         callback(row + 1, col - 1, 'attack');
         callback(row + 1, col + 1, 'attack');
