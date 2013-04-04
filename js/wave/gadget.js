@@ -31,11 +31,15 @@ Gadget.prototype._onStateUpdate = function() {
     if (!revision) {
         return;
     }
+    var isFirstUpdate = (this._revision == 0);
     for (var i = this._revision + 1; i <= revision; i += 1) {
         var update = gadgets.json.parse(state.get('update-' + i));
         this._game.update(update);
     }
     this._revision = revision;
+    if (isFirstUpdate) {
+        this._game.onFirstUpdateDone();
+    }
 };
 
 Gadget.prototype._init = function() {

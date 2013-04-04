@@ -55,7 +55,6 @@ PlayersView.prototype._addClickListener = function() {
                 return [color];
             });
         }
-        return false;
     }, this));
 };
 

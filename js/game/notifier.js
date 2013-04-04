@@ -12,6 +12,9 @@ Notifier.prototype._notify = function(msg) {
     if (document.hasFocus()) {
         return;
     }
+    if (!this._players.isViewerPlaying()) {
+        return;
+    }
     if (this._players.isViewerNowMoving()) {
         return;
     }

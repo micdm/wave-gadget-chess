@@ -1168,7 +1168,6 @@ Board.prototype.isStalemate = function(color) {
     this._board = null;
     this._players = null;
     this._state = null;
-    this._notifier = null;
     this._init(users);
 };
 
@@ -1308,7 +1307,6 @@ Game.prototype._init = function(users) {
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
     this._state = new GameState(this._board, this._players);
-    this._notifier = new Notifier(this._board, this._players);
     this._initBoard();
     this._initPlayers();
     this._initHint();
@@ -1374,6 +1372,10 @@ Game.prototype.update = function(update) {
     this._handleUpdate(update) || this._handleMove(update);
 };
 
+Game.prototype.onFirstUpdateDone = function() {
+    var notifier = new Notifier(this._board, this._players);
+};
+
         var GameState = function(board, players) {
     EventEmitter.mixin(this);
     this._isEnded = false;
@@ -1417,6 +1419,9 @@ Notifier.prototype._canBeUsed = function() {
 
 Notifier.prototype._notify = function(msg) {
     if (document.hasFocus()) {
+        return;
+    }
+    if (!this._players.isViewerPlaying()) {
         return;
     }
     if (this._players.isViewerNowMoving()) {
@@ -1516,11 +1521,15 @@ Gadget.prototype._onStateUpdate = function() {
     if (!revision) {
         return;
     }
+    var isFirstUpdate = (this._revision == 0);
     for (var i = this._revision + 1; i <= revision; i += 1) {
         var update = gadgets.json.parse(state.get('update-' + i));
         this._game.update(update);
     }
     this._revision = revision;
+    if (isFirstUpdate) {
+        this._game.onFirstUpdateDone();
+    }
 };
 
 Gadget.prototype._init = function() {
@@ -1592,7 +1601,6 @@ PlayersView.prototype._addClickListener = function() {
                 return [color];
             });
         }
-        return false;
     }, this));
 };
 

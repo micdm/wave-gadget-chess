@@ -3,7 +3,6 @@ var Game = function(users) {
     this._board = null;
     this._players = null;
     this._state = null;
-    this._notifier = null;
     this._init(users);
 };
 
@@ -143,7 +142,6 @@ Game.prototype._init = function(users) {
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
     this._state = new GameState(this._board, this._players);
-    this._notifier = new Notifier(this._board, this._players);
     this._initBoard();
     this._initPlayers();
     this._initHint();
@@ -207,4 +205,8 @@ Game.prototype._handleMove = function(update) {
 
 Game.prototype.update = function(update) {
     this._handleUpdate(update) || this._handleMove(update);
+};
+
+Game.prototype.onFirstUpdateDone = function() {
+    var notifier = new Notifier(this._board, this._players);
 };
