@@ -181,6 +181,7 @@
 }
 
 .board .rotate {
+    display: none;
     width: 20px;
     height: 20px;
     border: 0;
@@ -900,6 +901,18 @@ Players.prototype.getCurrentColor = function() {
     return this._color;
 };
 
+Players.prototype.isViewerPlaying = function() {
+    var info = this._users.getViewer();
+    for (var i in Piece.COLORS) {
+        var color = Piece.COLORS[i];
+        var player = this._list[color];
+        if (player && player.getId() == info.id) {
+            return true;
+        }
+    }
+    return false;
+};
+
 Players.prototype.isViewerNowMoving = function() {
     if (!(this._color in this._list)) {
         return false;
@@ -974,6 +987,14 @@ Players.prototype.giveUp = function(color) {
 };
 
 Board.SIZE = 8;
+
+Board.getRowNumber = function(row) {
+    return Board.SIZE - row;
+};
+
+Board.getColLetter = function(col) {
+    return String.fromCharCode(97 + col);
+};
 
 Board.getCopy = function(board) {
     var copy = new Board();
@@ -1147,6 +1168,7 @@ Board.prototype.isStalemate = function(color) {
     this._board = null;
     this._players = null;
     this._state = null;
+    this._notifier = null;
     this._init(users);
 };
 
@@ -1286,6 +1308,7 @@ Game.prototype._init = function(users) {
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
     this._state = new GameState(this._board, this._players);
+    this._notifier = new Notifier(this._board, this._players);
     this._initBoard();
     this._initPlayers();
     this._initHint();
@@ -1380,6 +1403,62 @@ GameState.prototype._init = function(board, players) {
 
 GameState.prototype.isEnded = function() {
     return this._isEnded;
+};
+
+        var Notifier = function(board, players) {
+    this._board = board;
+    this._players = players;
+    this._init();
+};
+
+Notifier.prototype._canBeUsed = function() {
+    return window.webkitNotifications != null;
+};
+
+Notifier.prototype._notify = function(msg) {
+    if (document.hasFocus()) {
+        return;
+    }
+    if (this._players.isViewerNowMoving()) {
+        return;
+    }
+    try {
+        var notification = webkitNotifications.createNotification('', 'Chess Gadget', msg);
+        notification.show();
+    } catch (e) {
+
+    }
+};
+
+Notifier.prototype._addBoardListeners = function() {
+    this._board.on('move', $.proxy(function(fromRow, fromCol, toRow, toCol, piece) {
+        var to = Board.getColLetter(toCol) + Board.getRowNumber(toRow);
+        this._notify('Opponent has moved the ' + piece.getType() + ' to ' + to + '.');
+    }, this));
+};
+
+Notifier.prototype._addPlayersListeners = function() {
+    this._players.on('give-up', $.proxy(function() {
+        this._notify('Opponent has given up.');
+    }, this));
+};
+
+Notifier.prototype._addClickListener = function() {
+    $(document).click($.proxy(function(event) {
+        if (this._players.isViewerPlaying()) {
+            webkitNotifications.requestPermission();
+            $(document).unbind(event);
+        }
+    }, this));
+};
+
+Notifier.prototype._init = function() {
+    if (!this._canBeUsed()) {
+        return;
+    }
+    this._addBoardListeners();
+    this._addPlayersListeners();
+    this._addClickListener();
 };
 
         var Users = function() {
@@ -1546,13 +1625,15 @@ BoardView.prototype._createField = function() {
             var cell = $('<div class="cell"></div>');
             row.append(cell);
         }
-        var number = this._isRotated ? i + 1 : Board.SIZE - i;
+        var coords = this._getCoords(i, 0);
+        var number = Board.getRowNumber(coords.row);
         row.append('<div class="number">' + number + '</div>');
         this._node.append(row);
     }
     var row = $('<div></div>');
     for (var i = 0; i < Board.SIZE; i += 1) {
-        var letter = String.fromCharCode(this._isRotated ? 104 - i : 97 + i);
+        var coords = this._getCoords(0, i);
+        var letter = Board.getColLetter(coords.col);
         row.append('<div class="letter">' + letter + '</div>');
     }
     row.append('<button class="rotate" title="Rotate board"></button>');

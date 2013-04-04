@@ -9,6 +9,14 @@ var Board = function() {
 
 Board.SIZE = 8;
 
+Board.getRowNumber = function(row) {
+    return Board.SIZE - row;
+};
+
+Board.getColLetter = function(col) {
+    return String.fromCharCode(97 + col);
+};
+
 Board.getCopy = function(board) {
     var copy = new Board();
     var pieces = board.getPieces();

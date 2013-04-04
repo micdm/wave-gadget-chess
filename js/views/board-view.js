@@ -19,13 +19,15 @@ BoardView.prototype._createField = function() {
             var cell = $('<div class="cell"></div>');
             row.append(cell);
         }
-        var number = this._isRotated ? i + 1 : Board.SIZE - i;
+        var coords = this._getCoords(i, 0);
+        var number = Board.getRowNumber(coords.row);
         row.append('<div class="number">' + number + '</div>');
         this._node.append(row);
     }
     var row = $('<div></div>');
     for (var i = 0; i < Board.SIZE; i += 1) {
-        var letter = String.fromCharCode(this._isRotated ? 104 - i : 97 + i);
+        var coords = this._getCoords(0, i);
+        var letter = Board.getColLetter(coords.col);
         row.append('<div class="letter">' + letter + '</div>');
     }
     row.append('<button class="rotate" title="Rotate board"></button>');

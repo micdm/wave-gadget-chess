@@ -10,6 +10,18 @@ Players.prototype.getCurrentColor = function() {
     return this._color;
 };
 
+Players.prototype.isViewerPlaying = function() {
+    var info = this._users.getViewer();
+    for (var i in Piece.COLORS) {
+        var color = Piece.COLORS[i];
+        var player = this._list[color];
+        if (player && player.getId() == info.id) {
+            return true;
+        }
+    }
+    return false;
+};
+
 Players.prototype.isViewerNowMoving = function() {
     if (!(this._color in this._list)) {
         return false;
