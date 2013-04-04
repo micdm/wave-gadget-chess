@@ -172,6 +172,7 @@
 }
 
 .board .rotate {
+    display: none;
     width: 20px;
     height: 20px;
     border: 0;
