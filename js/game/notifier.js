@@ -5,11 +5,11 @@ var Notifier = function(board, players) {
 };
 
 Notifier.prototype._canBeUsed = function() {
-    return window.webkitNotifications != null;
+    return window.webkitNotifications != null && document.webkitHidden != null;
 };
 
 Notifier.prototype._notify = function(msg) {
-    if (document.hasFocus()) {
+    if (!document.webkitHidden) {
         return;
     }
     if (!this._players.isViewerPlaying()) {
