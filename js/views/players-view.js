@@ -33,8 +33,12 @@ PlayersView.prototype._addBoardListeners = function() {
 
 PlayersView.prototype._onSetPlayer = function(color, player) {
     var node = this._node.find('.player.' + color + ' .avatar');
-    node.attr('title', player.getName());
-    node.css('background-image', 'url(' + player.getAvatar() + ')');
+    var name = player.getName();
+    node.attr('title', name);
+    var avatar = player.getAvatar();
+    if (avatar) {
+        node.css('background-image', 'url(' + avatar + ')');
+    }
 };
 
 PlayersView.prototype._onTurn = function(color) {

@@ -33,7 +33,7 @@ Players.prototype.isViewerNowMoving = function() {
 
 Players.prototype.set = function(color, id) {
     var info = this._users.get(id);
-    var player = new Player(info.id, info.name, info.avatar);
+    var player = info ? new Player(info.id, info.name, info.avatar) : new Player(id, '(Unknown)', null);
     this._list[color] = player;
     this.emit('set', function() {
         return [color, player];
