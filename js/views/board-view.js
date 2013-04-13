@@ -30,7 +30,6 @@ BoardView.prototype._createField = function() {
         var letter = Board.getColLetter(coords.col);
         row.append('<div class="letter">' + letter + '</div>');
     }
-    row.append('<button class="rotate" title="Rotate board"></button>');
     this._node.append(row);
 };
 

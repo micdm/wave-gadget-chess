@@ -1,18 +1,15 @@
 var Notifier = function(board, players) {
+    this._isEnabled = false;
     this._board = board;
     this._players = players;
     this._init();
 };
 
-Notifier.prototype._canBeUsed = function() {
-    return window.webkitNotifications != null && document.webkitHidden != null;
-};
-
 Notifier.prototype._notify = function(msg) {
-    if (!document.webkitHidden) {
+    if (!this._isEnabled) {
         return;
     }
-    if (!this._players.isViewerPlaying()) {
+    if (!document.webkitHidden) {
         return;
     }
     if (this._players.isViewerNowMoving()) {
@@ -39,20 +36,18 @@ Notifier.prototype._addPlayersListeners = function() {
     }, this));
 };
 
-Notifier.prototype._addClickListener = function() {
-    $(document).click($.proxy(function(event) {
-        if (this._players.isViewerPlaying()) {
-            webkitNotifications.requestPermission();
-            $(document).unbind(event);
-        }
-    }, this));
-};
-
 Notifier.prototype._init = function() {
-    if (!this._canBeUsed()) {
+    if (!this.canBeUsed()) {
         return;
     }
     this._addBoardListeners();
     this._addPlayersListeners();
-    this._addClickListener();
+};
+
+Notifier.prototype.canBeUsed = function() {
+    return window.webkitNotifications != null && document.webkitHidden != null;
+};
+
+Notifier.prototype.enable = function() {
+    this._isEnabled = true;
 };

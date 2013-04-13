@@ -180,15 +180,6 @@
     background-position: -80px -80px;
 }
 
-.board .rotate {
-    display: none;
-    width: 20px;
-    height: 20px;
-    border: 0;
-    background: no-repeat center center url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QMVEhcVNe9vTwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAG4SURBVDjLlVO7qsJAFJyIsmmERND4QAtFREI6GwsbP8EfEGz8Aj9EsLAQwcYPEMFKFCQi+KiM2ihIisRGEgux2r3FJbk3ep8DW+xhZnbO2V0OT7Btmy0WC+i6jtvtBgAghCCZTCKTyUCWZQ4AdF1ng8EA3GfxZDJhm80GPyEcDkOWZUynUwD4MBiNRmy73eK/4ABgPB6z1WrlFgkhUBQF2WzWaQuqqsK27RcDv2VZrN1uu4VIJIJarcY9E7vdLmOMvRj4lsslKKWglCIQCKBSqXgIl8uFdTodZpqmy/u8fIZhuBtFUSAIgud0y7JACEEwGPzSwO84A0AqlXqJmMvlPIamabLH44Hz+fw+A0opnN54nv916tFo1GPokyTJjXM4HP59jX5JknA6nQAA6/X6V0G/32f7/R6CICCfz8NXLBbdBPf7Ha1Wi30nns/nTNM0UEpxvV5BCHl/SMPhkKmq6hJDoRDK5TLS6TREUeR2ux1TVdVN6nAajQbnDqTZbDLDMP7UN8/zqNfriMVinGeivV6PaZr2o1gURVSrVcTjcc7zmRwcj0c2m83w/LESiQQKhQJKpZJH8wbStuSOoyZmbAAAAABJRU5ErkJggg==);
-    cursor: pointer;
-}
-
 .promotion-dialog {
     position: absolute;
     width: 160px;
@@ -212,6 +203,51 @@
 
 .promotion-dialog .icon:hover{
     background-color: white;
+}
+
+.menu {
+    position: absolute;
+    left: 320px;
+    top: 320px;
+}
+
+.menu-button {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: no-repeat  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAUCAYAAAD/Rn+7AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QQHBA0t/VuxzAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAJ7SURBVEjH7dbBi5ZVFAbw3zczmjikIYSRBEGJWV0MaiPRokVBGdFCg7sog9oGQX9D6xbtgtaHcCthIS5cGBnRaG8k6sJGVCRlxMEm6puZNkf5vvF9v5n5nKVn95733ueec5/nPvfyMB4sem3JWmsPm7EYEf1a6wS2Ygp3IuK/MdbZjEX0MYSHTrzJluIm8BTew3Qp5Rqm8QHex9lSyu2madZa3BAe7sPD7a7JUx1Fv4HP8Ttm8Rg+wqP4LiJma62TWI6IpVUKXBUvc5NYxtLIHSyl9PAv3sJeXMeT+X0V35ZS+tiHXaWUG03T9FehdyRe0r4Pu3Ajv4cLrLX2SinT2IKFTL+G57ADz+NnXEh6PsOzONVBeS+pXDfeIOWDFG/DQbyKM5jPbqYT8DpewJd4HH/jzxEC3xC8wQK34k28jrez6wV8gV/xND7GK5jBV/gJcxGx3FLg2HipxXsn7G7M4ZscOJO5m5iJiDM4geM57hhutWl4LXi5o2vCu5domqZfSrmEc3mqduMfHCulzGM7DuPl7Ho/XsJManDlLvbRipd0d+KlBpeHKE7beAIH0gKeScBPcTEX3Itf0h52ZoN7soC25h8Yb1CDj+ATfJj6+Q3n8e7ADbAF3+cu7Mjc6ZXetZF4gwUupav/kZOO41COOZvCPpzCP5IWsRgRXR44Ft6gB7Zp8EqK91QOfCd1cRSRHvZiUnU6IhZGHJI+1oU34JfaTrGImMfliLiT/7bjcnY8i6/TWKe6HhorYj7nj41337G+eyPkdXYNP+JkRMyVUv7KTn/AraZpltbxohnCS3sZwuvQcnfUWidqrZtaXjvjxgQ2jWLxYWx0/A/B6SA4iyXILgAAAABJRU5ErkJggg==);
+    cursor: pointer;
+}
+
+.menu-button.active {
+    background-position: -20px 0;
+}
+
+.menu-list {
+    display: none;
+    position: absolute;
+    right: -5px;
+    bottom: -5px;
+    background: white;
+    box-shadow: 0 0 20px 0 black;
+}
+
+.menu-list.visible {
+    display: block;
+}
+
+.menu-item {
+    white-space: nowrap;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background: #eeeeee;
+}
+
+.menu-item.hidden {
+    display: none;
 }
 
 .players {
@@ -339,12 +375,16 @@
 .hint {
     position: absolute;
     left: 350px;
-    top: 305px;
+    top: 250px;
     width: 150px;
 }
 
 </style>
 <div class="board"></div>
+<div class="menu">
+    <div class="menu-button" title="Toggle enu"></div>
+    <div class="menu-list"></div>
+</div>
 <div class="players">
     <div class="player white">
         <div class="icon player-icon"></div>
@@ -358,9 +398,6 @@
         <div class="avatar"></div>
         <div class="clock" title="Now moving"></div>
         <div class="taken" title="Taken pieces"></div>
-    </div>
-    <div class="buttons">
-        <input type="button" value="Give Up" class="give-up-button">
     </div>
 </div>
 <div class="hint">
@@ -1165,10 +1202,16 @@ Board.prototype.isStalemate = function(color) {
 
         var Game = function(users) {
     EventEmitter.mixin(this);
+    this._menu = null;
     this._board = null;
     this._players = null;
     this._state = null;
+    this._notifier = null;
     this._init(users);
+};
+
+Game.prototype._initMenu = function() {
+    var view = new MenuView(this._menu);
 };
 
 Game.prototype._onMovePiece = function(piece, row, col) {
@@ -1286,9 +1329,13 @@ Game.prototype._onGiveUp = function(color) {
 };
 
 Game.prototype._initPlayers = function() {
-    var view = new PlayersView(this._board, this._players, this._state);
+    var view = new PlayersView(this._board, this._players, this._state, this._menu);
     view.on('give-up', $.proxy(this._onGiveUp, this));
 };
+
+Game.prototype._initNotifier = function() {
+    var view = new NotifierView(this._notifier, this._menu);
+}
 
 Game.prototype._initHint = function() {
     var view = new HintView(this._board, this._players);
@@ -1303,12 +1350,16 @@ Game.prototype._createPieces = function() {
 };
 
 Game.prototype._init = function(users) {
+    this._menu = new Menu();
     this._board = new Board();
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
     this._state = new GameState(this._board, this._players);
+    this._notifier = new Notifier(this._board, this._players);
+    this._initMenu();
     this._initBoard();
     this._initPlayers();
+    this._initNotifier();
     this._initHint();
     this._createPieces();
     this._players.turn();
@@ -1373,7 +1424,7 @@ Game.prototype.update = function(update) {
 };
 
 Game.prototype.onFirstUpdateDone = function() {
-    var notifier = new Notifier(this._board, this._players);
+    this._notifier.enable();
 };
 
         var GameState = function(board, players) {
@@ -1407,21 +1458,40 @@ GameState.prototype.isEnded = function() {
     return this._isEnded;
 };
 
+        var Menu = function() {
+    EventEmitter.mixin(this);
+};
+
+Menu.prototype.add = function(name, title, position, callback) {
+    this.emit('add', function() {
+        return [name, title, position, callback];
+    });
+};
+
+Menu.prototype.enable = function(name) {
+    this.emit('enable', function() {
+        return [name];
+    });
+};
+
+Menu.prototype.disable = function(name) {
+    this.emit('disable', function() {
+        return [name];
+    });
+};
+
         var Notifier = function(board, players) {
+    this._isEnabled = false;
     this._board = board;
     this._players = players;
     this._init();
 };
 
-Notifier.prototype._canBeUsed = function() {
-    return window.webkitNotifications != null && document.webkitHidden != null;
-};
-
 Notifier.prototype._notify = function(msg) {
-    if (!document.webkitHidden) {
+    if (!this._isEnabled) {
         return;
     }
-    if (!this._players.isViewerPlaying()) {
+    if (!document.webkitHidden) {
         return;
     }
     if (this._players.isViewerNowMoving()) {
@@ -1448,22 +1518,20 @@ Notifier.prototype._addPlayersListeners = function() {
     }, this));
 };
 
-Notifier.prototype._addClickListener = function() {
-    $(document).click($.proxy(function(event) {
-        if (this._players.isViewerPlaying()) {
-            webkitNotifications.requestPermission();
-            $(document).unbind(event);
-        }
-    }, this));
-};
-
 Notifier.prototype._init = function() {
-    if (!this._canBeUsed()) {
+    if (!this.canBeUsed()) {
         return;
     }
     this._addBoardListeners();
     this._addPlayersListeners();
-    this._addClickListener();
+};
+
+Notifier.prototype.canBeUsed = function() {
+    return window.webkitNotifications != null && document.webkitHidden != null;
+};
+
+Notifier.prototype.enable = function() {
+    this._isEnabled = true;
 };
 
         var Users = function() {
@@ -1544,74 +1612,6 @@ Gadget.prototype._init = function() {
     }, this));
 };
 
-        var PlayersView = function(board, players, state) {
-    EventEmitter.mixin(this);
-    this._players = players;
-    this._node = null;
-    this._init(board, state);
-};
-
-PlayersView.prototype._onAttack = function(piece) {
-    var color = piece.getColor();
-    var type = piece.getType();
-    var inverted = Piece.getInvertedColor(color);
-    var container = this._node.find('.player.' + inverted + ' .taken');
-    var node = $('<div class="icon ' + color + ' ' + type + '"></div>');
-    container.append(node);
-};
-
-PlayersView.prototype._addBoardListeners = function(board) {
-    board.on('attack', $.proxy(this._onAttack, this));
-};
-
-PlayersView.prototype._onSetPlayer = function(color, player) {
-    var node = this._node.find('.player.' + color + ' .avatar');
-    node.attr('title', player.getName());
-    node.css('background-image', 'url(' + player.getAvatar() + ')');
-};
-
-PlayersView.prototype._onTurn = function(color) {
-    this._node.find('.turn').removeClass('turn');
-    var node = this._node.find('.player.' + color);
-    node.addClass('turn');
-    var needShow = this._players.isViewerNowMoving();
-    this._node.find('.give-up-button').toggleClass('visible', needShow);
-};
-
-PlayersView.prototype._addPlayersListeners = function() {
-    this._players.on('set', $.proxy(this._onSetPlayer, this));
-    this._players.on('turn', $.proxy(this._onTurn, this));
-};
-
-PlayersView.prototype._onEnd = function() {
-    this._node.find('.turn').removeClass('turn');
-    this._node.find('.give-up-button').removeClass('visible');
-};
-
-PlayersView.prototype._addStateListeners = function(state) {
-    state.on('end', $.proxy(this._onEnd, this));
-};
-
-PlayersView.prototype._addClickListener = function() {
-    this._node.click($.proxy(function(event) {
-        var element = $(event.target);
-        if (element.hasClass('give-up-button')) {
-            var color = this._players.getCurrentColor();
-            this.emit('give-up', function() {
-                return [color];
-            });
-        }
-    }, this));
-};
-
-PlayersView.prototype._init = function(board, state) {
-    this._node = $('.players');
-    this._addBoardListeners(board);
-    this._addPlayersListeners();
-    this._addStateListeners(state);
-    this._addClickListener();
-};
-
         var BoardView = function(board, state) {
     EventEmitter.mixin(this);
     this._piece = null;
@@ -1644,7 +1644,6 @@ BoardView.prototype._createField = function() {
         var letter = Board.getColLetter(coords.col);
         row.append('<div class="letter">' + letter + '</div>');
     }
-    row.append('<button class="rotate" title="Rotate board"></button>');
     this._node.append(row);
 };
 
@@ -1945,6 +1944,154 @@ HintView.prototype._init = function(board, players) {
     this._set('player', 'Move any white piece to join the game');
     this._addBoardListeners(board);
     this._addPlayersListeners(players);
+};
+
+        var MenuView = function(menu) {
+    this._menu = menu;
+    this._node = null;
+    this._init();
+};
+
+MenuView.prototype._addMenuListeners = function() {
+    this._menu.on('add', $.proxy(function(name, title, position, callback) {
+        var node = $('<div class="menu-item menu-item-' + name + '">' + title + '</div>');
+        node.click(callback);
+        var list = this._node.find('.menu-list');
+        if (position == 'top') {
+            list.prepend(node);
+        } else {
+            list.append(node);
+        }
+    }, this));
+    this._menu.on('enable', $.proxy(function(name) {
+        this._node.find('.menu-item-' + name).removeClass('hidden');
+        this._node.find('.menu-button').addClass('active');
+    }, this));
+    this._menu.on('disable', $.proxy(function(name) {
+        this._node.find('.menu-item-' + name).addClass('hidden');
+        var hasItems = (this._node.find('.menu-item:not(.hidden)').length != 0);
+        this._node.find('.menu-button').toggleClass('active', hasItems);
+    }, this));
+};
+
+MenuView.prototype._addMouseListeners = function() {
+    this._node.click($.proxy(function(event) {
+        var element = $(event.target);
+        if (element.hasClass('menu-button')) {
+            if (this._node.find('.menu-button').hasClass('active')) {
+                this._node.find('.menu-list').toggleClass('visible');
+            }
+        }
+        if (element.hasClass('menu-item')) {
+            this._node.find('.menu-list').removeClass('visible');
+        }
+    }, this));
+};
+
+MenuView.prototype._addKeyboardListeners = function() {
+    $(document).keyup($.proxy(function(event) {
+        if (event.which == 27) {
+            this._node.find('.menu-list').removeClass('visible');
+        }
+    }, this));
+};
+
+MenuView.prototype._init = function() {
+    this._node = $('.menu');
+    this._addMenuListeners();
+    this._addMouseListeners();
+    this._addKeyboardListeners();
+};
+
+        var NotifierView = function(notifier, menu) {
+    this._notifier = notifier;
+    this._menu = menu;
+    this._init();
+};
+
+NotifierView.prototype._addMenuItems = function() {
+    if (webkitNotifications.checkPermission() == 0) {
+        this._menu.add('enable-notifications', 'Enable notifications', 'bottom', function() {
+            webkitNotifications.requestPermission();
+        });
+    }
+};
+
+NotifierView.prototype._init = function() {
+    if (!this._notifier.canBeUsed()) {
+        return;
+    }
+    this._addMenuItems();
+};
+
+        var PlayersView = function(board, players, state, menu) {
+    EventEmitter.mixin(this);
+    this._board = board;
+    this._players = players;
+    this._state = state;
+    this._menu = menu;
+    this._node = null;
+    this._init();
+};
+
+PlayersView.prototype._addMenuItems = function() {
+    this._menu.add('give-up', 'Give up', 'top', $.proxy(function(event) {
+        var color = this._players.getCurrentColor();
+        this.emit('give-up', function() {
+            return [color];
+        });
+    }, this));
+    this._menu.disable('give-up');
+};
+
+PlayersView.prototype._onAttack = function(piece) {
+    var color = piece.getColor();
+    var type = piece.getType();
+    var inverted = Piece.getInvertedColor(color);
+    var container = this._node.find('.player.' + inverted + ' .taken');
+    var node = $('<div class="icon ' + color + ' ' + type + '"></div>');
+    container.append(node);
+};
+
+PlayersView.prototype._addBoardListeners = function() {
+    this._board.on('attack', $.proxy(this._onAttack, this));
+};
+
+PlayersView.prototype._onSetPlayer = function(color, player) {
+    var node = this._node.find('.player.' + color + ' .avatar');
+    node.attr('title', player.getName());
+    node.css('background-image', 'url(' + player.getAvatar() + ')');
+};
+
+PlayersView.prototype._onTurn = function(color) {
+    this._node.find('.turn').removeClass('turn');
+    var node = this._node.find('.player.' + color);
+    node.addClass('turn');
+    if (this._players.isViewerNowMoving()) {
+        this._menu.enable('give-up');
+    } else {
+        this._menu.disable('give-up');
+    }
+};
+
+PlayersView.prototype._addPlayersListeners = function() {
+    this._players.on('set', $.proxy(this._onSetPlayer, this));
+    this._players.on('turn', $.proxy(this._onTurn, this));
+};
+
+PlayersView.prototype._addStateListeners = function() {
+    this._state.on('end', $.proxy(function() {
+        this._node.find('.turn').removeClass('turn');
+        this._menu.disable('give-up');
+    }, this));
+};
+
+PlayersView.prototype._init = function() {
+    this._node = $('.players');
+    this._addMenuItems();
+    this._addBoardListeners();
+    this._addPlayersListeners();
+    this._addStateListeners();
 };
 
         var gadget = new Gadget();

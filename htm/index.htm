@@ -2,6 +2,10 @@
     %% css/styles.css %%
 </style>
 <div class="board"></div>
+<div class="menu">
+    <div class="menu-button" title="Toggle enu"></div>
+    <div class="menu-list"></div>
+</div>
 <div class="players">
     <div class="player white">
         <div class="icon player-icon"></div>
@@ -15,9 +19,6 @@
         <div class="avatar"></div>
         <div class="clock" title="Now moving"></div>
         <div class="taken" title="Taken pieces"></div>
-    </div>
-    <div class="buttons">
-        <input type="button" value="Give Up" class="give-up-button">
     </div>
 </div>
 <div class="hint">
@@ -36,12 +37,15 @@
         %% js/board/board.js %%
         %% js/game/game.js %%
         %% js/game/game-state.js %%
+        %% js/game/menu.js %%
         %% js/game/notifier.js %%
         %% js/wave/users.js %%
         %% js/wave/gadget.js %%
-        %% js/views/players-view.js %%
         %% js/views/board-view.js %%
         %% js/views/hint-view.js %%
+        %% js/views/menu-view.js %%
+        %% js/views/notifier-view.js %%
+        %% js/views/players-view.js %%
         var gadget = new Gadget();
     })();
 </script>

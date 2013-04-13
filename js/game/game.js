@@ -1,9 +1,15 @@
 var Game = function(users) {
     EventEmitter.mixin(this);
+    this._menu = null;
     this._board = null;
     this._players = null;
     this._state = null;
+    this._notifier = null;
     this._init(users);
+};
+
+Game.prototype._initMenu = function() {
+    var view = new MenuView(this._menu);
 };
 
 Game.prototype._onMovePiece = function(piece, row, col) {
@@ -121,9 +127,13 @@ Game.prototype._onGiveUp = function(color) {
 };
 
 Game.prototype._initPlayers = function() {
-    var view = new PlayersView(this._board, this._players, this._state);
+    var view = new PlayersView(this._board, this._players, this._state, this._menu);
     view.on('give-up', $.proxy(this._onGiveUp, this));
 };
+
+Game.prototype._initNotifier = function() {
+    var view = new NotifierView(this._notifier, this._menu);
+}
 
 Game.prototype._initHint = function() {
     var view = new HintView(this._board, this._players);
@@ -138,12 +148,16 @@ Game.prototype._createPieces = function() {
 };
 
 Game.prototype._init = function(users) {
+    this._menu = new Menu();
     this._board = new Board();
     this._players = new Players(users);
     this._players.on('new', $.proxy(this._onNewPlayer, this));
     this._state = new GameState(this._board, this._players);
+    this._notifier = new Notifier(this._board, this._players);
+    this._initMenu();
     this._initBoard();
     this._initPlayers();
+    this._initNotifier();
     this._initHint();
     this._createPieces();
     this._players.turn();
@@ -208,5 +222,5 @@ Game.prototype.update = function(update) {
 };
 
 Game.prototype.onFirstUpdateDone = function() {
-    var notifier = new Notifier(this._board, this._players);
+    this._notifier.enable();
 };

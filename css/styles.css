@@ -171,15 +171,6 @@
     background-position: -80px -80px;
 }
 
-.board .rotate {
-    display: none;
-    width: 20px;
-    height: 20px;
-    border: 0;
-    background: no-repeat center center url(data:image/png;base64,%% img/rotate.png base64 %%);
-    cursor: pointer;
-}
-
 .promotion-dialog {
     position: absolute;
     width: 160px;
@@ -203,6 +194,51 @@
 
 .promotion-dialog .icon:hover{
     background-color: white;
+}
+
+.menu {
+    position: absolute;
+    left: 320px;
+    top: 320px;
+}
+
+.menu-button {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: no-repeat  url(data:image/png;base64,%% img/menu.png base64 %%);
+    cursor: pointer;
+}
+
+.menu-button.active {
+    background-position: -20px 0;
+}
+
+.menu-list {
+    display: none;
+    position: absolute;
+    right: -5px;
+    bottom: -5px;
+    background: white;
+    box-shadow: 0 0 20px 0 black;
+}
+
+.menu-list.visible {
+    display: block;
+}
+
+.menu-item {
+    white-space: nowrap;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background: #eeeeee;
+}
+
+.menu-item.hidden {
+    display: none;
 }
 
 .players {
@@ -330,6 +366,6 @@
 .hint {
     position: absolute;
     left: 350px;
-    top: 305px;
+    top: 250px;
     width: 150px;
 }
