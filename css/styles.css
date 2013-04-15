@@ -349,20 +349,6 @@
     background-position: -80px -20px; 
 }
 
-.players .buttons {
-    position: absolute;
-    top: 270px;
-}
-
-.players .buttons .give-up-button {
-    display: none;
-    padding: 3px;
-}
-
-.players .buttons .give-up-button.visible {
-    display: inline-block;
-}
-
 .hint {
     position: absolute;
     left: 350px;
